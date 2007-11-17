@@ -112,6 +112,12 @@ class Player:
 	def getPath( self ):
 		return self.path
 
+	def isFinished( self ):
+		if self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) ) == self.endCell and self.headAttached:
+			return True
+		else:
+			return False
+
 	def getPosition( self ):
 		return self.position
 		
