@@ -39,6 +39,7 @@ class Player:
 		'''
 		if direction == 4:
 			self.signaling = True
+			return
 
 		if direction == 0:
 			potentialPosition = [ self.position[0], self.position[1] + playerYIncrement ]
