@@ -162,7 +162,7 @@ class XoMaze:
 		self.board.fill( (1.0, 1.0, 1.0) )
 		#self.hud.reset()
 		# create the new maze
-		self.maze.initialize(60,120)
+		self.maze.initialize(120,60)
 		# setup each player
 		self.playerManager.reset()
 		self.gameClock.start()
