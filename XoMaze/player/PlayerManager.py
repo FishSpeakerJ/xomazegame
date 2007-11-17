@@ -13,5 +13,9 @@ class PlayerManager:
 		
 		for i in range( self.game.numberOfPlayers ):
 			self.playerIdsToPlayers[ i ] = Player( self.game, i )
+	
+	def reset( self ):
+		for player in self.playerIdsToPlayers.values():
+			player.reset()
 
 		
