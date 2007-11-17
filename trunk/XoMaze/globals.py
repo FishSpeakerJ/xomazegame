@@ -3,6 +3,15 @@ import pygame
 # custom events
 CLOCKTICK = pygame.USEREVENT + 1
 
+# global variables
+hudHeight = 50
+# maze sizes
+difficultyLevelToMazeSize = {
+ 1:( 20,20),
+ 2:( 50, 30 ),
+ 3:( 70, 50 )
+}
+
 EMULATORKEYS = {
 	"K_KP8" : [ 0, 0, ],
 	"K_KP6" : [ 0, 1, ],
