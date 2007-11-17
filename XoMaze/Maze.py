@@ -29,7 +29,7 @@ class Cell:
 		for direction in self.directions:
 			if direction.neighbor == other:
 				direction.isWalled = False
-				print self, other
+				#print self, other
 
 class Maze:
 	def __init__(self, rowCount=16, columnCount=16):
