@@ -142,18 +142,23 @@ class Maze:
 				currentCell = cellStack.pop();
 
 	def mapX( self, fx ):
-		return self._x0 + fx*self._cellSize
+		return int( self._x0 + fx*self._cellSize + 0.5 )
 	
 	def mapY( self, fy ):
-		return ( self._y0 + self._h ) - (fy*self._cellSize)
+		return int( ( self._y0 + self._h ) - (fy*self._cellSize) + 0.5 )
 	
 	def mapWidth( self, fw ):
-		return fw*self._cellSize
+		return int( fw*self._cellSize + 0.5 )
 	def mapHeight( self, fh ):
-		return fh*self._cellSize
+		return int( fh*self._cellSize + 0.5 )
 	
 	def drawLine( self, surface, color, ax, ay, bx, by, width=1 ):
 		pygame.draw.line( surface, color, (self.mapX(ax), self.mapY(ay)), (self.mapX(bx), self.mapY(by)), width )
+
+	def drawCircle( self, surface, color, cx, cy, radius ):
+		rect = (self.mapX(cx-radius), self.mapY(cy+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
+		pygame.draw.ellipse( surface, color, rect )
+		 
 
 	def drawPlayer( self, surface, player ):
 		x, y = player.getPosition()
@@ -174,13 +179,26 @@ class Maze:
 		
 		color = player.getStrokeColor()
 		radius = 0.2
-		rect = (self.mapX(x-radius), self.mapY(y+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
-		pygame.draw.ellipse( surface, color, rect )
-		
+		self.drawCircle(surface, color, x, y, radius)
 		color = player.getFillColor()
 		radius *= 0.75
-		rect = (self.mapX(x-radius), self.mapY(y+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
-		pygame.draw.ellipse( surface, color, rect )
+		self.drawCircle(surface, color, x, y, radius)
+#		rect = (self.mapX(x-radius), self.mapY(y+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
+#		pygame.draw.ellipse( surface, color, rect )
+		
+#		rect = (self.mapX(x-radius), self.mapY(y+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
+#		pygame.draw.ellipse( surface, color, rect )
+		
+#		print
+#		print
+		path = player.getPath()
+		if len( path ):
+			currentCell = path[ 0 ]
+			for nextCell in path[ 0: ]:
+				currentCell = nextCell
+#				print currentCell, nextCell
+#		print
+#		print
 		
 	def paint(self, surface):
 		self._w = surface.get_width()
@@ -191,10 +209,10 @@ class Maze:
 
 		w = self._cellSize*self._columnCount
 		h = self._cellSize*self._rowCount
-		self._w = surface.get_width()
-		self._h = surface.get_height()
 		self._x0 = (self._w-w)/2
 		self._y0 = (self._h-h)/2
+		self._w = w
+		self._h = h
 		
 		black = (0,0,0)
 		white = (255,255,255)
