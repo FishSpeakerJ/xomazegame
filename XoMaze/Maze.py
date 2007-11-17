@@ -33,7 +33,7 @@ class Cell:
 				return
 		raise "did not knock down wall"
 	def __repr__( self ):
-		return "(" + `self.row` + "," + `self.column` + ")"
+		return "(x=" + `self.column` + ",y=" + `self.row` + ")"
 
 class Path:
 	def __init__(self, row, column):
@@ -42,7 +42,7 @@ class Path:
 		self.cells.append(cell)
 
 class Maze:
-	def __init__(self, game, xCellCount=16, yCellCount=16):
+	def __init__(self, game, xCellCount=1, yCellCount=1):
 		self._game = game
 		self.initialize(xCellCount, yCellCount)
 	def initialize(self, xCellCount, yCellCount):
@@ -93,14 +93,14 @@ class Maze:
 		return self._rowCount
 	def getCellXY(self, x, y):
 		return self._cells[ y ][ x ]
-	def generateRandom(self):
-		r = 0
-		while r<self._rowCount:
-			c = 0
-			while c<self._columnCount:
-				self._cells[ r ][ c ].generateRandom()
-				c += 1
-			r += 1
+	#def generateRandom(self):
+	#	r = 0
+	#	while r<self._rowCount:
+	#		c = 0
+	#		while c<self._columnCount:
+	#			self._cells[ r ][ c ].generateRandom()
+	#			c += 1
+	#		r += 1
 	def getRandomCell(self):
 		r = random.randint( 0, self._rowCount-1 )
 		c = random.randint( 0, self._columnCount-1 )
@@ -126,10 +126,13 @@ class Maze:
 			r += 1
 		
 		cellStack = []
-		
+			
 		currentCell = self.getRandomCell()
 		visitedCellCount = 1
 		totalCellCount = self._rowCount * self._columnCount
+		
+		n = totalCellCount / 20
+		i = 0
 		while visitedCellCount < totalCellCount:
 			nextCell = self._selectRandomNeighborCellWithAllWallsInTact( currentCell )
 			if nextCell:
@@ -138,6 +141,12 @@ class Maze:
 				cellStack.append( currentCell )
 				currentCell = nextCell
 				visitedCellCount += 1
+				i += 1
+				i %= n
+				if i == 0:
+					self.paint( self._game.board )
+					pygame.display.update()
+				#pygame.time.delay( 100 )
 			else:
 				currentCell = cellStack.pop();
 
@@ -158,7 +167,15 @@ class Maze:
 	def drawCircle( self, surface, color, cx, cy, radius ):
 		rect = (self.mapX(cx-radius), self.mapY(cy+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
 		pygame.draw.ellipse( surface, color, rect )
-		 
+	
+	
+	def drawPathStart( self, surface, color, cell ):
+		self._prevDrawCell = cell
+	def drawPathNextCell( self, surface, color, cell ):
+		self._prevDrawCell = cell
+	def drawPathEnd( self, surface, color ):
+		self._prevDrawCell = None
+	
 
 	def drawPlayer( self, surface, player ):
 		x, y = player.getPosition()
@@ -183,22 +200,14 @@ class Maze:
 		color = player.getFillColor()
 		radius *= 0.75
 		self.drawCircle(surface, color, x, y, radius)
-#		rect = (self.mapX(x-radius), self.mapY(y+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
-#		pygame.draw.ellipse( surface, color, rect )
 		
-#		rect = (self.mapX(x-radius), self.mapY(y+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
-#		pygame.draw.ellipse( surface, color, rect )
-		
-#		print
-#		print
 		path = player.getPath()
 		if len( path ):
 			currentCell = path[ 0 ]
+			self.drawPathStart( surface, color, path[ 0 ] )
 			for nextCell in path[ 0: ]:
-				currentCell = nextCell
-#				print currentCell, nextCell
-#		print
-#		print
+				self.drawPathNextCell( surface, color, nextCell )
+			self.drawPathEnd( surface, color )
 		
 	def paint(self, surface):
 		self._w = surface.get_width()
@@ -242,8 +251,9 @@ class Maze:
 				c += 1
 			r += 1
 		
-		for player in self._game.playerManager.playerIdsToPlayers.values():
-			self.drawPlayer( surface, player )
+		if self._game.playerManager:
+			for player in self._game.playerManager.playerIdsToPlayers.values():
+				self.drawPlayer( surface, player )
 		
 		self._x0 = None
 		self._y0 = None
