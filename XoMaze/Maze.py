@@ -85,7 +85,10 @@ class Maze:
 		if r<0 or r>=self._rowCount or c<0 or c>=self._columnCount:
 			return None
 		else:
-			return self.getCell( r, c )
+			return self._getCellRC( r, c )
+	def _getCellRC(self, r,c):
+		return getCellXY( c, r )
+	
 	def getXCellCount(self):
 		return self._columnCount
 	def getYCellCount(self):
