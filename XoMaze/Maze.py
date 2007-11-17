@@ -10,6 +10,10 @@ def blendColors( a, b ):
 	br, bg, bb = b
 	return (ar+br)/2,(ag+bg)/2,(ab+bb)/2
 
+def halfColor( a, factor=6 ):
+	ar, ag, ab = a
+	return ar/factor, ag/factor, ab/factor
+
 class Direction:
 	def __init__(self):
 		self.isWalled = True
@@ -191,12 +195,12 @@ class Maze:
 		lineWidth *= 0.75
 		radius *= 0.85
 		if isSignaling:
-			self.drawLine( surface, stroke, x-radius, y-radius, x, y, lineWidth )
-			self.drawLine( surface, stroke, x, y, x+radius, y-radius, lineWidth )
-			self.drawLine( surface, stroke, x-radius, y, x+radius, y, lineWidth )
+			self.drawLine( surface, fill, x-radius, y-radius, x, y, lineWidth )
+			self.drawLine( surface, fill, x, y, x+radius, y-radius, lineWidth )
+			self.drawLine( surface, fill, x-radius, y, x+radius, y, lineWidth )
 		else:
-			self.drawLine( surface, stroke, x-radius, y-radius, x+radius, y+radius, lineWidth )
-			self.drawLine( surface, stroke, x-radius, y+radius, x+radius, y-radius, lineWidth )
+			self.drawLine( surface, fill, x-radius, y-radius, x+radius, y+radius, lineWidth )
+			self.drawLine( surface, fill, x-radius, y+radius, x+radius, y-radius, lineWidth )
 
 	def drawO( self, surface, stroke, fill, x, y ):
 		#x += offset
@@ -246,7 +250,7 @@ class Maze:
 		
 		path = player.getPath()
 		if len( path ):
-			self.drawPath( surface, blendColors( player.getFillColor(), (192,192,192)), player.offset, path )
+			self.drawPath( surface, halfColor( player.getFillColor() ), player.offset, path )
 			
 			prunedPath = path[:]
 			
