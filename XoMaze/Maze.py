@@ -27,9 +27,13 @@ class Cell:
 	def areAllWallsInTact(self):
 		return self.north.isWalled and self.east.isWalled and self.south.isWalled and self.west.isWalled
 	def knockDownWallToward(self, other):
+		print self, other
 		for direction in self.directions:
+			print direction.neighbor
 			if direction.neighbor == other:
 				direction.isWalled = False
+				return
+		raise "blah"
 	def __repr__( self ):
 		return "(" + `self.row` + "," + `self.column` + ")"
 
@@ -78,10 +82,10 @@ class Maze:
 #		nextCell.knockDownWallToward( currentCell )
 		
 	def _getNeighborCell(self, r, c):
-		try:
-			return self.getCell( r, c )
-		except:
+		if r<0 or r>=self._rowCount or c<0 or c>=self._columnCount:
 			return None
+		else:
+			return self.getCell( r, c )
 	def getRowCount(self):
 		return self._rowCount
 	def getColumnCount(self):
@@ -119,6 +123,7 @@ class Maze:
 					direction.isWalled = True
 				c += 1
 			r += 1
+		
 		cellStack = []
 		
 		currentCell = self.getRandomCell()
