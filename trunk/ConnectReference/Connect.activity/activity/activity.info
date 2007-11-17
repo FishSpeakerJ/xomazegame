@@ -1,0 +1,7 @@
+[Activity]
+name = Connect
+service_name = org.laptop.Connect
+class = activity.ConnectActivity
+icon = activity-connect
+activity_version = 15
+show_launcher = yes
