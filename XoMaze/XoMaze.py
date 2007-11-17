@@ -144,13 +144,13 @@ class XoMaze:
 			if event.key == K_SPACE:
 				# checkif this is relevant
 				self.startNewGame(globals.difficultyLevelToMazeSize[1])
-			elif event.key == K_1:
+			elif event.key == K_F1:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[1])
-			elif event.key == K_2:
+			elif event.key == K_F2:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[2])
-			elif event.key == K_3:
+			elif event.key == K_F3:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[3])
 						
