@@ -171,8 +171,13 @@ class Maze:
 	
 	def drawPathStart( self, surface, color, cell ):
 		self._prevDrawCell = cell
+		self.drawCircle( surface, color, cell.column+0.5, cell.row+0.5, 0.1 )
+		
 	def drawPathNextCell( self, surface, color, cell ):
+		self.drawLine( surface, color, cell.column+0.5, cell.row+0.5, self._prevDrawCell.column+0.5, self._prevDrawCell.row+0.5 )
+		self.drawCircle( surface, color, cell.column+0.5, cell.row+0.5, 0.1 )
 		self._prevDrawCell = cell
+
 	def drawPathEnd( self, surface, color ):
 		self._prevDrawCell = None
 	
