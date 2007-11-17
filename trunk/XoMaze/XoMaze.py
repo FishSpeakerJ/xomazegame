@@ -11,12 +11,17 @@ from player.PlayerManager import PlayerManager
 try:
 	from olpcgames import eventwrap
 	emulatorMode = True
+	width=1200
+	height=825
+
 except ImportError:
 	# Use this variable to determine if we're running in the emulator or not
 	emulatorMode = False
+	width=1024
+	height=750
 
 class XoMaze:
-	def __init__(self, width=1200,height=825):
+	def __init__(self):
 		self.initScreen( width, height ) 
 		self.initVariables()
 		self.initPlayerManager()
@@ -29,9 +34,9 @@ class XoMaze:
 		"""Set the window Size"""
 		# determine space available for board & hud
 		boardWidth = width
-		boardHeight = height*0.9
+		boardHeight = height*0.8
 		hudWidth = width
-		hudHeight = height - boardHeight
+		hudHeight = (height - boardHeight)/2.0
 		
 		"""Create the Screen"""
 		self.screen = pygame.display.set_mode((width, height))

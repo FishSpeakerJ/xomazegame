@@ -6,7 +6,7 @@ from XoMaze import XoMaze
 def main():
 	pygame.init()
 	# Start Pygame displays...
-	game = XoMaze( 1200, 855 )
+	game = XoMaze( )
 	while True:
 		# Pygame event loop.
 		# Update the screen
