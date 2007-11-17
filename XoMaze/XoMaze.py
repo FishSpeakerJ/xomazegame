@@ -29,7 +29,7 @@ class XoMaze:
 		"""Set the window Size"""
 		# determine space available for board & hud
 		boardWidth = width
-		boardHeight = height*0.8
+		boardHeight = height*0.9
 		hudWidth = width
 		hudHeight = height - boardHeight
 		
