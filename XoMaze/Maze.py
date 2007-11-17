@@ -169,20 +169,26 @@ class Maze:
 		pygame.draw.ellipse( surface, color, rect )
 	
 	
-	def drawPathStart( self, surface, color, cell ):
+	def drawPathStart( self, surface, color, offset, cell ):
 		self._prevDrawCell = cell
-		self.drawCircle( surface, color, cell.column+0.5, cell.row+0.5, 0.1 )
+		self.drawCircle( surface, color, cell.column+offset, cell.row+offset, 0.1 )
 		
-	def drawPathNextCell( self, surface, color, cell ):
-		self.drawLine( surface, color, cell.column+0.5, cell.row+0.5, self._prevDrawCell.column+0.5, self._prevDrawCell.row+0.5 )
-		self.drawCircle( surface, color, cell.column+0.5, cell.row+0.5, 0.1 )
+	def drawPathNextCell( self, surface, color, offset, cell ):
+		self.drawLine( surface, color, cell.column+offset, cell.row+offset, self._prevDrawCell.column+offset, self._prevDrawCell.row+offset )
+		self.drawCircle( surface, color, cell.column+offset, cell.row+offset, 0.1 )
 		self._prevDrawCell = cell
 
-	def drawPathEnd( self, surface, color ):
+	def drawPathEnd( self, surface, color, offset ):
 		self._prevDrawCell = None
 	
+	def drawPath( self, surface, color, offset, path ):
+		currentCell = path[ 0 ]
+		self.drawPathStart( surface, color, offset, path[ 0 ] )
+		for nextCell in path[ 0: ]:
+			self.drawPathNextCell( surface, color, offset, nextCell )
+		self.drawPathEnd( surface, color, offset )
 
-	def drawPlayer( self, surface, player ):
+	def drawPlayer( self, surface, player, offset ):
 		x, y = player.getPosition()
 
 		lineWidth = self.mapWidth(0.2)
@@ -206,14 +212,27 @@ class Maze:
 		radius *= 0.75
 		self.drawCircle(surface, color, x, y, radius)
 		
+		gray192 = (192,192,192)
 		path = player.getPath()
 		if len( path ):
-			currentCell = path[ 0 ]
-			self.drawPathStart( surface, color, path[ 0 ] )
-			for nextCell in path[ 0: ]:
-				self.drawPathNextCell( surface, color, nextCell )
-			self.drawPathEnd( surface, color )
-		
+			self.drawPath( surface, gray192, offset, path )
+			
+			prunedPath = path[:]
+			
+			i = 0
+			while i<len(prunedPath):
+				j = i+1
+				jFound = -1
+				while j<len(prunedPath):
+					if prunedPath[i] is prunedPath[j]:
+						jFound = j
+					j += 1
+				if jFound != -1:
+					prunedPath = prunedPath[0:i]+prunedPath[(jFound+1):]
+				i += 1
+
+			self.drawPath( surface, color, offset, prunedPath )
+			
 	def paint(self, surface):
 		self._w = surface.get_width()
 		self._h = surface.get_height()
@@ -257,8 +276,10 @@ class Maze:
 			r += 1
 		
 		if self._game.playerManager:
+			offset = 0.35
 			for player in self._game.playerManager.playerIdsToPlayers.values():
-				self.drawPlayer( surface, player )
+				self.drawPlayer( surface, player, offset )
+				offset += 0.1
 		
 		self._x0 = None
 		self._y0 = None
