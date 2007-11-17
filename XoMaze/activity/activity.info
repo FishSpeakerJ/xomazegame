@@ -1,0 +1,7 @@
+[Activity]
+name = XoMaze
+activity_version = 1
+host_version = 1
+service_name = net.coderanger.olpc.XoMazeActivity
+icon = xoMaze
+class = activity.XoMazeActivity
