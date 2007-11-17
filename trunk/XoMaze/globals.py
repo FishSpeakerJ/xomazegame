@@ -27,10 +27,16 @@ KEYBOARDKEYS = {
 	"K_DOWN" : [ 2, 2, ],
 	"K_LEFT" : [ 2, 3, ],
 	
+	"K_8" : [ 3, 0, ],
+	"K_6" : [ 3, 1, ],
+	"K_2" : [ 3, 2, ],
+	"K_4" : [ 3, 3, ],
+
 	"K_KP8" : [ 3, 0, ],
 	"K_KP6" : [ 3, 1, ],
 	"K_KP2" : [ 3, 2, ],
 	"K_KP4" : [ 3, 3, ],
+
 }
 # Player variables
 PLAYERXINCREMENT = 0.5
