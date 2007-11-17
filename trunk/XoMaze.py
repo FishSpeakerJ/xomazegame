@@ -1,8 +1,9 @@
 import pygame
-
+from Maze import Maze, Cell
 class XoMaze:
     def __init__(self, width=1200,height=825):
-        self.initScreen( width, height )                
+        self.initScreen( width, height ) 
+        self.maze = Maze()
         
     def initScreen( self, width, height ):
         """Set the window Size"""
