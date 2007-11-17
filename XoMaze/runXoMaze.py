@@ -2,6 +2,7 @@ import pygame
 #import olpcgames ##note, disable this when testing on a non-xo computer.
 from XoMaze import XoMaze
 
+
 def main():
     pygame.init()
     # Start Pygame displays...
