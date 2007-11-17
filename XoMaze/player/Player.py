@@ -42,7 +42,7 @@ class Player:
 		'''
 		Resets the player to the bottom of the maze, offset based on his id
 		'''
-		x = self.game.maze.getColumnCount / 2.0
+		x = self.game.maze.getColumnCount() / 2.0
 		print x
 		self.position = ( x - float(self.game.numberOfPlayers) + self.id*1.0, 0.0 )
 
