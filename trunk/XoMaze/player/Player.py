@@ -27,7 +27,7 @@ class Player:
 			3 : "west",
 		}
 
-	def move( self, direction ):
+	def move( self, direction, dt=1.0 ):
 		'''
 		Move yourself in the maze
 			0 - Up
@@ -80,7 +80,7 @@ class Player:
 			
 		currentCell = self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) )
 		directionObject = getattr( currentCell, self.directionToStringDirection[ direction ] )
-		if currentCell == self.headCell:
+		if currentCell == self.headCell and not self.headAttached:
 			self.game.playerManager.foundHead( self.id )
 			self.headAttached = True
 			
