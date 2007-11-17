@@ -4,6 +4,7 @@ import sys
 import os
 from Maze import Maze
 from Maze import Cell
+from Hud import Hud
 from GameTimer import GameTimer
 import globals
 from player.PlayerManager import PlayerManager
@@ -28,6 +29,7 @@ class XoMaze:
 		self.initPlayerManager()
 		self.initSounds()
 		pygame.init()
+		pygame.font.init()
 		pygame.event.set_blocked( pygame.MOUSEMOTION )
 		pygame.event.set_blocked( pygame.VIDEORESIZE )
 		pygame.event.set_blocked( pygame.VIDEOEXPOSE )
@@ -46,11 +48,11 @@ class XoMaze:
 		"""Create the Screen"""
 		self.screen = pygame.display.set_mode((width, height))
 		pygame.display.set_caption('XoMaze')
-		self.board = self.screen.subsurface( pygame.Rect( 0, hudHeight, boardWidth, boardHeight ))
-		self.hud = self.screen.subsurface( pygame.Rect( 0,0,hudWidth, hudHeight ))
-		self.initHud()
-		self.maze = Maze( self )
+		self.boardSurface = self.screen.subsurface( pygame.Rect( 0, hudHeight, boardWidth, boardHeight ))
+		self.hudSurface = self.screen.subsurface( pygame.Rect( 0,0,hudWidth, hudHeight ))
 		self.gameClock = GameTimer()
+		self.hud = Hud( self )
+		self.maze = Maze( self )
 
 
 	def initVariables( self ):
@@ -62,9 +64,6 @@ class XoMaze:
 		else:
 			# These are... wasd
 			self.keysToDirections = globals.keyboardKeys
-
-	def initHud( self ):
-		pass
 
 	def initPlayerManager( self ):
 		self.playerManager = PlayerManager( self )
@@ -116,7 +115,7 @@ class XoMaze:
 		# if game timer is running, update stuff
 		if updateVisuals and self.gameClock.isRunning():	
 			# Do update the maze!
-			self.maze.paint( self.board )		
+			self.maze.paint( self.boardSurface )		
 			# Render that sucker
 			pygame.display.update()						
 				
@@ -143,7 +142,7 @@ class XoMaze:
 					
 			if event.key == K_SPACE:
 				# checkif this is relevant
-				self.startNewGame(globals.difficultyLevelToMazeSize[1])
+				self.startNewGame(*globals.difficultyLevelToMazeSize[1])
 			elif event.key == K_F1:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[1])
@@ -161,7 +160,7 @@ class XoMaze:
 		
 	def startNewGame( self, xCellNum, yCellNum ):
 		# clear EVERYTHING
-		self.board.fill( (1.0, 1.0, 1.0) )
+		self.boardSurface.fill( (1.0, 1.0, 1.0) )
 		#self.hud.reset()
 		# create the new maze
 		self.maze.initialize(xCellNum,yCellNum)

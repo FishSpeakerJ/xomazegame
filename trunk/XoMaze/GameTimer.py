@@ -24,9 +24,7 @@ class GameTimer:
 		
 	def update( self ):
 		self.totalTime += 1000
-		
-	def updateVisual( self ):
-		''' draw some stuff '''
-		pass
-		# should return rect that should be updated
+	
+	def getTimeString( self ):
+		return "%i:%i" % ( this.totalTime/1000, 60*this.totalTime%1000) 
 		
