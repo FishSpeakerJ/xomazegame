@@ -28,7 +28,7 @@ class XoMaze:
 		self.initVariables()
 		self.initPlayerManager()
 		self.initSounds()
-		self.pressedKeys = []
+		self.pressedKeys = {}
 		pygame.init()
 		pygame.font.init()
 		pygame.event.set_blocked( pygame.MOUSEMOTION )
@@ -114,11 +114,11 @@ class XoMaze:
 				updateVisuals = True
 		
 		# update player movement
-		if self.pressedKeys != []:
-			for key in self.pressedKeys:
-				updateVisuals = True
-				self.playerManager.playerIdsToPlayers[ self.keysToDirections[key][0] ].move( self.keysToDirections[key][1] )
-					
+		for key, lastUpdateTime in self.pressedKeys.items():
+			if lastUpdateTime != 0:
+				self.playerManager.playerIdsToPlayers[ self.keysToDirections[key][0] ].move( self.keysToDirections[key][1], self.gameClock.getTime() - lastUpdateTime )
+				self.pressedKeys[key] = self.gameClock.getTime()
+				
 		# if game timer is running, update stuff
 		if updateVisuals and self.gameClock.isRunning():	
 			# Do update the maze!
@@ -140,15 +140,14 @@ class XoMaze:
 			# Handle any directional input
 			if event.key in self.keysToDirections.keys():
 				if event.key in self.pressedKeys:
-					self.pressedKeys.remove( event.key )												
+					self.pressedKeys[event.key] = 0										
 		elif event.type == KEYDOWN: # (I assume we want key down, not up)
 			if event.key == K_ESCAPE:
 				# TODO: Show a confirmation dialog maybe?
 				return False			
 			# Handle any directional input
 			if event.key in self.keysToDirections.keys():
-				self.pressedKeys.append( event.key )
-					
+				self.pressedKeys[event.key] = self.gameClock.getTime()					
 			if event.key == K_SPACE:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[1])
