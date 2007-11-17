@@ -8,10 +8,10 @@ class GameTimer:
 
 	def start( self ):
 		self.totalTime = 0
-		pygame.time.set_timer(globals.CLOCKTICK, 1)
+		pygame.time.set_timer(globals.CLOCKTICK, 1000)
 		
 	def resume( self ):
-		pygame.time.set_timer(globals.CLOCKTICK, 1)
+		pygame.time.set_timer(globals.CLOCKTICK, 1000)
 		
 	def pause( self ):
 		pygame.time.set_timer(0)
@@ -20,7 +20,7 @@ class GameTimer:
 		return self.totalTime
 		
 	def update( self ):
-		self.totalTime += 1
+		self.totalTime += 1000
 		
 	def updateVisual( self ):
 		''' draw some stuff '''

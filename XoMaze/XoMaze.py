@@ -2,62 +2,39 @@ import pygame
 from pygame.locals import *
 import sys
 import os
-#from olpcgames import eventwrap
 from Maze import Maze
 from Maze import Cell
+from GameTimer import GameTimer
+import globals
 from player.PlayerManager import PlayerManager
 
+try:
+	from olpcgames import eventwrap
+	emulatorMode = True
+except ImportError:
+	# Use this variable to determine if we're running in the emulator or not
+	emulatorMode = False
 
-# Use this variable to determine if we're running in the emulator or not
-emulatorMode = False
+
 
 class XoMaze:
 	def __init__(self, width=1200,height=825):
 		self.initScreen( width, height ) 
-		self.maze = Maze()
-		self.players = {}
-		pygame.init()
-		pygame.event.set_blocked( pygame.MOUSEMOTION )
-		#eventwrap.install()
-
-	def processMessages( self, event ):
-		# Gotta have this if we want to exit nicely
-			if event.type == QUIT:
-				return False
-			elif event.type == KEYDOWN: # (I assume we want key down, not up)
-				if event.key == K_ESCAPE:
-					# TODO: Show a confirmation dialog maybe?
-					return False
-				
-				# Handle any directional input
-				for key, value in self.keysToDirections.items():
-					if event.key == getattr( pygame.locals, key ):
-						# Let's assume player ID 0 is me, the main player.
-						self.playerManager.playerIdsToPlayers[ 0 ].move( value )
-
-	def initScreen( self, width, height ):
-		"""Set the window Size"""
-		self.width = width
-		self.height = height
-		"""Create the Screen"""
-		self.screen = pygame.display.set_mode( (self.width, self.height) )
-		pygame.display.set_caption("XoMaze")
-		
-		
-	def startNewGame( self ):
-		# create the new maze
-		# setup each player
-		# start game time
-		pass
-		
-	def __init__(self, width=1200,height=825):
-		self.initScreen( width, height )
 		self.initVariables()
 		self.initPlayerManager()
 		self.initSounds()
 		self.maze = Maze()
+		self.gameClock = GameTimer()
 		pygame.init()
+		pygame.event.set_blocked( pygame.MOUSEMOTION )
 		#eventwrap.install()
+		
+	def startNewGame( self ):
+		# create the new maze
+		self.maze.constructRandom()
+		# setup each player
+		self.playerManager.reset()
+		self.gameClock.start()
 
 	def initScreen( self, width, height ):
 		"""Set the window Size"""
@@ -68,7 +45,7 @@ class XoMaze:
 		pygame.display.set_caption('XoMaze')
 
 	def initVariables( self ):
-		self.numberOfPlayers = 1
+		self.numberOfPlayers = 4
 		
 		if emulatorMode:
 			# These are the directional keys on the laptop's joystick
@@ -90,6 +67,14 @@ class XoMaze:
 	def initPlayerManager( self ):
 		self.playerManager = PlayerManager( self )
 
+
+	def gameOver( self ):
+		'''
+		Everyone quit or everyone finished
+		'''
+		pass
+		
+		
 	def initSounds( self ):
 		if not pygame.mixer or not pygame.mixer.get_init():
 			print "Sound can't initialize!"
@@ -132,3 +117,26 @@ class XoMaze:
 					
 		# Keep looping!
 		return True
+		
+	def processMessages( self, event ):
+		# Gotta have this if we want to exit nicely
+			if event.type == QUIT:
+				return False
+			elif event.type == globals.CLOCKTICK:
+				self.gameClock.update()
+#				print self.gameClock.getTime()
+			elif event.type == KEYDOWN: # (I assume we want key down, not up)
+				if event.key == K_ESCAPE:
+					# TODO: Show a confirmation dialog maybe?
+					return False
+				
+				# Handle any directional input
+				for key, value in self.keysToDirections.items():
+					if event.key == getattr( pygame.locals, key ):
+						# Let's assume player ID 0 is me, the main player.
+						self.playerManager.playerIdsToPlayers[ 0 ].move( value )
+						
+				if event.key == K_SPACE:
+					# checkif this is relevant
+					self.startNewGame()
+		
