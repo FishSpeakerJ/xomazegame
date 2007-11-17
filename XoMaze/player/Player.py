@@ -18,7 +18,8 @@ class Player:
 		self.position = ( 0.0, 0.0 )
 		self.oldDirection = -1
 		self.path = []
-		self.isHeadAttached = False
+		self.offset = 1.0 / ( self.game.numberOfPlayers + 2.0 ) * ( self.id + 1 )
+		self.headAttached = False
 		self.directionToStringDirection = {
 			0 : "north",
 			1 : "east",
@@ -37,23 +38,23 @@ class Player:
 		if direction == 0:
 			potentialPosition = [ self.position[0], self.position[1] + playerYIncrement ]
 			checkPosition = [ self.position[0], self.position[1] + 0.5 ]
-#			if self.oldDirection == 1 or self.oldDirection == 3:
-#				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
+			if self.oldDirection == 1 or self.oldDirection == 3:
+				potentialPosition[0] = int( potentialPosition[0] ) + self.offset
 		elif direction == 1:
 			potentialPosition = [ self.position[0] + playerXIncrement, self.position[1] ]
 			checkPosition = [ self.position[0] + 0.5, self.position[1] ] 
-#			if self.oldDirection == 0 or self.oldDirection == 2:
-#				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
+			if self.oldDirection == 0 or self.oldDirection == 2:
+				potentialPosition[0] = int( potentialPosition[0] ) + self.offset
 		elif direction == 2:
 			potentialPosition = [ self.position[0], self.position[1] - playerYIncrement ]
 			checkPosition = [ self.position[0], self.position[1] - 0.5 ] 
-#			if self.oldDirection == 1 or self.oldDirection == 3:
-#				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
+			if self.oldDirection == 1 or self.oldDirection == 3:
+				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
 		else:
 			potentialPosition = [ self.position[0] - playerXIncrement, self.position[1] ]
 			checkPosition = [ self.position[0] - 0.5, self.position[1] ] 
-#			if self.oldDirection == 0 or self.oldDirection == 2:
-#				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
+			if self.oldDirection == 0 or self.oldDirection == 2:
+				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
 		if self.id == 60:
 			print "Player 0 move"
 			print "position = ( %f, %f ) " % ( self.position[0], self.position[1] )
@@ -79,6 +80,14 @@ class Player:
 			
 		currentCell = self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) )
 		directionObject = getattr( currentCell, self.directionToStringDirection[ direction ] )
+		if currentCell == self.headCell:
+			self.game.playerManager.foundHead( self.id )
+			self.headAttached = True
+			
+		if currentCell == self.endCell:
+			if self.headAttached:
+				self.playerManager.finished( self.id )
+
 		if directionObject.isWalled:
 			# We hit a wall, if there is sound, play it... if not, do nothing.
 			if self.game.hasSound:
@@ -93,10 +102,14 @@ class Player:
 		Resets the player to the bottom of the maze, offset based on his id
 		'''
 		self.oldDirection = -1
-		self.isHeadAttached = False
+		self.headAttached = False
 		
-		x = int( self.game.maze.getXCellCount() / 2.0 ) + 0.5
-		self.position = ( x - float(self.game.numberOfPlayers) + self.id*1.0, 0.5 )
+		x = int( self.game.maze.getXCellCount() / 2.0 )
+		x = int( x - float(self.game.numberOfPlayers / 2.0 ) ) + self.id*1.0 + self.offset
+		self.position = ( x, self.offset )
+		self.beginCell = self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) ) 
+		self.headCell = self.game.maze.getRandomCell()
+		self.endCell = self.game.maze.getCellXY( *self.getDiscreetPosition( ( self.position[0], self.position[1] + self.game.maze.getYCellCount() - 1 ) ) )
 		self.path = [ self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) ) ]
 
 	def getPath( self ):
