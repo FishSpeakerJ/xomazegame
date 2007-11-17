@@ -1,0 +1,26 @@
+#summary What needs implementing and who's on it
+
+= Functionality =
+  * Maze generation - Dennis
+  * Maze info query - Dennis
+  * Maze rendering
+
+  * Mesh Networking - Jason
+
+  * Game loop - Sabrina
+  * Game start logic - Sabrina
+  * Game timer
+
+  * Controls - Shawn
+  * Player base - Shawn
+  * Player rendering
+  * Player path rendering/pruning
+  * Player animation????
+  * Player movement
+
+  * Sounds
+  * Artwork
+  * Fog of War
+
+ 
+
