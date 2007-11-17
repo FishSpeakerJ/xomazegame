@@ -116,20 +116,26 @@ class XoMaze:
 		
 		# Event Handling (controls)
 		# sleep if there is no event
+		updateVisuals = False
 		firstNewEvent = pygame.event.wait()
 		if firstNewEvent.type != globals.CLOCKTICK:
-			# if game timer is running, update stuff
-			if self.gameClock.isRunning() == True:	
-				# Do update the maze!
-				self.maze.paint( self.board )		
-				# Render that sucker
-				pygame.display.update()						
-
+			updateVisuals = True
 		keepGoing = self.processMessages( firstNewEvent)		
 		for event in pygame.event.get():
 			keepGoing = self.processMessages( event )
 			if keepGoing == False:
 				return False
+			if event.type != globals.CLOCKTICK:
+				updateVisuals = True
+		
+		print updateVisuals
+		print self.gameClock.isRunning()
+		# if game timer is running, update stuff
+		if updateVisuals and self.gameClock.isRunning():	
+			# Do update the maze!
+			self.maze.paint( self.board )		
+			# Render that sucker
+			pygame.display.update()						
 				
 		# Keep looping!
 		return keepGoing
@@ -162,7 +168,7 @@ class XoMaze:
 		self.board.fill( (1.0, 1.0, 1.0) )
 		#self.hud.reset()
 		# create the new maze
-		self.maze.initialize(120,60)
+		self.maze.initialize(50,20)
 		# setup each player
 		self.playerManager.reset()
 		self.gameClock.start()
