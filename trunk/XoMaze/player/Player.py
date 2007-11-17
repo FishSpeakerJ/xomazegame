@@ -60,7 +60,7 @@ class Player:
 			self.position = potentialPosition
 			return
 		
-		potentialCell = self.game.maze.getCell( *self.getDiscreetPosition( potentialPosition ) )
+		potentialCell = self.game.maze.getCellXY( *self.getDiscreetPosition( potentialPosition ) )
 		directionObject = getattr( potentialCell, self.directionToStringDirection[ direction ] )
 		if directionObject.isWalled:
 			# We hit a wall, if there is sound, play it... if not, do nothing.
@@ -78,9 +78,9 @@ class Player:
 		self.oldDirection = -1
 		self.isHeadAttached = False
 		
-		x = self.game.maze.getColumnCount() / 2.0
+		x = self.game.maze.getXCellCount() / 2.0
 		self.position = ( x - float(self.game.numberOfPlayers) + self.id*1.0, 0.5 )
-		self.path = [ self.game.maze.getCell( *self.getDiscreetPosition( self.position ) ) ]
+		self.path = [ self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) ) ]
 
 	def getPath( self ):
 		return self.path
