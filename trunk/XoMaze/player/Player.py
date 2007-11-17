@@ -34,7 +34,6 @@ class Player:
 			2 - Down
 			3 - Left
 		'''
-		print "Player %d is moving %s (%d)" % ( self.id, self.directionToStringDirection[ direction ], direction )
 		if direction == 0:
 			potentialPosition = [ self.position[0], self.position[1] + PLAYERYINCREMENT ]
 			if self.oldDirection == 1 or self.oldDirection == 3:
@@ -86,8 +85,6 @@ class Player:
 		return self.path
 
 	def getPosition( self ):
-		if self.id == 0:
-			print "Player %d's path is %s " % ( self.id, self.path )
 		return self.position
 		
 	def getDiscreetPosition( self, position ):
