@@ -90,8 +90,8 @@ class Maze:
 		return self._rowCount
 	def getColumnCount(self):
 		return self._columnCount
-	def getCell(self, row, column):
-		return self._cells[ row ][ column ]
+	def getCellXY(self, x, y):
+		return self._cells[ y ][ x ]
 	def generateRandom(self):
 		r = 0
 		while r<self._rowCount:
