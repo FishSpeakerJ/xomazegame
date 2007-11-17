@@ -12,6 +12,44 @@ emulatorMode = False
 
 class XoMaze:
 	def __init__(self, width=1200,height=825):
+		self.initScreen( width, height ) 
+		self.maze = Maze()
+		self.players = {}
+		pygame.init()
+		pygame.event.set_blocked( pygame.MOUSEMOTION )
+		#eventwrap.install()
+
+	def processMessages( self, event ):
+		# Gotta have this if we want to exit nicely
+			if event.type == QUIT:
+				return False
+			elif event.type == KEYDOWN: # (I assume we want key down, not up)
+				if event.key == K_ESCAPE:
+					# TODO: Show a confirmation dialog maybe?
+					return False
+				
+				# Handle any directional input
+				for key, value in self.keysToDirections.items():
+					if event.key == getattr( pygame.locals, key ):
+						# Let's assume player ID 0 is me, the main player.
+						self.playerManager.playerIdsToPlayers[ 0 ].move( value )
+
+	def initScreen( self, width, height ):
+		"""Set the window Size"""
+		self.width = width
+		self.height = height
+		"""Create the Screen"""
+		self.screen = pygame.display.set_mode( (self.width, self.height) )
+		pygame.display.set_caption("XoMaze")
+		
+		
+	def startNewGame( self ):
+		# create the new maze
+		# setup each player
+		# start game time
+		pass
+		
+	def __init__(self, width=1200,height=825):
 		self.initScreen( width, height )
 		self.initVariables()
 		self.initPlayerManager()
@@ -62,22 +100,11 @@ class XoMaze:
 		pygame.display.update()
 		
 		# Event Handling (controls)
-		events = pygame.event.get( )
-		for e in events:
-			# Gotta have this if we want to exit nicely
-			if e.type == QUIT:
-				return False
-			elif e.type == KEYDOWN: # (I assume we want key down, not up)
-				if e.key == K_ESCAPE:
-					# TODO: Show a confirmation dialog maybe?
-					return False
-				
-				# Handle any directional input
-				for key, value in self.keysToDirections.items():
-					if e.key == getattr( pygame.locals, key ):
-						# Let's assume player ID 0 is me, the main player.
-						self.playerManager.playerIdsToPlayers[ 0 ].move( value )
-		
+		# sleep if there is no event
+		firstNewEvent = pygame.event.wait()
+		self.processMessages( firstNewEvent)		
+		for event in pygame.event.get():
+			self.processMessages( event )
+					
 		# Keep looping!
 		return True
-
