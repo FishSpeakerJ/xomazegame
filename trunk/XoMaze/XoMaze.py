@@ -9,13 +9,14 @@ import globals
 from player.PlayerManager import PlayerManager
 
 try:
+	# if we're running on an evironment euivalent to the XO laptop
 	from olpcgames import eventwrap
 	emulatorMode = True
 	width=1200
 	height=825
 
 except ImportError:
-	# Use this variable to determine if we're running in the emulator or not
+	# otherwise, assume a smaller resolution
 	emulatorMode = False
 	width=1024
 	height=750
@@ -28,6 +29,10 @@ class XoMaze:
 		self.initSounds()
 		pygame.init()
 		pygame.event.set_blocked( pygame.MOUSEMOTION )
+		pygame.event.set_blocked( pygame.VIDEORESIZE )
+		pygame.event.set_blocked( pygame.VIDEOEXPOSE )
+		pygame.event.set_blocked( pygame.ACTIVEEVENT )
+				
 		#eventwrap.install()
 		
 	def initScreen( self, width, height ):
@@ -104,7 +109,7 @@ class XoMaze:
 		'''
 		This is the main game loop.
 		
-		'''
+		'''			
 		# check to see if game is over
 		
 		
@@ -115,10 +120,12 @@ class XoMaze:
 		for event in pygame.event.get():
 			self.processMessages( event )
 		
-		# Do update the maze!
-		self.maze.paint( self.board )		
-		# Render that sucker
-		pygame.display.update()
+		# if game timer is running, update stuff
+		if self.gameClock.isRunning() == True:	
+			# Do update the maze!
+			self.maze.paint( self.board )		
+			# Render that sucker
+			pygame.display.update()
 					
 		# Keep looping!
 		return keepGoing
