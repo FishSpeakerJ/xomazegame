@@ -44,12 +44,12 @@ class Path:
 		self.cells.append(cell)
 
 class Maze:
-	def __init__(self, game, rowCount=16, columnCount=16):
+	def __init__(self, game, xCellCount=16, yCellCount=16):
 		self._game = game
-		self.initialize(rowCount, columnCount)
-	def initialize(self, rowCount, columnCount):
-		self._rowCount = rowCount
-		self._columnCount = columnCount
+		self.initialize(xCellCount, yCellCount)
+	def initialize(self, xCellCount, yCellCount):
+		self._rowCount = yCellCount
+		self._columnCount = xCellCount
 		self._cells = [None]*self._rowCount
 		r = 0
 		while r<self._rowCount:
@@ -86,10 +86,10 @@ class Maze:
 			return None
 		else:
 			return self.getCell( r, c )
-	def getRowCount(self):
-		return self._rowCount
-	def getColumnCount(self):
+	def getXCellCount(self):
 		return self._columnCount
+	def getYCellCount(self):
+		return self._rowCount
 	def getCellXY(self, x, y):
 		return self._cells[ y ][ x ]
 	def generateRandom(self):
