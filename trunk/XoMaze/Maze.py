@@ -44,7 +44,7 @@ class Path:
 class Maze:
 	def __init__(self, game, xCellCount=1, yCellCount=1):
 		self._game = game
-		self.initialize(xCellCount, yCellCount)
+		#self.initialize(xCellCount, yCellCount)
 	def initialize(self, xCellCount, yCellCount):
 		self._rowCount = yCellCount
 		self._columnCount = xCellCount
@@ -68,17 +68,8 @@ class Maze:
 				cell.west.neighbor = self._getNeighborCell( r, c-1 )
 				c += 1
 			r += 1
-		#self.generateRandom()
 		self.constructRandom()
-		
-#		r = 2
-#		c = 2
-#		currentCell = self.getCell( r, c )
-#		nextCell = self.getCell( r-1, c )
-#		print currentCell, nextCell
-#		currentCell.knockDownWallToward( nextCell )
-#		nextCell.knockDownWallToward( currentCell )
-		
+
 	def _getNeighborCell(self, r, c):
 		if r<0 or r>=self._rowCount or c<0 or c>=self._columnCount:
 			return None
@@ -131,7 +122,7 @@ class Maze:
 		visitedCellCount = 1
 		totalCellCount = self._rowCount * self._columnCount
 		
-		n = totalCellCount / 20
+		n = totalCellCount / 15
 		i = 0
 		while visitedCellCount < totalCellCount:
 			nextCell = self._selectRandomNeighborCellWithAllWallsInTact( currentCell )
@@ -143,10 +134,9 @@ class Maze:
 				visitedCellCount += 1
 				i += 1
 				i %= n
-				if i == 0:
-					self.paint( self._game.boardSurface )
-					pygame.display.update()
-				#pygame.time.delay( 100 )
+				#if i == 0:
+				#	self.paint( self._game.boardSurface )
+				#	pygame.display.update()
 			else:
 				currentCell = cellStack.pop();
 
@@ -188,7 +178,7 @@ class Maze:
 			self.drawPathNextCell( surface, color, offset, nextCell )
 		self.drawPathEnd( surface, color, offset )
 
-	def drawPlayer( self, surface, player, offset ):
+	def drawPlayer( self, surface, player ):
 		x, y = player.getPosition()
 
 		lineWidth = self.mapWidth(0.2)
@@ -203,8 +193,17 @@ class Maze:
 		self.drawLine( surface, color, x-radius, y-radius, x+radius, y+radius, lineWidth )
 		self.drawLine( surface, color, x-radius, y+radius, x+radius, y-radius, lineWidth )
 		
-		y+=0.25
-		
+		if player.headAttached:
+			pass
+		else:
+			x = player.headCell.column + 0.5
+			y = player.headCell.row + 0.5
+
+		print player.headCell
+		#x += offset
+		#y += offset
+		y += 0.25
+			
 		color = player.getStrokeColor()
 		radius = 0.2
 		self.drawCircle(surface, color, x, y, radius)
@@ -215,7 +214,7 @@ class Maze:
 		gray192 = (192,192,192)
 		path = player.getPath()
 		if len( path ):
-			self.drawPath( surface, gray192, offset, path )
+			self.drawPath( surface, gray192, player.offset, path )
 			
 			prunedPath = path[:]
 			
@@ -228,11 +227,11 @@ class Maze:
 						jFound = j
 					j += 1
 				if jFound != -1:
-					prunedPath = prunedPath[0:i]+prunedPath[(jFound+1):]
+					prunedPath = prunedPath[:i]+prunedPath[(jFound+1):]
 				i += 1
 
 			if len( prunedPath ):
-				self.drawPath( surface, color, offset, prunedPath )
+				self.drawPath( surface, color, player.offset, prunedPath )
 			
 	def paint(self, surface):
 		self._w = surface.get_width()
@@ -277,10 +276,8 @@ class Maze:
 			r += 1
 		
 		if self._game.playerManager:
-			offset = 0.35
 			for player in self._game.playerManager.playerIdsToPlayers.values():
-				self.drawPlayer( surface, player, offset )
-				offset += 0.1
+				self.drawPlayer( surface, player )
 		
 		self._x0 = None
 		self._y0 = None
