@@ -67,6 +67,15 @@ class Maze:
 			r += 1
 		#self.generateRandom()
 		self.constructRandom()
+		
+#		r = 2
+#		c = 2
+#		currentCell = self.getCell( r, c )
+#		nextCell = self.getCell( r-1, c )
+#		print currentCell, nextCell
+#		currentCell.knockDownWallToward( nextCell )
+#		nextCell.knockDownWallToward( currentCell )
+		
 	def _getNeighborCell(self, r, c):
 		try:
 			return self.getCell( r, c )
@@ -100,16 +109,7 @@ class Maze:
 			return allWallsInTactNeighbors[ random.randint( 0, n-1 ) ]
 		else:
 			return None
-	def constructRandom(self):
-#		r = 2
-#		c = 2
-#		currentCell = self.getCell( r, c )
-#		nextCell = self.getCell( r, c+1 )
-#		print currentCell, nextCell
-#		currentCell.knockDownWallToward( nextCell )
-#		nextCell.knockDownWallToward( currentCell )
-#		return
-		
+	def constructRandom(self):		
 		r = 0
 		while r<self._rowCount:
 			c = 0
@@ -148,52 +148,35 @@ class Maze:
 		self._y0 = y0
 		self._w = w
 		self._h = h
-		self._cellWidth = self._w/self._columnCount
-		self._cellHeight = self._h/self._rowCount
-		self._cellSize = min( self._cellWidth, self._cellHeight )
+		cellWidth = w/self._columnCount
+		cellHeight = h/self._rowCount
+		self._cellSize = min( cellWidth, cellHeight )
 		
 		white = (255,255,255)
 		yellow = (255,255,0)
 		red = (255,0,0)
 		green = (0,255,0)
-		
-		cellWidth = w/self._columnCount
-		cellHeight = h/self._rowCount
-		
-		cellSize = min( cellWidth, cellHeight )
-		
-		PAD = 4
-		
+
 		pad0 = 0.025
 		pad1 = 1.0-pad0
-		y = y0 + h + 50
 		r = 0
 		while r<self._rowCount:
 			c = 0
-			x = x0
 			while c<self._columnCount:
 				cell = self._cells[ r ][ c ]
 				if cell.north.isWalled:
-#					self.drawLine( surface, yellow, r+pad0, c+pad1, r+pad1, c+pad1 )
-					pygame.draw.line( surface, white, (x, y), (x+cellSize, y) )
+					self.drawLine( surface, yellow, c+pad0, r+pad1, c+pad1, r+pad1 )
 				if cell.west.isWalled:
-#					self.drawLine( surface, yellow, r+pad0, c+pad0, r+pad0, c+pad1 )
-					pygame.draw.line( surface, white, (x, y), (x, y+cellSize) )
+					self.drawLine( surface, yellow, c+pad0, r+pad0, c+pad0, r+pad1 )
 				if cell.south.isWalled:
-#					self.drawLine( surface, white, r+pad0, c+pad0, r+pad1, c+pad0 )
-					pygame.draw.line( surface, yellow, (x, y+cellSize), (x+cellSize, y+cellSize) )
+					self.drawLine( surface, white, c+pad0, r+pad0, c+pad1, r+pad0 )
 				if cell.east.isWalled:
-#					self.drawLine( surface, white, r+pad1, c+pad0, r+pad1, c+pad1 )
-					pygame.draw.line( surface, yellow, (x+cellSize, y), (x+cellSize, y+cellSize) )
-				x += cellSize + PAD
+					self.drawLine( surface, white, c+pad1, r+pad0, c+pad1, r+pad1 )
 				c += 1
-			y -= cellSize + PAD
 			r += 1
 		
 		self._x0 = None
 		self._y0 = None
 		self._w = None
 		self._h = None
-		self._cellWidth = None
-		self._cellHeight = None
 		self._cellSize = None
