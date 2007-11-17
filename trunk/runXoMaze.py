@@ -5,11 +5,11 @@ from XoMaze import XoMaze
 def main():
     pygame.init()
     # Start Pygame displays...
-    Game = XoMaze( 1200, 855 )
+    game = XoMaze( 1200, 855 )
     while True:
         # Pygame event loop.
         # Update the screen
-		pygame.display.update()
+		game.update()
 		
 if __name__=="__main__":
     main()
