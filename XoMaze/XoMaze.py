@@ -49,18 +49,22 @@ class XoMaze:
 		if emulatorMode:
 			# These are the directional keys on the laptop's joystick
 			self.keysToDirections = {
-				"K_KP8" : 0,
-				"K_KP6" : 1,
-				"K_KP2" : 2,
-				"K_KP4" : 3,
+				"K_KP8" : [ 0, 0, ],
+				"K_KP6" : [ 0, 1, ],
+				"K_KP2" : [ 0, 2, ],
+				"K_KP4" : [ 0, 3, ],
 			}
 		else:
 			# These are... wasd
 			self.keysToDirections = {
-				"K_w" : 0,
-				"K_d" : 1,
-				"K_s" : 2,
-				"K_a" : 3,
+				"K_w" : [ 0, 0, ],
+				"K_d" : [ 0, 1, ],
+				"K_s" : [ 0, 2, ],
+				"K_a" : [ 0, 3, ],
+				"K_UP" : [ 1, 0, ],
+				"K_RIGHT" : [ 1, 1, ],
+				"K_DOWN" : [ 1, 2, ],
+				"K_LEFT" : [ 1, 3, ],
 			}
 
 	def initHud( self ):
@@ -130,7 +134,7 @@ class XoMaze:
 			for key, value in self.keysToDirections.items():
 				if event.key == getattr( pygame.locals, key ):
 					# Let's assume player ID 0 is me, the main player.
-					self.playerManager.playerIdsToPlayers[ 0 ].move( value )
+					self.playerManager.playerIdsToPlayers[ value[0] ].move( value[1] )
 					
 			if event.key == K_SPACE:
 				# checkif this is relevant
