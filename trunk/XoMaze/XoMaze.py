@@ -102,21 +102,23 @@ class XoMaze:
 		This is the main game loop.
 		
 		'''
-		# Do some stuff!
-		self.maze.paint( self.screen, 0, 0, 1000, 700 )
+		# check to see if game is over
 		
-		# Render that sucker
-		pygame.display.update()
 		
 		# Event Handling (controls)
 		# sleep if there is no event
 		firstNewEvent = pygame.event.wait()
-		self.processMessages( firstNewEvent)		
+		keepGoing = self.processMessages( firstNewEvent)		
 		for event in pygame.event.get():
 			self.processMessages( event )
+		
+		# Do update the maze!
+		self.maze.paint( self.screen, 0, 0, 1000, 700 )		
+		# Render that sucker
+		pygame.display.update()
 					
 		# Keep looping!
-		return True
+		return keepGoing
 		
 	def processMessages( self, event ):
 		# Gotta have this if we want to exit nicely
