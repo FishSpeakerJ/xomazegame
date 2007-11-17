@@ -176,7 +176,7 @@ class Maze:
 		rect = (self.mapX(x-radius), self.mapY(y+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
 		pygame.draw.ellipse( surface, color, rect )
 		
-	def paint(self, surface, x0, y0, w, h):
+	def paint(self, surface):
 		self._x0 = x0
 		self._y0 = y0
 		self._w = w
@@ -210,6 +210,8 @@ class Maze:
 		
 		for player in self._game.playerManager.playerIdsToPlayers.values():
 			self.drawPlayer( surface, player )
+			print player.getPosition(),
+		print
 		
 		self._x0 = None
 		self._y0 = None
