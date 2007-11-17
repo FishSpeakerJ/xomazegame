@@ -177,12 +177,13 @@ class Maze:
 		pygame.draw.ellipse( surface, color, rect )
 		
 	def paint(self, surface):
-		self._x0, self._y0 = surface.get_offset()
 		self._w = surface.get_width()
 		self._h = surface.get_height()
 		cellWidth = self._w/self._columnCount
-		cellHeight = self._w/self._rowCount
+		cellHeight = self._h/self._rowCount
 		self._cellSize = min( cellWidth, cellHeight )
+		self._x0 = (self._w-self._cellSize*self._columnCount)/2
+		self._y0 = (self._h-self._cellSize*self._rowCount)/2
 		
 		white = (255,255,255)
 		yellow = (255,255,0)
