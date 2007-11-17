@@ -5,6 +5,8 @@ CLOCKTICK = pygame.USEREVENT + 1
 
 # global variables
 hudHeight = 50
+bottomMargin = 20
+
 # maze sizes
 difficultyLevelToMazeSize = {
  1:( 20,20),
