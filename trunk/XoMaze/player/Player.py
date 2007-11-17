@@ -17,6 +17,7 @@ class Player:
 		self.colors = PLAYERCOLORS[ self.id ]
 		self.position = ( 0.0, 0.0 )
 		self.oldDirection = -1
+		self.path = []
 		self.isHeadAttached = False
 		self.directionToStringDirection = {
 			0 : "north",
@@ -67,6 +68,7 @@ class Player:
 				self.game.soundNamesToSounds[ "hitWall" ].play()
 			return
 		# We're free and clear
+		self.path.append( potentialCell )
 		self.position = potentialPosition
 		
 	def reset( self ):
@@ -75,10 +77,17 @@ class Player:
 		'''
 		self.oldDirection = -1
 		self.isHeadAttached = False
+		
 		x = self.game.maze.getColumnCount() / 2.0
 		self.position = ( x - float(self.game.numberOfPlayers) + self.id*1.0, 0.5 )
+		self.path = [ self.game.maze.getCell( *self.getDiscreetPosition( self.position ) ) ]
+
+	def getPath( self ):
+		return self.path
 
 	def getPosition( self ):
+		if self.id == 0:
+			print "Player %d's path is %s " % ( self.id, self.path )
 		return self.position
 		
 	def getDiscreetPosition( self, position ):
