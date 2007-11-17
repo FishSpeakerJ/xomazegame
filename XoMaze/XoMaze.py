@@ -21,20 +21,27 @@ class XoMaze:
 		self.initVariables()
 		self.initPlayerManager()
 		self.initSounds()
-		self.initHud()
-		self.maze = Maze( self )
-		self.gameClock = GameTimer()
 		pygame.init()
 		pygame.event.set_blocked( pygame.MOUSEMOTION )
 		#eventwrap.install()
 		
 	def initScreen( self, width, height ):
 		"""Set the window Size"""
-		self.width = width
-		self.height = height
+		# determine space available for board & hud
+		boardWidth = width
+		boardHeight = height*0.8
+		hudWidth = width
+		hudHeight = height - boardHeight
+		
 		"""Create the Screen"""
-		self.screen = pygame.display.set_mode((self.width, self.height))
+		self.screen = pygame.display.set_mode((width, height))
 		pygame.display.set_caption('XoMaze')
+		self.board = self.screen.subsurface( pygame.Rect( 0, hudHeight, boardWidth, boardHeight ))
+		self.hud = self.screen.subsurface( pygame.Rect( 0,0,hudWidth, hudHeight ))
+		self.initHud()
+		self.maze = Maze( self )
+		self.gameClock = GameTimer()
+
 
 	def initVariables( self ):
 		self.numberOfPlayers = 4
@@ -100,7 +107,7 @@ class XoMaze:
 			self.processMessages( event )
 		
 		# Do update the maze!
-		self.maze.paint( self.screen, 0, 0, 1000, 700 )		
+		self.maze.paint( self.board )		
 		# Render that sucker
 		pygame.display.update()
 					
@@ -132,7 +139,7 @@ class XoMaze:
 		
 	def startNewGame( self ):
 		# clear EVERYTHING
-		self.screen.fill( (1.0, 1.0, 1.0) )
+		self.board.fill( (1.0, 1.0, 1.0) )
 		#self.hud.reset()
 		# create the new maze
 		self.maze.constructRandom()
