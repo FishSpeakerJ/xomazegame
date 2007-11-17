@@ -5,7 +5,7 @@ Handles player stuff... not sure what yet...
 
 """
 
-import globals
+from globals import *
 
 class Player:
 	def __init__( self, game, id ):
@@ -52,7 +52,7 @@ class Player:
 			return
 		potentialCell = self.game.maze.getCell( *self.getDiscreetPosition( potentialPosition ) )
 		directionObject = getattr( potentialCell, self.directionToStringDirection[ direction ] )
-		if directionObject.isWalled():
+		if directionObject.isWalled:
 			# We hit a wall, if there is sound, play it... if not, do nothing.
 			if self.game.hasSound:
 				self.game.soundNamesToSounds[ "hitWall" ].play()
@@ -73,6 +73,10 @@ class Player:
 	def getDiscreetPosition( self, position ):
 		return ( int( position[0] ), int( position[1] ) )
 
+	def getStrokeColor( self ):
+		return self.colors[ 0 ]
+	def getFillColor( self ):
+		return self.colors[ 1 ]
 	def signal( self ):
 		'''
 		Wave and change strong path to where you are
