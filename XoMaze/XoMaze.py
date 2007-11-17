@@ -106,6 +106,12 @@ class XoMaze:
 		if event.type != globals.CLOCKTICK:
 			updateVisuals = True
 		keepGoing = self.processMessages( event)
+		for event in pygame.event.get():
+			keepGoing = self.processMessages( event )
+			if keepGoing == False:
+				return False
+			if event.type != globals.CLOCKTICK:
+				updateVisuals = True
 		
 		# update player movement
 		if self.pressedKeys != []:
