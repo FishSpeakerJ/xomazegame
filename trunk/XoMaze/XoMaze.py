@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 import sys
+import os
 #from olpcgames import eventwrap
 from Maze import Maze
 from Maze import Cell
@@ -53,6 +54,7 @@ class XoMaze:
 		self.initScreen( width, height )
 		self.initVariables()
 		self.initPlayerManager()
+		self.initSounds()
 		self.maze = Maze()
 		pygame.init()
 		#eventwrap.install()
@@ -87,6 +89,28 @@ class XoMaze:
 
 	def initPlayerManager( self ):
 		self.playerManager = PlayerManager( self )
+
+	def initSounds( self ):
+		if not pygame.mixer or not pygame.mixer.get_init():
+			print "Sound can't initialize!"
+			self.hasSound = False
+			return
+		else:
+			self.hasSound = True
+	
+		# Add any sounds you want here!!
+		self.soundNamesToSounds = {
+			"hitWall" : None,
+		}
+		
+		for soundName in self.soundNamesToSounds.keys():
+			fullname = os.path.join( 'data\sounds', soundName + ".ogg" )
+			try:
+			    sound = pygame.mixer.Sound( fullname )
+			except pygame.error, message:
+			    print 'Cannot load sound:', fullname
+			    raise SystemExit, message
+			self.soundNamesToSounds[ soundName ] = sound
 
 	def update( self ):
 		'''
