@@ -87,7 +87,7 @@ class Maze:
 		else:
 			return self._getCellRC( r, c )
 	def _getCellRC(self, r,c):
-		return getCellXY( c, r )
+		return self.getCellXY( c, r )
 	
 	def getXCellCount(self):
 		return self._columnCount
@@ -106,7 +106,7 @@ class Maze:
 	def getRandomCell(self):
 		r = random.randint( 0, self._rowCount-1 )
 		c = random.randint( 0, self._columnCount-1 )
-		return self.getCell( r, c )
+		return self._getCellRC( r, c )
 	def _selectRandomNeighborCellWithAllWallsInTact(self, cell):
 		allWallsInTactNeighbors = []
 		for direction in cell.directions:
