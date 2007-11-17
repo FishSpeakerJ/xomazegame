@@ -4,13 +4,16 @@ from XoMaze import XoMaze
 
 
 def main():
-    pygame.init()
-    # Start Pygame displays...
-    game = XoMaze( 1200, 855 )
-    while True:
-        # Pygame event loop.
-        # Update the screen
-		game.update()
-		
+	pygame.init()
+	# Start Pygame displays...
+	game = XoMaze( 1200, 855 )
+	while True:
+		# Pygame event loop.
+		# Update the screen
+		if not game.update():
+			break
+	print "Good Game!"
+	return
+	
 if __name__=="__main__":
-    main()
+	main()
