@@ -28,6 +28,7 @@ class XoMaze:
 		self.initVariables()
 		self.initPlayerManager()
 		self.initSounds()
+		self.pressedKeys = []
 		pygame.init()
 		pygame.font.init()
 		pygame.event.set_blocked( pygame.MOUSEMOTION )
@@ -101,17 +102,17 @@ class XoMaze:
 		# Event Handling (controls)
 		# sleep if there is no event
 		updateVisuals = False
-		firstNewEvent = pygame.event.wait()
-		if firstNewEvent.type != globals.CLOCKTICK:
+		event = pygame.event.wait()
+		if event.type != globals.CLOCKTICK:
 			updateVisuals = True
-		keepGoing = self.processMessages( firstNewEvent)		
-		for event in pygame.event.get():
-			keepGoing = self.processMessages( event )
-			if keepGoing == False:
-				return False
-			if event.type != globals.CLOCKTICK:
-				updateVisuals = True
+		keepGoing = self.processMessages( event)
 		
+		# update player movement
+		if self.pressedKeys != []:
+			for key in self.pressedKeys:
+				updateVisuals = True
+				self.playerManager.playerIdsToPlayers[ self.keysToDirections[key][0] ].move( self.keysToDirections[key][1] )
+					
 		# if game timer is running, update stuff
 		if updateVisuals and self.gameClock.isRunning():	
 			# Do update the maze!
@@ -129,16 +130,18 @@ class XoMaze:
 		elif event.type == globals.CLOCKTICK:
 			self.gameClock.update()
 #				print self.gameClock.getTime()
+		elif event.type == KEYUP: # (I assume we want key down, not up)
+			# Handle any directional input
+			if event.key in self.keysToDirections.keys():
+				if event.key in self.pressedKeys:
+					self.pressedKeys.remove( event.key )												
 		elif event.type == KEYDOWN: # (I assume we want key down, not up)
 			if event.key == K_ESCAPE:
 				# TODO: Show a confirmation dialog maybe?
-				return False
-			
+				return False			
 			# Handle any directional input
-			for key, value in self.keysToDirections.items():
-				if event.key == getattr( pygame.locals, key ):
-					# Let's assume player ID 0 is me, the main player.
-					self.playerManager.playerIdsToPlayers[ value[0] ].move( value[1] )
+			if event.key in self.keysToDirections.keys():
+				self.pressedKeys.append( event.key )
 					
 			if event.key == K_SPACE:
 				# checkif this is relevant
