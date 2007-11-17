@@ -28,4 +28,5 @@ class GameTimer:
 	def updateVisual( self ):
 		''' draw some stuff '''
 		pass
+		# should return rect that should be updated
 		
