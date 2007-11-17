@@ -86,7 +86,7 @@ class Player:
 			
 		if currentCell == self.endCell:
 			if self.headAttached:
-				self.playerManager.finished( self.id )
+				self.game.playerManager.finished( self.id )
 
 		if directionObject.isWalled:
 			return
