@@ -18,7 +18,7 @@ class Player:
 		self.position = ( 0.0, 0.0 )
 		self.oldDirection = -1
 		self.path = []
-		self.offset = 1.0 / ( self.game.numberOfPlayers + 2.0 ) * ( self.id + 1 )
+		self.offset = 1.0 / ( self.game.numberOfPlayers + 4.0 ) * ( self.id + 1 )
 		self.headAttached = False
 		self.directionToStringDirection = {
 			0 : "north",
@@ -39,12 +39,12 @@ class Player:
 			potentialPosition = [ self.position[0], self.position[1] + playerYIncrement ]
 			checkPosition = [ self.position[0], self.position[1] + 0.5 ]
 			if self.oldDirection == 1 or self.oldDirection == 3:
-				potentialPosition[0] = int( potentialPosition[0] ) + self.offset
+				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
 		elif direction == 1:
 			potentialPosition = [ self.position[0] + playerXIncrement, self.position[1] ]
 			checkPosition = [ self.position[0] + 0.5, self.position[1] ] 
 			if self.oldDirection == 0 or self.oldDirection == 2:
-				potentialPosition[0] = int( potentialPosition[0] ) + self.offset
+				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
 		elif direction == 2:
 			potentialPosition = [ self.position[0], self.position[1] - playerYIncrement ]
 			checkPosition = [ self.position[0], self.position[1] - 0.5 ] 
@@ -106,7 +106,7 @@ class Player:
 		
 		x = int( self.game.maze.getXCellCount() / 2.0 )
 		x = int( x - float(self.game.numberOfPlayers / 2.0 ) ) + self.id*1.0 + self.offset
-		self.position = ( x, self.offset )
+		self.position = ( x, 0.5 )
 		self.beginCell = self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) ) 
 		self.headCell = self.game.maze.getRandomCell()
 		self.endCell = self.game.maze.getCellXY( *self.getDiscreetPosition( ( self.position[0], self.position[1] + self.game.maze.getYCellCount() - 1 ) ) )
