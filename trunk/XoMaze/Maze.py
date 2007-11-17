@@ -9,7 +9,6 @@ class Direction:
 	def __init__(self):
 		self.isWalled = True
 		self.neighbor = None
-	
 
 class Cell:
 	def __init__(self):
@@ -92,9 +91,6 @@ class Maze:
 			return allWallsInTactNeighbors[ random.randint( 0, n-1 ) ]
 		else:
 			return None
-	def _knockDownWallBetween(self, currentCell, nextCell):
-		currentCell.knockDownWallToward( nextCell )
-		nextCell.knockDownWallToward( currentCell )
 	def constructRandom(self):
 		cellStack = []
 		currentCell = self.getRandomCell()
@@ -103,7 +99,8 @@ class Maze:
 		while visitedCellCount < totalCellCount:
 			nextCell = self._selectRandomNeighborCellWithAllWallsInTact( currentCell )
 			if nextCell:
-				self._knockDownWallBetween( currentCell, nextCell )
+				currentCell.knockDownWallToward( nextCell )
+				nextCell.knockDownWallToward( currentCell )
 				cellStack.append( currentCell )
 				currentCell = nextCell
 				visitedCellCount += 1
@@ -111,7 +108,6 @@ class Maze:
 				currentCell = cellStack.pop();
 
 	def paint(self, surface, x0, y0, w, h):
-		red = (255,0,0)
 		white = (255,255,255)
 		yellow = (255,255,0)
 		
@@ -141,23 +137,3 @@ class Maze:
 				c += 1
 			y += cellSize + PAD
 			r += 1
-	
-	def echo(self):	
-		r = 0
-		while r<self._rowCount:
-			c = 0
-			while c<self._columnCount:
-				if self._cells[ r ][ c ].south:
-					print '_',
-				else:
-					print ' ',
-				if self._cells[ r ][ c ].east:
-					print '|',
-				else:
-					print ' ',
-				c += 1
-			print
-			r += 1
-		
-#m = Maze()
-#m.paint( None, 10, 10, 100, 100 )
