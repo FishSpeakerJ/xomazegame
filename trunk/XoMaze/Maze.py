@@ -149,9 +149,17 @@ class Maze:
 	def drawLine( self, surface, color, ax, ay, bx, by ):
 		pygame.draw.line( surface, color, (self.mapX(ax), self.mapY(ay)), (self.mapX(bx), self.mapY(by)) )
 
-	def drawPlayer( self, surface, color, player ):
+	def drawPlayer( self, surface, player ):
 		x, y = player.getPosition()
-		rect = (self.mapX(x), self.mapY(y), self.mapWidth(0.5), self.mapHeight(0.5))
+		
+		color = player.getStrokeColor()
+		radius = 0.375
+		rect = (self.mapX(x-radius), self.mapY(y+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
+		pygame.draw.ellipse( surface, color, rect )
+		
+		color = player.getFillColor()
+		radius = 0.325
+		rect = (self.mapX(x-radius), self.mapY(y+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
 		pygame.draw.ellipse( surface, color, rect )
 		
 	def paint(self, surface, x0, y0, w, h):
@@ -187,7 +195,7 @@ class Maze:
 			r += 1
 		
 		for player in self._game.playerManager.playerIdsToPlayers.values():
-			self.drawPlayer( surface, red, player )
+			self.drawPlayer( surface, player )
 		
 		self._x0 = None
 		self._y0 = None
