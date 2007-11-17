@@ -180,8 +180,8 @@ class Maze:
 		self._x0, self._y0 = surface.get_offset()
 		self._w = surface.get_width()
 		self._h = surface.get_height()
-		cellWidth = w/self._columnCount
-		cellHeight = h/self._rowCount
+		cellWidth = self._w/self._columnCount
+		cellHeight = self._w/self._rowCount
 		self._cellSize = min( cellWidth, cellHeight )
 		
 		white = (255,255,255)
