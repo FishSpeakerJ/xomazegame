@@ -5,6 +5,11 @@ import pygame
 def generateRandomBoolean():
 	return random.randint( 0, 1 ) == 0
 
+def blendColors( a, b ):
+	ar, ag, ab = a
+	br, bg, bb = b
+	return (ar+br)/2,(ag+bg)/2,(ab+bb)/2
+
 class Direction:
 	def __init__(self):
 		self.isWalled = True
@@ -34,12 +39,6 @@ class Cell:
 		raise "did not knock down wall"
 	def __repr__( self ):
 		return "(x=" + `self.column` + ",y=" + `self.row` + ")"
-
-class Path:
-	def __init__(self, row, column):
-		self.cells = []
-	def addCell(self, cell):
-		self.cells.append(cell)
 
 class Maze:
 	def __init__(self, game, xCellCount=1, yCellCount=1):
@@ -178,20 +177,64 @@ class Maze:
 			self.drawPathNextCell( surface, color, offset, nextCell )
 		self.drawPathEnd( surface, color, offset )
 
-	def drawPlayer( self, surface, player ):
-		x, y = player.getPosition()
-
+	def drawX( self, surface, stroke, fill, x, y, isSignaling ):
 		lineWidth = self.mapWidth(0.2)
 		radius = 0.25
-		color = player.getStrokeColor()
-		self.drawLine( surface, color, x-radius, y-radius, x+radius, y+radius, lineWidth )
-		self.drawLine( surface, color, x-radius, y+radius, x+radius, y-radius, lineWidth )
+		if isSignaling:
+			self.drawLine( surface, stroke, x-radius, y-radius, x, y, lineWidth )
+			self.drawLine( surface, stroke, x, y, x+radius, y-radius, lineWidth )
+			self.drawLine( surface, stroke, x-radius, y, x+radius, y, lineWidth )
+		else:
+			self.drawLine( surface, stroke, x-radius, y-radius, x+radius, y+radius, lineWidth )
+			self.drawLine( surface, stroke, x-radius, y+radius, x+radius, y-radius, lineWidth )
 
-		lineWidth *= 0.5
+		lineWidth *= 0.75
+		radius *= 0.85
+		if isSignaling:
+			self.drawLine( surface, stroke, x-radius, y-radius, x, y, lineWidth )
+			self.drawLine( surface, stroke, x, y, x+radius, y-radius, lineWidth )
+			self.drawLine( surface, stroke, x-radius, y, x+radius, y, lineWidth )
+		else:
+			self.drawLine( surface, stroke, x-radius, y-radius, x+radius, y+radius, lineWidth )
+			self.drawLine( surface, stroke, x-radius, y+radius, x+radius, y-radius, lineWidth )
+
+	def drawO( self, surface, stroke, fill, x, y ):
+		#x += offset
+		#y += offset
+		y += 0.25
+			
+		radius = 0.2
+		self.drawCircle(surface, stroke, x, y, radius)
 		radius *= 0.75
-		color = player.getFillColor()
-		self.drawLine( surface, color, x-radius, y-radius, x+radius, y+radius, lineWidth )
-		self.drawLine( surface, color, x-radius, y+radius, x+radius, y-radius, lineWidth )
+		self.drawCircle(surface, fill, x, y, radius)
+		
+
+	def drawPlayer( self, surface, player ):
+		x = player.endCell.column + 0.5
+		y = player.endCell.row + 0.5
+		
+		strokeColor = blendColors( player.getStrokeColor(), (32,32,32))
+		fillColor = blendColors( player.getFillColor(), (32,32,32))
+		
+		isSignaling = player.isSignaling()
+		self.drawX( surface, strokeColor, fillColor, x, y, False )
+		self.drawO( surface, strokeColor, fillColor, x, y )
+
+		x, y = player.getPosition()
+
+		self.drawX( surface, player.getStrokeColor(), player.getFillColor(), x, y, isSignaling )
+		
+#		lineWidth = self.mapWidth(0.2)
+#		radius = 0.25
+#		color = player.getStrokeColor()
+#		self.drawLine( surface, color, x-radius, y-radius, x+radius, y+radius, lineWidth )
+#		self.drawLine( surface, color, x-radius, y+radius, x+radius, y-radius, lineWidth )
+
+#		lineWidth *= 0.5
+#		radius *= 0.75
+#		color = player.getFillColor()
+#		self.drawLine( surface, color, x-radius, y-radius, x+radius, y+radius, lineWidth )
+#		self.drawLine( surface, color, x-radius, y+radius, x+radius, y-radius, lineWidth )
 		
 		if player.headAttached:
 			pass
@@ -199,21 +242,11 @@ class Maze:
 			x = player.headCell.column + 0.5
 			y = player.headCell.row + 0.5
 
-		#x += offset
-		#y += offset
-		y += 0.25
-			
-		color = player.getStrokeColor()
-		radius = 0.2
-		self.drawCircle(surface, color, x, y, radius)
-		color = player.getFillColor()
-		radius *= 0.75
-		self.drawCircle(surface, color, x, y, radius)
+		self.drawO( surface, player.getStrokeColor(), player.getFillColor(), x, y )
 		
-		gray192 = (192,192,192)
 		path = player.getPath()
 		if len( path ):
-			self.drawPath( surface, gray192, player.offset, path )
+			self.drawPath( surface, blendColors( player.getFillColor(), (192,192,192)), player.offset, path )
 			
 			prunedPath = path[:]
 			
@@ -230,8 +263,8 @@ class Maze:
 				i += 1
 
 			if len( prunedPath ):
-				self.drawPath( surface, color, player.offset, prunedPath )
-			
+				self.drawPath( surface, fillColor, player.offset, prunedPath )
+		
 	def paint(self, surface):
 		self._w = surface.get_width()
 		self._h = surface.get_height()
@@ -253,8 +286,6 @@ class Maze:
 		green = (0,255,0)
 
 		pygame.draw.rect( surface, black, (self._x0, self._y0, self._w, self._h) )
-		
-		
 
 		pad0 = 0.025
 		pad1 = 1.0-pad0
