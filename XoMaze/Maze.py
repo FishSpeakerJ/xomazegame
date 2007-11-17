@@ -11,7 +11,9 @@ class Direction:
 		self.neighbor = None
 
 class Cell:
-	def __init__(self):
+	def __init__(self, row, column):
+		self.row = row
+		self.column = column
 		self.north = Direction()
 		self.east = Direction()
 		self.south = Direction()
@@ -28,7 +30,14 @@ class Cell:
 		for direction in self.directions:
 			if direction.neighbor == other:
 				direction.isWalled = False
-				#print self, other
+	def __repr__( self ):
+		return "(" + `self.row` + "," + `self.column` + ")"
+
+class Path:
+	def __init__(self, row, column):
+		self.cells = []
+	def addCell(self, cell):
+		self.cells.append(cell)
 
 class Maze:
 	def __init__(self, rowCount=16, columnCount=16):
@@ -42,7 +51,7 @@ class Maze:
 			self._cells[ r ] = [None]*self._columnCount
 			c = 0
 			while c<self._columnCount:
-				self._cells[ r ][ c ] = Cell()
+				self._cells[ r ][ c ] = Cell( r, c )
 				c += 1
 			r += 1
 		r = 0
@@ -50,9 +59,9 @@ class Maze:
 			c = 0
 			while c<self._columnCount:
 				cell = self._cells[ r ][ c ]
-				cell.north.neighbor = self._getNeighborCell( r-1, c )
+				cell.north.neighbor = self._getNeighborCell( r+1, c )
 				cell.east.neighbor = self._getNeighborCell( r, c+1 )
-				cell.south.neighbor = self._getNeighborCell( r+1, c )
+				cell.south.neighbor = self._getNeighborCell( r-1, c )
 				cell.west.neighbor = self._getNeighborCell( r, c-1 )
 				c += 1
 			r += 1
@@ -92,7 +101,25 @@ class Maze:
 		else:
 			return None
 	def constructRandom(self):
+#		r = 2
+#		c = 2
+#		currentCell = self.getCell( r, c )
+#		nextCell = self.getCell( r, c+1 )
+#		print currentCell, nextCell
+#		currentCell.knockDownWallToward( nextCell )
+#		nextCell.knockDownWallToward( currentCell )
+#		return
+		
+		r = 0
+		while r<self._rowCount:
+			c = 0
+			while c<self._columnCount:
+				for direction in self._cells[ r ][ c ].directions:
+					direction.isWalled = True
+				c += 1
+			r += 1
 		cellStack = []
+		
 		currentCell = self.getRandomCell()
 		visitedCellCount = 1
 		totalCellCount = self._rowCount * self._columnCount
@@ -107,9 +134,28 @@ class Maze:
 			else:
 				currentCell = cellStack.pop();
 
+	def mapX( self, fx ):
+		return self._x0 + fx*self._cellSize
+	
+	def mapY( self, fy ):
+		return ( self._y0 + self._h ) - (fy*self._cellSize)
+	
+	def drawLine( self, surface, color, ax, ay, bx, by ):
+		pygame.draw.line( surface, color, (self.mapX(ax), self.mapY(ay)), (self.mapX(bx), self.mapY(by)) )
+
 	def paint(self, surface, x0, y0, w, h):
+		self._x0 = x0
+		self._y0 = y0
+		self._w = w
+		self._h = h
+		self._cellWidth = self._w/self._columnCount
+		self._cellHeight = self._h/self._rowCount
+		self._cellSize = min( self._cellWidth, self._cellHeight )
+		
 		white = (255,255,255)
 		yellow = (255,255,0)
+		red = (255,0,0)
+		green = (0,255,0)
 		
 		cellWidth = w/self._columnCount
 		cellHeight = h/self._rowCount
@@ -118,7 +164,9 @@ class Maze:
 		
 		PAD = 4
 		
-		y = y0
+		pad0 = 0.025
+		pad1 = 1.0-pad0
+		y = y0 + h + 50
 		r = 0
 		while r<self._rowCount:
 			c = 0
@@ -126,14 +174,26 @@ class Maze:
 			while c<self._columnCount:
 				cell = self._cells[ r ][ c ]
 				if cell.north.isWalled:
+#					self.drawLine( surface, yellow, r+pad0, c+pad1, r+pad1, c+pad1 )
 					pygame.draw.line( surface, white, (x, y), (x+cellSize, y) )
 				if cell.west.isWalled:
+#					self.drawLine( surface, yellow, r+pad0, c+pad0, r+pad0, c+pad1 )
 					pygame.draw.line( surface, white, (x, y), (x, y+cellSize) )
 				if cell.south.isWalled:
+#					self.drawLine( surface, white, r+pad0, c+pad0, r+pad1, c+pad0 )
 					pygame.draw.line( surface, yellow, (x, y+cellSize), (x+cellSize, y+cellSize) )
 				if cell.east.isWalled:
+#					self.drawLine( surface, white, r+pad1, c+pad0, r+pad1, c+pad1 )
 					pygame.draw.line( surface, yellow, (x+cellSize, y), (x+cellSize, y+cellSize) )
 				x += cellSize + PAD
 				c += 1
-			y += cellSize + PAD
+			y -= cellSize + PAD
 			r += 1
+		
+		self._x0 = None
+		self._y0 = None
+		self._w = None
+		self._h = None
+		self._cellWidth = None
+		self._cellHeight = None
+		self._cellSize = None
