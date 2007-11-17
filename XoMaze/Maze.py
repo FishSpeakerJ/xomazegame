@@ -28,7 +28,6 @@ class Cell:
 		return self.north.isWalled and self.east.isWalled and self.south.isWalled and self.west.isWalled
 	def knockDownWallToward(self, other):
 		for direction in self.directions:
-			print direction.neighbor
 			if direction.neighbor == other:
 				direction.isWalled = False
 				return
@@ -189,8 +188,13 @@ class Maze:
 		cellWidth = self._w/self._columnCount
 		cellHeight = self._h/self._rowCount
 		self._cellSize = min( cellWidth, cellHeight )
-		self._x0 = (self._w-self._cellSize*self._columnCount)/2
-		self._y0 = (self._h-self._cellSize*self._rowCount)/2
+
+		w = self._cellSize*self._columnCount
+		h = self._cellSize*self._rowCount
+		self._w = surface.get_width()
+		self._h = surface.get_height()
+		self._x0 = (self._w-w)/2
+		self._y0 = (self._h-h)/2
 		
 		black = (0,0,0)
 		white = (255,255,255)
