@@ -177,10 +177,9 @@ class Maze:
 		pygame.draw.ellipse( surface, color, rect )
 		
 	def paint(self, surface):
-		self._x0 = x0
-		self._y0 = y0
-		self._w = w
-		self._h = h
+		self._x0, self._y0 = surface.get_offset()
+		self._w = surface.get_width()
+		self._h = surface.get_height()
 		cellWidth = w/self._columnCount
 		cellHeight = h/self._rowCount
 		self._cellSize = min( cellWidth, cellHeight )
