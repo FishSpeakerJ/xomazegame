@@ -18,7 +18,7 @@ class Player:
 		self.position = ( 0.0, 0.0 )
 		self.oldDirection = -1
 		self.path = []
-		self.offset = 1.0 / ( self.game.numberOfPlayers + 4.0 ) * ( self.id + 1 )
+		self.offset = 1.0 / ( self.game.numberOfPlayers + 3.0 ) * ( self.id + 2 )
 		self.headAttached = False
 		self.directionToStringDirection = {
 			0 : "north",
@@ -89,9 +89,6 @@ class Player:
 				self.playerManager.finished( self.id )
 
 		if directionObject.isWalled:
-			# We hit a wall, if there is sound, play it... if not, do nothing.
-			if self.game.hasSound:
-				self.game.soundNamesToSounds[ "hitWall" ].play()
 			return
 		# We're free and clear
 		self.path.append( currentCell )
