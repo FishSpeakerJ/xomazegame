@@ -59,10 +59,10 @@ class XoMaze:
 		
 		if emulatorMode:
 			# These are the directional keys on the laptop's joystick
-			self.keysToDirections = EMULATORKEYS
+			self.keysToDirections = globals.EMULATORKEYS
 		else:
 			# These are... wasd
-			self.keysToDirections = KEYBOARDKEYS
+			self.keysToDirections = globals.KEYBOARDKEYS
 
 	def initHud( self ):
 		pass
@@ -114,8 +114,6 @@ class XoMaze:
 			if event.type != globals.CLOCKTICK:
 				updateVisuals = True
 		
-		print updateVisuals
-		print self.gameClock.isRunning()
 		# if game timer is running, update stuff
 		if updateVisuals and self.gameClock.isRunning():	
 			# Do update the maze!
