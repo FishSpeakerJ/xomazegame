@@ -15,8 +15,6 @@ except ImportError:
 	# Use this variable to determine if we're running in the emulator or not
 	emulatorMode = False
 
-
-
 class XoMaze:
 	def __init__(self, width=1200,height=825):
 		self.initScreen( width, height ) 
@@ -133,6 +131,9 @@ class XoMaze:
 		return True
 		
 	def startNewGame( self ):
+		# clear EVERYTHING
+		self.screen.fill( (1.0, 1.0, 1.0) )
+		#self.hud.reset()
 		# create the new maze
 		self.maze.constructRandom()
 		# setup each player
