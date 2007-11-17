@@ -12,14 +12,14 @@ try:
 	# if we're running on an evironment euivalent to the XO laptop
 	from olpcgames import eventwrap
 	emulatorMode = True
-	width=1200
-	height=825
+	width=1200.0
+	height=825.0
 
 except ImportError:
 	# otherwise, assume a smaller resolution
 	emulatorMode = False
-	width=1024
-	height=750
+	width=1024.0
+	height=750.0
 
 class XoMaze:
 	def __init__(self):
@@ -42,6 +42,7 @@ class XoMaze:
 		boardHeight = height*0.8
 		hudWidth = width
 		hudHeight = (height - boardHeight)/2.0
+		print hudHeight
 		
 		"""Create the Screen"""
 		self.screen = pygame.display.set_mode((width, height))
@@ -116,17 +117,20 @@ class XoMaze:
 		# Event Handling (controls)
 		# sleep if there is no event
 		firstNewEvent = pygame.event.wait()
+		if firstNewEvent.type != globals.CLOCKTICK:
+			# if game timer is running, update stuff
+			if self.gameClock.isRunning() == True:	
+				# Do update the maze!
+				self.maze.paint( self.board )		
+				# Render that sucker
+				pygame.display.update()						
+
 		keepGoing = self.processMessages( firstNewEvent)		
 		for event in pygame.event.get():
-			self.processMessages( event )
-		
-		# if game timer is running, update stuff
-		if self.gameClock.isRunning() == True:	
-			# Do update the maze!
-			self.maze.paint( self.board )		
-			# Render that sucker
-			pygame.display.update()
-					
+			keepGoing = self.processMessages( event )
+			if keepGoing == False:
+				return False
+				
 		# Keep looping!
 		return keepGoing
 		
@@ -158,7 +162,7 @@ class XoMaze:
 		self.board.fill( (1.0, 1.0, 1.0) )
 		#self.hud.reset()
 		# create the new maze
-		self.maze.constructRandom()
+		self.maze.initialize(60,120)
 		# setup each player
 		self.playerManager.reset()
 		self.gameClock.start()
