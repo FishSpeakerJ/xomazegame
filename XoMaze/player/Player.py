@@ -76,7 +76,7 @@ class Player:
 		self.oldDirection = -1
 		self.isHeadAttached = False
 		x = self.game.maze.getColumnCount() / 2.0
-		self.position = ( x - float(self.game.numberOfPlayers) + self.id*1.0, 0.0 )
+		self.position = ( x - float(self.game.numberOfPlayers) + self.id*1.0, 0.5 )
 
 	def getPosition( self ):
 		return self.position
