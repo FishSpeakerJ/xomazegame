@@ -10,7 +10,34 @@ class Player:
 	def __init__( self, game, id ):
 		self.game = game
 		self.id = id
+		self.initVariables()
+		self.initVisuals()
+		
+	def initVariables( self ):
+		self.directionToStringDirection = {
+			0 : "up",
+			1 : "right",
+			2 : "down",
+			3 : "left",
+		}
+
+	def initVisuals( self ):
+		'''
+		Have to get colors from somewhere...
+		'''
 
 	def move( self, direction ):
-		print "Player %d is moving %d" % ( self.id, direction )
+		'''
+		Move yourself in the maze
+			0 - Up
+			1 - Right
+			2 - Down
+			3 - Left
+		'''		
+		print "Player %d is moving %s (%d)" % ( self.id, self.directionToStringDirection[ direction ], direction )
 
+	def signal( self ):
+		'''
+		Wave and change strong path to where you are
+		'''
+		pass
