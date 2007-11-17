@@ -231,7 +231,8 @@ class Maze:
 					prunedPath = prunedPath[0:i]+prunedPath[(jFound+1):]
 				i += 1
 
-			self.drawPath( surface, color, offset, prunedPath )
+			if len( prunedPath ):
+				self.drawPath( surface, color, offset, prunedPath )
 			
 	def paint(self, surface):
 		self._w = surface.get_width()
