@@ -58,10 +58,10 @@ class XoMaze:
 		
 		if emulatorMode:
 			# These are the directional keys on the laptop's joystick
-			self.keysToDirections = globals.EMULATORKEYS
+			self.keysToDirections = globals.emulatorKeys
 		else:
 			# These are... wasd
-			self.keysToDirections = globals.KEYBOARDKEYS
+			self.keysToDirections = globals.keyboardKeys
 
 	def initHud( self ):
 		pass

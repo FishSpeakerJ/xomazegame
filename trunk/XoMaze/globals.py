@@ -14,14 +14,14 @@ difficultyLevelToMazeSize = {
  3:( 70, 50 )
 }
 
-EMULATORKEYS = {
+emulatorKeys = {
 	"K_KP8" : [ 0, 0, ],
 	"K_KP6" : [ 0, 1, ],
 	"K_KP2" : [ 0, 2, ],
 	"K_KP4" : [ 0, 3, ],
 }
 
-KEYBOARDKEYS = {
+keyboardKeys = {
 	"K_w" : [ 0, 0, ],
 	"K_d" : [ 0, 1, ],
 	"K_s" : [ 0, 2, ],
@@ -50,9 +50,9 @@ KEYBOARDKEYS = {
 
 }
 # Player variables
-PLAYERXINCREMENT = 0.5
-PLAYERYINCREMENT = 0.5
-PLAYERCOLORS = [
+playerXIncrement = 0.11
+playerYIncrement = 0.11
+playerColors = [
 	( ( 255.0, 0.0, 0.0 ), ( 0.0, 255.0, 0.0 ) ),
 	( ( 0.0, 0.0, 255.0 ), ( 255.0, 0.0, 0.0 ) ),
 	( ( 255.0, 255.0, 0.0 ), ( 0.0, 255.0, 255.0 ) ),

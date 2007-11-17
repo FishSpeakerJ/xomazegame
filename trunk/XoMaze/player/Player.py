@@ -14,7 +14,7 @@ class Player:
 		self.initVariables()
 
 	def initVariables( self ):
-		self.colors = PLAYERCOLORS[ self.id ]
+		self.colors = playerColors[ self.id ]
 		self.position = ( 0.0, 0.0 )
 		self.oldDirection = -1
 		self.path = []
@@ -35,22 +35,30 @@ class Player:
 			3 - Left
 		'''
 		if direction == 0:
-			potentialPosition = [ self.position[0], self.position[1] + PLAYERYINCREMENT ]
-			if self.oldDirection == 1 or self.oldDirection == 3:
-				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
+			potentialPosition = [ self.position[0], self.position[1] + playerYIncrement ]
+#			if self.oldDirection == 1 or self.oldDirection == 3:
+#				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
 		elif direction == 1:
-			potentialPosition = [ self.position[0] + PLAYERXINCREMENT, self.position[1] ] 
-			if self.oldDirection == 0 or self.oldDirection == 2:
-				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
+			potentialPosition = [ self.position[0] + playerXIncrement, self.position[1] ] 
+#			if self.oldDirection == 0 or self.oldDirection == 2:
+#				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
 		elif direction == 2:
-			potentialPosition = [ self.position[0], self.position[1] - PLAYERYINCREMENT ] 
-			if self.oldDirection == 1 or self.oldDirection == 3:
-				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
+			potentialPosition = [ self.position[0], self.position[1] - playerYIncrement ] 
+#			if self.oldDirection == 1 or self.oldDirection == 3:
+#				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
 		else:
-			potentialPosition = [ self.position[0] - PLAYERXINCREMENT, self.position[1] ] 
-			if self.oldDirection == 0 or self.oldDirection == 2:
-				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
-		
+			potentialPosition = [ self.position[0] - playerXIncrement, self.position[1] ] 
+#			if self.oldDirection == 0 or self.oldDirection == 2:
+#				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
+		if self.id == 0:
+			print "Player 0 move"
+			print "position = ( %f, %f ) " % ( self.position[0], self.position[1] )
+			print "direction = %d" % direction
+			print "oldDirection = %d" % self.oldDirection
+			print "potentialPosition = ( %f, %f )" % ( potentialPosition[0], potentialPosition[1] )
+			print "current cell %s " % self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) )
+			print "potential cell %s " % self.game.maze.getCellXY( *self.getDiscreetPosition( potentialPosition ) )
+			
 		self.oldDirection = direction
 		
 		# If my new discreet position is the same as my old one, update position
@@ -77,7 +85,7 @@ class Player:
 		self.oldDirection = -1
 		self.isHeadAttached = False
 		
-		x = self.game.maze.getXCellCount() / 2.0
+		x = int( self.game.maze.getXCellCount() / 2.0 ) + 0.5
 		self.position = ( x - float(self.game.numberOfPlayers) + self.id*1.0, 0.5 )
 		self.path = [ self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) ) ]
 
