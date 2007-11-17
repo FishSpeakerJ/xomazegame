@@ -71,6 +71,7 @@ class Maze:
 				cell.west.neighbor = self._getNeighborCell( r, c-1 )
 				c += 1
 			r += 1
+		#self.constructRandom()
 
 	def _getNeighborCell(self, r, c):
 		if r<0 or r>=self._rowCount or c<0 or c>=self._columnCount:
@@ -100,6 +101,19 @@ class Maze:
 			return allWallsInTactNeighbors[ random.randint( 0, n-1 ) ]
 		else:
 			return None
+
+	def _clearWallsBetween( self, a, b ):
+		a.knockDownWallToward( b )
+		b.knockDownWallToward( a )
+	def _clearStartAndEndWallsForPlayer( self, player ):
+		self._clearWallsBetween( player.beginCell, player.beginCell.east.neighbor )
+		self._clearWallsBetween( player.beginCell, player.beginCell.west.neighbor )
+		self._clearWallsBetween( player.beginCell, player.beginCell.north.neighbor )
+
+		self._clearWallsBetween( player.endCell, player.endCell.east.neighbor )
+		self._clearWallsBetween( player.endCell, player.endCell.west.neighbor )
+		self._clearWallsBetween( player.endCell, player.endCell.south.neighbor )
+	
 	def constructRandom(self):		
 		r = 0
 		while r<self._rowCount:
@@ -121,8 +135,7 @@ class Maze:
 		while visitedCellCount < totalCellCount:
 			nextCell = self._selectRandomNeighborCellWithAllWallsInTact( currentCell )
 			if nextCell:
-				currentCell.knockDownWallToward( nextCell )
-				nextCell.knockDownWallToward( currentCell )
+				self._clearWallsBetween( currentCell, nextCell )
 				cellStack.append( currentCell )
 				currentCell = nextCell
 				visitedCellCount += 1
@@ -133,6 +146,11 @@ class Maze:
 					pygame.display.update()
 			else:
 				currentCell = cellStack.pop();
+		
+		if self._game.playerManager:
+			for player in self._game.playerManager.playerIdsToPlayers.values():
+				self._clearStartAndEndWallsForPlayer( player )
+				print player
 
 	def mapX( self, fx ):
 		return int( self._x0 + fx*self._cellSize + 0.5 )
@@ -146,7 +164,7 @@ class Maze:
 		return int( fh*self._cellSize + 0.5 )
 	
 	def drawLine( self, surface, color, ax, ay, bx, by, width=1 ):
-		pygame.draw.line( surface, color, (self.mapX(ax), self.mapY(ay)), (self.mapX(bx), self.mapY(by)), width )
+		pygame.draw.line( surface, color, (self.mapX(ax), self.mapY(ay)), (self.mapX(bx), self.mapY(by)), int( width ) )
 
 	def drawCircle( self, surface, color, cx, cy, radius ):
 		rect = (self.mapX(cx-radius), self.mapY(cy+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
