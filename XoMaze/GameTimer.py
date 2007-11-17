@@ -16,6 +16,9 @@ class GameTimer:
 	def pause( self ):
 		pygame.time.set_timer(0)
 	
+	def isRunning( self ):
+		return bool(self.totalTime)
+		
 	def getTime( self ):
 		return self.totalTime
 		
