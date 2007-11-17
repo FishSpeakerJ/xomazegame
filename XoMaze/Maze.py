@@ -27,13 +27,12 @@ class Cell:
 	def areAllWallsInTact(self):
 		return self.north.isWalled and self.east.isWalled and self.south.isWalled and self.west.isWalled
 	def knockDownWallToward(self, other):
-		print self, other
 		for direction in self.directions:
 			print direction.neighbor
 			if direction.neighbor == other:
 				direction.isWalled = False
 				return
-		raise "blah"
+		raise "did not knock down wall"
 	def __repr__( self ):
 		return "(" + `self.row` + "," + `self.column` + ")"
 
@@ -193,10 +192,15 @@ class Maze:
 		self._x0 = (self._w-self._cellSize*self._columnCount)/2
 		self._y0 = (self._h-self._cellSize*self._rowCount)/2
 		
+		black = (0,0,0)
 		white = (255,255,255)
 		yellow = (255,255,0)
 		red = (255,0,0)
 		green = (0,255,0)
+
+		pygame.draw.rect( surface, black, (self._x0, self._y0, self._w, self._h) )
+		
+		
 
 		pad0 = 0.025
 		pad1 = 1.0-pad0
@@ -218,8 +222,6 @@ class Maze:
 		
 		for player in self._game.playerManager.playerIdsToPlayers.values():
 			self.drawPlayer( surface, player )
-			print player.getPosition(),
-		print
 		
 		self._x0 = None
 		self._y0 = None
