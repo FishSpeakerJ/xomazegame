@@ -18,4 +18,10 @@ class PlayerManager:
 		for player in self.playerIdsToPlayers.values():
 			player.reset()
 
+	def foundHead( self, id ):
+		print "Player %d found their head!" % id
+	
+	def finished( self, id ):
+		print "Player %d finished!!" % id
+
 		
