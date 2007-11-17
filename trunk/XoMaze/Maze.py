@@ -71,7 +71,6 @@ class Maze:
 				cell.west.neighbor = self._getNeighborCell( r, c-1 )
 				c += 1
 			r += 1
-		self.constructRandom()
 
 	def _getNeighborCell(self, r, c):
 		if r<0 or r>=self._rowCount or c<0 or c>=self._columnCount:
@@ -87,14 +86,6 @@ class Maze:
 		return self._rowCount
 	def getCellXY(self, x, y):
 		return self._cells[ y ][ x ]
-	#def generateRandom(self):
-	#	r = 0
-	#	while r<self._rowCount:
-	#		c = 0
-	#		while c<self._columnCount:
-	#			self._cells[ r ][ c ].generateRandom()
-	#			c += 1
-	#		r += 1
 	def getRandomCell(self):
 		r = random.randint( 0, self._rowCount-1 )
 		c = random.randint( 0, self._columnCount-1 )
@@ -137,9 +128,9 @@ class Maze:
 				visitedCellCount += 1
 				i += 1
 				i %= n
-				#if i == 0:
-				#	self.paint( self._game.boardSurface )
-				#	pygame.display.update()
+				if i == 0:
+					self.paint( self._game.boardSurface )
+					pygame.display.update()
 			else:
 				currentCell = cellStack.pop();
 
