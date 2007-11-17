@@ -23,19 +23,13 @@ class XoMaze:
 		self.initVariables()
 		self.initPlayerManager()
 		self.initSounds()
+		self.initHud()
 		self.maze = Maze( self )
 		self.gameClock = GameTimer()
 		pygame.init()
 		pygame.event.set_blocked( pygame.MOUSEMOTION )
 		#eventwrap.install()
 		
-	def startNewGame( self ):
-		# create the new maze
-		self.maze.constructRandom()
-		# setup each player
-		self.playerManager.reset()
-		self.gameClock.start()
-
 	def initScreen( self, width, height ):
 		"""Set the window Size"""
 		self.width = width
@@ -64,16 +58,11 @@ class XoMaze:
 				"K_a" : 3,
 			}
 
+	def initHud( self ):
+		pass
+
 	def initPlayerManager( self ):
 		self.playerManager = PlayerManager( self )
-
-
-	def gameOver( self ):
-		'''
-		Everyone quit or everyone finished
-		'''
-		pass
-		
 		
 	def initSounds( self ):
 		if not pygame.mixer or not pygame.mixer.get_init():
@@ -143,3 +132,17 @@ class XoMaze:
 				self.startNewGame()
 		return True
 		
+	def startNewGame( self ):
+		# create the new maze
+		self.maze.constructRandom()
+		# setup each player
+		self.playerManager.reset()
+		self.gameClock.start()
+
+	def gameOver( self ):
+		'''
+		Everyone quit or everyone finished
+		'''
+		pass
+		
+
