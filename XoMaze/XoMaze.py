@@ -122,23 +122,24 @@ class XoMaze:
 		
 	def processMessages( self, event ):
 		# Gotta have this if we want to exit nicely
-			if event.type == QUIT:
-				return False
-			elif event.type == globals.CLOCKTICK:
-				self.gameClock.update()
+		if event.type == QUIT:
+			return False
+		elif event.type == globals.CLOCKTICK:
+			self.gameClock.update()
 #				print self.gameClock.getTime()
-			elif event.type == KEYDOWN: # (I assume we want key down, not up)
-				if event.key == K_ESCAPE:
-					# TODO: Show a confirmation dialog maybe?
-					return False
-				
-				# Handle any directional input
-				for key, value in self.keysToDirections.items():
-					if event.key == getattr( pygame.locals, key ):
-						# Let's assume player ID 0 is me, the main player.
-						self.playerManager.playerIdsToPlayers[ 0 ].move( value )
-						
-				if event.key == K_SPACE:
-					# checkif this is relevant
-					self.startNewGame()
+		elif event.type == KEYDOWN: # (I assume we want key down, not up)
+			if event.key == K_ESCAPE:
+				# TODO: Show a confirmation dialog maybe?
+				return False
+			
+			# Handle any directional input
+			for key, value in self.keysToDirections.items():
+				if event.key == getattr( pygame.locals, key ):
+					# Let's assume player ID 0 is me, the main player.
+					self.playerManager.playerIdsToPlayers[ 0 ].move( value )
+					
+			if event.key == K_SPACE:
+				# checkif this is relevant
+				self.startNewGame()
+		return True
 		
