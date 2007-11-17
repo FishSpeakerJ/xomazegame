@@ -7,7 +7,7 @@ class GameTimer:
 		self.totalTime = 0
 
 	def start( self ):
-		self.totalTime = 0
+		self.totalTime = 1
 		pygame.time.set_timer(globals.CLOCKTICK, 1000)
 		
 	def resume( self ):
