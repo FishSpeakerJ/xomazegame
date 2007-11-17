@@ -146,21 +146,33 @@ class Maze:
 	def mapHeight( self, fh ):
 		return fh*self._cellSize
 	
-	def drawLine( self, surface, color, ax, ay, bx, by ):
-		pygame.draw.line( surface, color, (self.mapX(ax), self.mapY(ay)), (self.mapX(bx), self.mapY(by)) )
+	def drawLine( self, surface, color, ax, ay, bx, by, width=1 ):
+		pygame.draw.line( surface, color, (self.mapX(ax), self.mapY(ay)), (self.mapX(bx), self.mapY(by)), width )
 
 	def drawPlayer( self, surface, player ):
 		x, y = player.getPosition()
-		
+
+		lineWidth = self.mapWidth(0.2)
+		radius = 0.25
 		color = player.getStrokeColor()
-		radius = 0.375
-		rect = (self.mapX(x-radius), self.mapY(y+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
-		pygame.draw.ellipse( surface, color, rect )
-		
+		self.drawLine( surface, color, x-radius, y-radius, x+radius, y+radius, lineWidth )
+		self.drawLine( surface, color, x-radius, y+radius, x+radius, y-radius, lineWidth )
+
+		lineWidth *= 0.5
+		radius *= 0.75
 		color = player.getFillColor()
-		radius = 0.325
-		rect = (self.mapX(x-radius), self.mapY(y+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
-		pygame.draw.ellipse( surface, color, rect )
+		self.drawLine( surface, color, x-radius, y-radius, x+radius, y+radius, lineWidth )
+		self.drawLine( surface, color, x-radius, y+radius, x+radius, y-radius, lineWidth )
+		
+#		color = player.getStrokeColor()
+#		radius = 0.375
+#		rect = (self.mapX(x-radius), self.mapY(y+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
+#		pygame.draw.ellipse( surface, color, rect )
+		
+#		color = player.getFillColor()
+#		radius = 0.325
+#		rect = (self.mapX(x-radius), self.mapY(y+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
+#		pygame.draw.ellipse( surface, color, rect )
 		
 	def paint(self, surface, x0, y0, w, h):
 		self._x0 = x0
