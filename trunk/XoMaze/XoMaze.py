@@ -174,6 +174,8 @@ class XoMaze:
 		self.maze.initialize(xCellNum,yCellNum)
 		# setup each player
 		self.playerManager.reset()
+		
+		self.maze.constructRandom()
 		self.gameClock.start()
 
 	def gameOver( self ):
