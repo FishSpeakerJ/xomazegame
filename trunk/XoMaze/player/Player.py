@@ -37,49 +37,39 @@ class Player:
 		'''
 		if direction == 0:
 			potentialPosition = [ self.position[0], self.position[1] + playerYIncrement ]
-			checkPosition = [ self.position[0], self.position[1] + 0.5 ]
 			if self.oldDirection == 1 or self.oldDirection == 3:
 				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
 		elif direction == 1:
-			potentialPosition = [ self.position[0] + playerXIncrement, self.position[1] ]
-			checkPosition = [ self.position[0] + 0.5, self.position[1] ] 
+			potentialPosition = [ self.position[0] + playerXIncrement, self.position[1] ] 
 			if self.oldDirection == 0 or self.oldDirection == 2:
 				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
 		elif direction == 2:
-			potentialPosition = [ self.position[0], self.position[1] - playerYIncrement ]
-			checkPosition = [ self.position[0], self.position[1] - 0.5 ] 
+			potentialPosition = [ self.position[0], self.position[1] - playerYIncrement ] 
 			if self.oldDirection == 1 or self.oldDirection == 3:
 				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
 		else:
-			potentialPosition = [ self.position[0] - playerXIncrement, self.position[1] ]
-			checkPosition = [ self.position[0] - 0.5, self.position[1] ] 
+			potentialPosition = [ self.position[0] - playerXIncrement, self.position[1] ] 
 			if self.oldDirection == 0 or self.oldDirection == 2:
 				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
-		if self.id == 60:
+		if self.id == 0:
 			print "Player 0 move"
 			print "position = ( %f, %f ) " % ( self.position[0], self.position[1] )
 			print "direction = %d" % direction
 			print "oldDirection = %d" % self.oldDirection
 			print "potentialPosition = ( %f, %f )" % ( potentialPosition[0], potentialPosition[1] )
-			print "checkPosition = ( %f, %f )" % ( checkPosition[0], checkPosition[1] )
-			currentCell = self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) )
-			potentialCell = self.game.maze.getCellXY( *self.getDiscreetPosition( checkPosition ) )
-			
-			print "current cell %s " % currentCell
-			print "potential cell %s " % potentialCell
-			print "current cell's walls are : north = %s, east = %s, south = %s, west = %s " % ( currentCell.north.isWalled, currentCell.east.isWalled, currentCell.south.isWalled, currentCell.west.isWalled )
-			print "potential cell's walls are : north = %s, east = %s, south = %s, west = %s " % ( potentialCell.north.isWalled, potentialCell.east.isWalled, potentialCell.south.isWalled, potentialCell.west.isWalled )
+			print "current cell %s " % self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) )
+			print "potential cell %s " % self.game.maze.getCellXY( *self.getDiscreetPosition( potentialPosition ) )
 			
 		self.oldDirection = direction
 		
 		# If my new discreet position is the same as my old one, update position
 		# and return, no need to check other walls
-		if self.getDiscreetPosition( checkPosition ) == self.getDiscreetPosition( self.position ):
+		if self.getDiscreetPosition( potentialPosition ) == self.getDiscreetPosition( self.position ):
 			self.position = potentialPosition
 			return
-			
-		currentCell = self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) )
-		directionObject = getattr( currentCell, self.directionToStringDirection[ direction ] )
+		
+		potentialCell = self.game.maze.getCellXY( *self.getDiscreetPosition( potentialPosition ) )
+		directionObject = getattr( potentialCell, self.directionToStringDirection[ direction ] )
 		if currentCell == self.headCell:
 			self.game.playerManager.foundHead( self.id )
 			self.headAttached = True
@@ -94,7 +84,7 @@ class Player:
 				self.game.soundNamesToSounds[ "hitWall" ].play()
 			return
 		# We're free and clear
-		self.path.append( currentCell )
+		self.path.append( potentialCell )
 		self.position = potentialPosition
 		
 	def reset( self ):
