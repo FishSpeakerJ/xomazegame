@@ -199,7 +199,6 @@ class Maze:
 			x = player.headCell.column + 0.5
 			y = player.headCell.row + 0.5
 
-		print player.headCell
 		#x += offset
 		#y += offset
 		y += 0.25
