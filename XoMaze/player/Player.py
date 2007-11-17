@@ -20,6 +20,7 @@ class Player:
 		self.path = []
 		self.offset = 1.0 / ( self.game.numberOfPlayers + 3.0 ) * ( self.id + 2 )
 		self.headAttached = False
+		self.signaling = False
 		self.directionToStringDirection = {
 			0 : "north",
 			1 : "east",
@@ -30,11 +31,15 @@ class Player:
 	def move( self, direction, dt=1.0 ):
 		'''
 		Move yourself in the maze
-			0 - Up
-			1 - Right
-			2 - Down
-			3 - Left
+			0 - North
+			1 - East
+			2 - South
+			3 - West
+			4 - Signal
 		'''
+		if direction == 4:
+			self.signaling = True
+
 		if direction == 0:
 			potentialPosition = [ self.position[0], self.position[1] + playerYIncrement ]
 			checkPosition = [ self.position[0], self.position[1] + 0.5 ]
@@ -100,7 +105,7 @@ class Player:
 		'''
 		self.oldDirection = -1
 		self.headAttached = False
-		
+		self.signaling = False
 		x = int( self.game.maze.getXCellCount() / 2.0 )
 		x = int( x - float(self.game.numberOfPlayers / 2.0 ) ) + self.id*1.0 + self.offset
 		self.position = ( x, 0.5 )
@@ -130,9 +135,13 @@ class Player:
 	def getFillColor( self ):
 		return self.colors[1]
 
-	def signal( self ):
+	def isSignaling( self ):
 		'''
 		Wave and change strong path to where you are
 		'''
-		pass
+		if self.signaling:
+			self.signaling = False
+			return True
+		return False
+		
 
