@@ -113,9 +113,14 @@ class Maze:
 	def paint(self, surface, x0, y0, w, h):
 		red = (255,0,0)
 		white = (255,255,255)
+		yellow = (255,255,0)
 		
 		cellWidth = w/self._columnCount
-		cellHeight = w/self._rowCount
+		cellHeight = h/self._rowCount
+		
+		cellSize = min( cellWidth, cellHeight )
+		
+		PAD = 4
 		
 		y = y0
 		r = 0
@@ -125,12 +130,16 @@ class Maze:
 			while c<self._columnCount:
 				cell = self._cells[ r ][ c ]
 				if cell.north.isWalled:
-					pygame.draw.line( surface, white, (x, y), (x+cellWidth, y) )
+					pygame.draw.line( surface, white, (x, y), (x+cellSize, y) )
 				if cell.west.isWalled:
-					pygame.draw.line( surface, white, (x, y), (x, y+cellHeight) )
-				x += cellWidth
+					pygame.draw.line( surface, white, (x, y), (x, y+cellSize) )
+				if cell.south.isWalled:
+					pygame.draw.line( surface, yellow, (x, y+cellSize), (x+cellSize, y+cellSize) )
+				if cell.east.isWalled:
+					pygame.draw.line( surface, yellow, (x+cellSize, y), (x+cellSize, y+cellSize) )
+				x += cellSize + PAD
 				c += 1
-			y += cellHeight
+			y += cellSize + PAD
 			r += 1
 	
 	def echo(self):	
