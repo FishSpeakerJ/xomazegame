@@ -144,7 +144,7 @@ class Maze:
 				i += 1
 				i %= n
 				if i == 0:
-					self.paint( self._game.board )
+					self.paint( self._game.boardSurface )
 					pygame.display.update()
 				#pygame.time.delay( 100 )
 			else:
