@@ -39,10 +39,9 @@ class XoMaze:
 		"""Set the window Size"""
 		# determine space available for board & hud
 		boardWidth = width
-		boardHeight = height*0.8
+		boardHeight = height-globals.hudHeight-globals.bottomMargin
 		hudWidth = width
-		hudHeight = (height - boardHeight)/2.0
-		print hudHeight
+		hudHeight = globals.hudHeight
 		
 		"""Create the Screen"""
 		self.screen = pygame.display.set_mode((width, height))
@@ -144,15 +143,28 @@ class XoMaze:
 					
 			if event.key == K_SPACE:
 				# checkif this is relevant
-				self.startNewGame()
+				self.startNewGame(globals.difficultyLevelToMazeSize[1])
+			elif event.key == K_1:
+				# checkif this is relevant
+				self.startNewGame(*globals.difficultyLevelToMazeSize[1])
+			elif event.key == K_2:
+				# checkif this is relevant
+				self.startNewGame(*globals.difficultyLevelToMazeSize[2])
+			elif event.key == K_3:
+				# checkif this is relevant
+				self.startNewGame(*globals.difficultyLevelToMazeSize[3])
+						
+				
+				
+				
 		return True
 		
-	def startNewGame( self ):
+	def startNewGame( self, xCellNum, yCellNum ):
 		# clear EVERYTHING
 		self.board.fill( (1.0, 1.0, 1.0) )
 		#self.hud.reset()
 		# create the new maze
-		self.maze.initialize(50,20)
+		self.maze.initialize(xCellNum,yCellNum)
 		# setup each player
 		self.playerManager.reset()
 		self.gameClock.start()
