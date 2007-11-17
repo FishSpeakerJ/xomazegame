@@ -40,7 +40,8 @@ class Path:
 		self.cells.append(cell)
 
 class Maze:
-	def __init__(self, rowCount=16, columnCount=16):
+	def __init__(self, game, rowCount=16, columnCount=16):
+		self._game = game
 		self.initialize(rowCount, columnCount)
 	def initialize(self, rowCount, columnCount):
 		self._rowCount = rowCount
@@ -140,9 +141,19 @@ class Maze:
 	def mapY( self, fy ):
 		return ( self._y0 + self._h ) - (fy*self._cellSize)
 	
+	def mapWidth( self, fw ):
+		return fw*self._cellSize
+	def mapHeight( self, fh ):
+		return fh*self._cellSize
+	
 	def drawLine( self, surface, color, ax, ay, bx, by ):
 		pygame.draw.line( surface, color, (self.mapX(ax), self.mapY(ay)), (self.mapX(bx), self.mapY(by)) )
 
+	def drawPlayer( self, surface, color, player ):
+		x, y = player.getPosition()
+		rect = (self.mapX(x), self.mapY(y), self.mapWidth(0.5), self.mapHeight(0.5))
+		pygame.draw.ellipse( surface, color, rect )
+		
 	def paint(self, surface, x0, y0, w, h):
 		self._x0 = x0
 		self._y0 = y0
@@ -174,6 +185,9 @@ class Maze:
 					self.drawLine( surface, white, c+pad1, r+pad0, c+pad1, r+pad1 )
 				c += 1
 			r += 1
+		
+		for player in self._game.playerManager.playerIdsToPlayers.values():
+			self.drawPlayer( surface, red, player )
 		
 		self._x0 = None
 		self._y0 = None
