@@ -1,26 +1,55 @@
 #summary What needs implementing and who's on it
 
 = Functionality =
-  * Maze generation - Dennis
-  * Maze info query - Dennis
-  * Maze rendering
+ Jason
+  * Fog of War toggle
+  * Fog of War reset
+  * Show exit in fog of war
+  * Fog of War entrance
+  * Show players in the beginning of fog of war
+  * Speed tweaking
+  * Possible performance bug (Sabrina's laptop)
 
-  * Mesh Networking - Jason
+ Dennis
+  * better path line colors
+  * Improve granuality of path generation/coloring
+  * Render order of avatars and paths
+  * Path pruning & diagonals
+  * Maze openness tweaking
 
-  * Game loop - Sabrina
-  * Game start logic - Sabrina
-  * Game timer
-
-  * Controls - Shawn
-  * Player base - Shawn
-  * Player rendering
-  * Player path rendering/pruning
-  * Player animation????
-  * Player movement
-
-  * Sounds
-  * Artwork
-  * Fog of War
-
+ Shawn
+  * select difficulty dialog 
+  * Fog of War image
+  * Opening animation
+  * Winning animation
+  * SVG icon
+  * signaling 
  
+ Sabrina
+  * Disable resetting of maze during the game
+  * fix maze initialization timing problems
+  * Framerate meter
+  * Control instructions
+  * Splash screen
+  * Maze size tweaking
+  * Sounds
 
+
+  * subupdate rects for optimization
+
+
+
+
+  # splash screen with instructions
+  # character visible
+  # maze
+  # maze generation
+  # fog of war
+  # sound hit & timer start
+  # play
+  # pleasing sound when you find head
+  # pleasing sound when you reach end
+  # fun animation
+  # all fog of war vanishs
+  # spacebar replay prompt
+  # select difficulty
