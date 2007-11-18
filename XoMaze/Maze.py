@@ -379,7 +379,15 @@ class Maze:
 
 			if len( prunedPath ):
 				self.drawPath( surface, strokeColor, fillColor, player.offset, player.isSignaling(), prunedPath )
-		
+				lastCell = path[-1]
+				if lastCell == prunedPath[-1]:
+					self._points = []
+					self._points.append( self.mapCell( lastCell, player.offset ) )
+					x, y = player.getPosition()
+					self._points.append( ( self.mapX( x ), self.mapY( y ) ) )
+					self.drawPathEnd( surface, strokeColor, fillColor, player.isSignaling() )
+					
+					
 	def paint(self, surface):
 		PAD = 4
 		self._w = surface.get_width() - PAD
