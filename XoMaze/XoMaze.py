@@ -158,7 +158,7 @@ class XoMaze:
 			self.hasSound = True
 	
 		# Add any sounds you want here!!
-		self.soundNamesToSounds = { "gameOver" : None, "trumpet" : None, "start" : None }
+		self.soundNamesToSounds = { "trumpet" : None, "start" : None }
 		for i in range( 4 ):
 			self.soundNamesToSounds[ "signalEnd%d" % i ] = None
 			self.soundNamesToSounds[ "signalFound%d" % i ] = None
