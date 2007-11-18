@@ -232,10 +232,8 @@ class Maze:
 			width = 0.15
 			lineWidth = self.mapWidth( width )
 			pygame.draw.lines( surface, stroke, False, self._points, lineWidth )
-		else:
-			width = 0.075
-			
-		lineWidth = max( self.mapWidth( width*0.5 ), 1 )
+		width = 0.1
+		lineWidth = max( self.mapWidth( width ), 1 )
 		pygame.draw.lines( surface, fill, False, self._points, lineWidth )
 
 	def drawPath( self, surface, stroke, fill, offset, isSignaling, path ):
