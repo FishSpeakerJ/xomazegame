@@ -3,6 +3,9 @@ import pygame
 # custom events
 CLOCKTICK = pygame.USEREVENT + 1
 
+# Milliseconds we will sleep each frame if there are no events
+sleepTime = 10
+
 # global variables
 hudHeight = 50
 bottomMargin = 20
@@ -61,12 +64,6 @@ keyboardKeys = {
 	pygame.K_DOWN : [ 2, 2, ],
 	pygame.K_LEFT : [ 2, 3, ],
 	pygame.K_RSHIFT : [ 2, 4, ],
-	
-	pygame.K_8 : [ 3, 0, ],
-	pygame.K_6 : [ 3, 1, ],
-	pygame.K_2 : [ 3, 2, ],
-	pygame.K_4 : [ 3, 3, ],
-	pygame.K_7 : [ 3, 4, ],
 
 	pygame.K_KP8 : [ 3, 0, ],
 	pygame.K_KP6 : [ 3, 1, ],

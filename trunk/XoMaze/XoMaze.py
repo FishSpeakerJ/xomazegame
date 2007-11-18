@@ -101,17 +101,17 @@ class XoMaze:
 		
 		# Event Handling (controls)
 		# sleep if there is no event
-		updateVisuals = False
+		updateVisuals = True # Don't we always want to update visuals?!
 		event = pygame.event.wait()
-		if event.type != globals.CLOCKTICK:
-			updateVisuals = True
+#		if event.type != globals.CLOCKTICK:
+#			updateVisuals = True
 		keepGoing = self.processMessages( event)
 		for event in pygame.event.get():
 			keepGoing = self.processMessages( event )
 			if keepGoing == False:
 				return False
-			if event.type != globals.CLOCKTICK:
-				updateVisuals = True
+#			if event.type != globals.CLOCKTICK:
+#				updateVisuals = True
 		
 		# update player movement
 		for key, lastUpdateTime in self.pressedKeys.items():
@@ -136,7 +136,7 @@ class XoMaze:
 		elif event.type == globals.CLOCKTICK:
 			self.gameClock.update()
 #				print self.gameClock.getTime()
-		elif event.type == KEYUP: # (I assume we want key down, not up)
+		elif event.type == KEYUP:
 			# Handle any directional input
 			if event.key in self.keysToDirections.keys():
 				if event.key in self.pressedKeys:
@@ -151,13 +151,13 @@ class XoMaze:
 			if event.key == K_SPACE:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[1])
-			elif event.key == K_F1:
+			elif event.key == K_1:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[1])
-			elif event.key == K_F2:
+			elif event.key == K_2:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[2])
-			elif event.key == K_F3:
+			elif event.key == K_3:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[3])
 						
