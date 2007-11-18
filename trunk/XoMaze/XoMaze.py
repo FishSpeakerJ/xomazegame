@@ -99,7 +99,7 @@ class XoMaze:
 			self.hasSound = True
 	
 		# Add any sounds you want here!!
-		self.soundNamesToSounds = {}
+		self.soundNamesToSounds = { "gameOver" : None }
 		for i in range( 4 ):
 			self.soundNamesToSounds[ "signalEnd%d" % i ] = None
 			self.soundNamesToSounds[ "signalFound%d" % i ] = None
@@ -267,7 +267,9 @@ class XoMaze:
 		'''
 		Everyone quit or everyone finished
 		'''
-		pass
+		print "Game Over!!"
+		if self.hasSound:
+			self.soundNamesToSounds[ "gameOver" ].play()
 
 	def loadImage( self, name, colorkey=None ):
 		fullname = os.path.join( "data", name )
