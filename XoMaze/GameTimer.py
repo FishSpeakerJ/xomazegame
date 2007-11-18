@@ -1,30 +1,25 @@
 import pygame
 import globals
+import time
+import datetime
 
 class GameTimer:
 	def __init__( self ):
 		# start game time
-		self.totalTime = 0
+		self.startTime = 0
 
 	def start( self ):
-		self.totalTime = 1
+		self.startTime = pygame.time.get_ticks()
 		pygame.time.set_timer(globals.CLOCKTICK, globals.clockSleepTime )
 		
-	def resume( self ):
-		pygame.time.set_timer(globals.CLOCKTICK, globals.clockSleepTime )
-		
-	def pause( self ):
-		pygame.time.set_timer(0)
-	
 	def isRunning( self ):
-		return bool(self.totalTime)
+		return bool(self.startTime)
 		
 	def getTime( self ):
-		return self.totalTime
+		return pygame.time.get_ticks() - self.startTime
 		
-	def update( self ):
-		self.totalTime += 1000
-	
 	def getTimeString( self ):
-		return "%i:%i" % ( this.totalTime/1000, 60*this.totalTime%1000) 
+		delta = datetime.timedelta( milliseconds=(pygame.time.get_ticks() - self.startTime) )
+		return time.strftime("%H:%M:%S",time.gmtime(delta.seconds))
 		
+#		.strftime("%M:%S")

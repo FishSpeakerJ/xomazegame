@@ -5,12 +5,12 @@ class Hud:
 		self.game = game
 		self.surface = game.hudSurface
 		# Create a font
-		font = pygame.font.Font(None, 17)
+		self.font = pygame.font.Font(None, 30)
 		
 	def update( self ):
 		# Render the text
-		text = font.render(self.gameClock.getTimeString(), True, 
-						(255, 255, 255), (159, 182, 205))
+		text = self.font.render(self.game.gameClock.getTimeString(), True, 
+						(255, 255, 255), (0, 0, 0))
 
 		# Create a rectangle
 		textRect = text.get_rect()
