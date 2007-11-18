@@ -15,12 +15,14 @@ try:
 	# if we're running on an evironment euivalent to the XO laptop
 	import olpcgames
 	emulatorMode = True
+	graphicsPrefix = "xo"
 	width=1200.0
 	height=825.0
 
 except ImportError:
 	# otherwise, assume a smaller resolution
 	emulatorMode = False
+	graphicsPrefix = "desktop"
 	width=1024.0
 	height=750.0
 
@@ -60,9 +62,41 @@ class XoMaze:
 		self.gameClock = GameTimer()
 		self.hud = Hud( self )
 		self.maze = Maze( self )
-
 		self.fogOfWarSurface = pygame.Surface( (boardWidth, boardHeight) )
+		self.showTitleScreen()
+		# show title screen
+		
 
+	def showTitleScreen( self ):
+		# clear to right color
+		self.screen.fill( (72, 70, 70) )
+
+		# show title
+		self.titleImage = self.loadImage( "title.png" )		
+		# Create a rectangle
+		imageRect = self.titleImage.get_rect()
+		# Center the rectangle
+		imageRect.centerx = self.screen.get_rect().centerx
+		imageRect.centery = self.titleImage.get_height() + 10
+		self.screen.blit( self.titleImage, imageRect )
+
+		# show spacebar press anim
+		
+		
+		# show directions		
+		self.directionsImage = self.loadImage( "%s_startDirections.png" % graphicsPrefix, (0, 255, 0) )		
+		if self.screen.get_width() < self.directionsImage.get_width() + 20:
+			self.directionsImage = pygame.transform.scale(self.directionsImage, (self.directionsImage.get_width()*0.8, self.directionsImage.get_height()*0.8))
+		# Create a rectangle
+		imageRect = self.directionsImage.get_rect()		
+		# Center the rectangle
+		imageRect.centerx = self.screen.get_rect().centerx
+		imageRect.centery = self.screen.get_height() - self.directionsImage.get_height()/2.0 - 20		
+		self.screen.blit( self.directionsImage, imageRect )
+		
+		
+		
+		
 	def initVariables( self ):
 		self.isGameRunning = False
 		
@@ -205,8 +239,7 @@ class XoMaze:
 			elif event.key == K_3:
 				self.mazeComplexityLevel = 3
 			elif event.key == K_4:
-				# checkif this is relevant
-				self.startNewGame(*globals.difficultyLevelToMazeSize[4])
+				self.mazeComplexityLevel = 4
 
 		return True
 
