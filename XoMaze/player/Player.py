@@ -19,6 +19,7 @@ class Player:
 		self.colors = playerColors[ self.id ]
 		self.position = ( 0.0, 0.0 )
 		self.oldDirection = -1
+		self.oldOldDirection = -1
 		self.path = []
 		self.offset = 1.0 / ( self.game.numberOfPlayers + 3.0 ) * ( self.id + 2 )
 		self.headAttached = True
@@ -31,6 +32,10 @@ class Player:
 		}
 
 	def move( self, direction, dt=0.05 ):
+#		print "move"
+#		print " direction", direction
+#		print " oldDirection", self.oldDirection
+#		print " oldOldDirection", self.oldOldDirection
 		'''
 		Move yourself in the maze
 			0 - North
@@ -72,14 +77,14 @@ class Player:
 			print "  position = ( %f, %f ) " % ( self.position[0], self.position[1] )
 			print "  direction = %d" % direction
 			print "  oldDirection = %d" % self.oldDirection
+			print "  oldOldDirection = %d" % self.oldOldDirection
 			print "  potentialPosition = ( %f, %f )" % ( potentialPosition[0], potentialPosition[1] )
 			currentCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
 			potentialCell = self.game.maze.getCellXY( *self.getDiscretePosition( potentialPosition ) )
 			
 			print "  current cell %s " % currentCell
 			print "  potential cell %s " % potentialCell
-		self.oldDirection = direction
-		
+
 		# Check for walls if I'm past the center of the cell (in the direction of travel)
 		directionObject = getattr( oldCell, self.directionToStringDirection[direction] )
 		if directionObject.isWalled:
@@ -97,7 +102,21 @@ class Player:
 			else:
 				potentialPosition[1] = int( potentialPosition[1] ) + 0.5
 
+		# Check for diagonal stuck bug
+#		print "new isWalled", directionObject.isWalled
+		if (direction == self.oldOldDirection) and (direction != self.oldDirection):
+			directionObject2 = getattr( oldCell, self.directionToStringDirection[self.oldDirection] )
+#			print "old isWalled", directionObject2.isWalled
+			if (not directionObject.isWalled) and (not directionObject2.isWalled):
+				if direction in (0, 2):
+#					print " bailing"
+					self.oldOldDirection = self.oldDirection
+					self.oldDirection = direction
+					return
 
+		self.oldOldDirection = self.oldDirection
+		self.oldDirection = direction
+		
 		self.position = potentialPosition
 		self.game.onPlayerPositionChange( self.id, self.position )
 
@@ -158,6 +177,7 @@ class Player:
 		Resets the player to the bottom of the maze, offset based on his id
 		'''
 		self.oldDirection = -1
+		self.oldOldDirection = -1
 		self.headAttached = True
 		self.signaling = False
 		self.snapDelayed = False
