@@ -103,12 +103,12 @@ class XoMaze:
 			self.hasSound = True
 	
 		# Add any sounds you want here!!
-		self.soundNamesToSounds = { "gameOver" : None, "frogOfWar" : None, "trumpet" : None }
+		self.soundNamesToSounds = { "gameOver" : None, "frogOfWar" : None, "trumpet" : None, "start" : None }
 		for i in range( 4 ):
 			self.soundNamesToSounds[ "signalEnd%d" % i ] = None
 			self.soundNamesToSounds[ "signalFound%d" % i ] = None
 			self.soundNamesToSounds[ "signalHead%d" % i ] = None
-			self.soundNamesToSounds[ "uhOh%d" % i ] = None
+			self.soundNamesToSounds[ "corkPop%d" % i ] = None
 		
 		for soundName in self.soundNamesToSounds.keys():
 			fullname = os.path.join( 'data\sounds', soundName + ".ogg" )
@@ -248,6 +248,8 @@ class XoMaze:
 		self.scheduler.doInterval( fogDuration, self.enterFogOfWar, waitBefore=0.0 )
 		self.scheduler.doInterval( headsDuration, self.maze.handleHeadsRollingAnimation, waitBefore=fogDuration )
 		self.scheduler.doLater( fogDuration + headsDuration, self.gameClock.start )
+		if self.hasSound:
+			self.scheduler.doLater( fogDuration + headsDuration, self.soundNamesToSounds[ "start" ].play )
 
 		self.isGameRunning = True
 
@@ -269,15 +271,15 @@ class XoMaze:
 		radius = self.fogOfWarStartRadius + t*(self.fogOfWarRadius - self.fogOfWarStartRadius)
 		for point in self._fogOfWarStartPoints:
 			pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, point, radius )
-	
+
 	def gameOver( self ):
 		'''
 		Everyone quit or everyone finished
 		'''
 		if self.hasSound:
-			self.soundNamesToSounds[ "gameOver" ].play()
+			#self.soundNamesToSounds[ "gameOver" ].play()
 			self.soundNamesToSounds[ "trumpet" ].play()
-		self.isGameRunning = False
+		#self.isGameRunning = False
 		self.playerManager.celebrate()
 
 	def loadImage( self, name, colorkey=None ):
