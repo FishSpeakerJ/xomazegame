@@ -95,9 +95,12 @@ class XoMaze:
 			self.hasSound = True
 	
 		# Add any sounds you want here!!
-		self.soundNamesToSounds = {
-			#"hitWall" : None,
-		}
+		self.soundNamesToSounds = {}
+		for i in range( 4 ):
+			self.soundNamesToSounds[ "signalEnd%d" % i ] = None
+			self.soundNamesToSounds[ "signalFound%d" % i ] = None
+			self.soundNamesToSounds[ "signalHead%d" % i ] = None
+			
 		
 		for soundName in self.soundNamesToSounds.keys():
 			fullname = os.path.join( 'data/sounds', soundName + ".ogg" )
@@ -167,6 +170,8 @@ class XoMaze:
 			return False
 		elif event.type == globals.CHECKHEADS:
 			self.playerManager.checkForHeads()
+		elif event.type == globals.DELAYSNAP:
+			self.playerManager.checkForSnapDelays()
 		elif event.type == KEYUP:
 			# Handle any directional input
 			if event.key in self.pressedKeys:
