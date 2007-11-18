@@ -6,18 +6,21 @@
   * faster movement on pre-walked paths
 
  Dennis
-  * better path line colors
-  * Improve granuality of path generation/coloring
-  * Render order of avatars and paths
-  * Path pruning & diagonals
-  * Maze openness tweaking
-  * bug: heads can be placed on exit spots
+  * ~~better path line colors~~
+  * ~~Improve granuality of path generation/coloring~~
+  * ~~Render order of avatars and paths~~
+  * ~~Path pruning & diagonals~~
+  * ~~Maze openness tweaking~~
+  * ~~bug: heads can be placed on exit spots~~
+  * ~~Opening animation~~
 
  Shawn
   * select difficulty dialog
   * Fog of War image
-  * Opening animation
   * Winning animation
+  * ~~Sounds~~
+  * ~~signaling~~
+  * ~~svg icon~~
  
  Sabrina
   * Disable resetting of maze during the game
@@ -26,7 +29,7 @@
   * Control instructions
   * Splash screen
   * Maze size tweaking
-  * Sounds
+
 
 
   * subupdate rects for optimization
