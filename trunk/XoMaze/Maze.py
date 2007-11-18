@@ -362,15 +362,15 @@ class Maze:
 			self._xPixelOffset = -1
 			self._yPixelOffset = -1
 			self.drawX( surface, shadow, None, x, y, False )
-			self.drawO( surface, shadow, None, x, y )
+			self.drawO( surface, shadow, None, x, y + 0.3 )
 			self._xPixelOffset = 1
 			self._yPixelOffset = 1
 			self.drawX( surface, highlight, None, x, y, False )
-			self.drawO( surface, highlight, None, x, y )
+			self.drawO( surface, highlight, None, x, y + 0.3 )
 			self._xPixelOffset = 0
 			self._yPixelOffset = 0
 			self.drawX( surface, sunken, None, x, y, False )
-			self.drawO( surface, sunken, None, x, y )
+			self.drawO( surface, sunken, None, x, y + 0.3 )
 	
 	def drawPlayerPath( self, surface, player ):
 		#strokeColor = blendColors( player.getStrokeColor(), (32,32,32))
