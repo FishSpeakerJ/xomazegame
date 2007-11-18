@@ -2,9 +2,6 @@ import pygame
 
 # custom events
 CLOCKTICK = pygame.USEREVENT + 1
-CHECKHEADS = pygame.USEREVENT + 2
-DELAYSNAP = pygame.USEREVENT + 3
-CELEBRATE = pygame.USEREVENT + 4
 
 # Milliseconds we will sleep each frame if there are no events,
 # this will update the clock every second
