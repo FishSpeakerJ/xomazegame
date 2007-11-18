@@ -103,7 +103,7 @@ class XoMaze:
 			self.hasSound = True
 	
 		# Add any sounds you want here!!
-		self.soundNamesToSounds = { "gameOver" : None, "frogOfWar" : None }
+		self.soundNamesToSounds = { "gameOver" : None, "frogOfWar" : None, "trumpet" : None }
 		for i in range( 4 ):
 			self.soundNamesToSounds[ "signalEnd%d" % i ] = None
 			self.soundNamesToSounds[ "signalFound%d" % i ] = None
@@ -282,6 +282,7 @@ class XoMaze:
 		'''
 		if self.hasSound:
 			self.soundNamesToSounds[ "gameOver" ].play()
+			self.soundNamesToSounds[ "trumpet" ].play()
 		self.isGameRunning = False
 		self.playerManager.celebrate()
 
