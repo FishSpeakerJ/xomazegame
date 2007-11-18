@@ -455,9 +455,13 @@ class Maze:
 				self.drawPlayerPath( surface, player )
 			for player in self._game.playerManager.playerIdsToPlayers.values():
 				self.drawPlayer( surface, player )
-			if self._headsRollingAnimationPortion >= 0:
-				for player in self._game.playerManager.playerIdsToPlayers.values():
-					self.drawHeadRolling(surface, player, self._headsRollingAnimationPortion)
+			for player in self._game.playerManager.playerIdsToPlayers.values():
+				if self._headsRollingAnimationPortion < 0:
+					return
+				delta = max( 0.0, self._headsRollingAnimationPortion - player.id*0.2 )
+				if delta > 0.0:
+					self._game.playerManager.playUhOh( player.id )
+				self.drawHeadRolling(surface, player, delta )
 
 #		self._x0 = None
 #		self._y0 = None

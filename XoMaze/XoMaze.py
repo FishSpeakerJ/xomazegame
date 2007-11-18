@@ -99,12 +99,12 @@ class XoMaze:
 			self.hasSound = True
 	
 		# Add any sounds you want here!!
-		self.soundNamesToSounds = { "gameOver" : None }
+		self.soundNamesToSounds = { "gameOver" : None, "frogOfWar" : None }
 		for i in range( 4 ):
 			self.soundNamesToSounds[ "signalEnd%d" % i ] = None
 			self.soundNamesToSounds[ "signalFound%d" % i ] = None
 			self.soundNamesToSounds[ "signalHead%d" % i ] = None
-			
+			self.soundNamesToSounds[ "uhOh%d" % i ] = None
 		
 		for soundName in self.soundNamesToSounds.keys():
 			fullname = os.path.join( 'data/sounds', soundName + ".ogg" )
@@ -178,6 +178,8 @@ class XoMaze:
 			self.playerManager.checkForHeads()
 		elif event.type == globals.DELAYSNAP:
 			self.playerManager.checkForSnapDelays()
+		elif event.type == globals.CELEBRATE:
+			self.playerManager.celebrate()		
 		elif event.type == KEYUP:
 			# Handle any directional input
 			if event.key in self.pressedKeys:
@@ -269,9 +271,9 @@ class XoMaze:
 		'''
 		Everyone quit or everyone finished
 		'''
-		print "Game Over!!"
 		if self.hasSound:
 			self.soundNamesToSounds[ "gameOver" ].play()
+		self.playerManager.celebrate()
 
 	def loadImage( self, name, colorkey=None ):
 		fullname = os.path.join( "data", name )

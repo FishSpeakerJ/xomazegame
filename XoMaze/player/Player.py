@@ -144,6 +144,15 @@ class Player:
 			self.signaling = False
 		pygame.time.set_timer( CHECKHEADS, 300 )
 
+	def celebrate( self ):
+		if not self.isFinished():
+			return
+		if self.signaling:
+			self.signaling = False
+		else:
+			self.signaling = True
+		pygame.time.set_timer( CELEBRATE, 300 )
+		
 	def reset( self ):
 		'''
 		Resets the player to the bottom of the maze, offset based on his id
