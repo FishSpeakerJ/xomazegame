@@ -26,7 +26,7 @@ class PlayerManager:
 			return
 		self.alreadySaidUhOhs.append( id )
 		if self.game.hasSound:
-			self.game.soundNamesToSounds[ "uhOh%d" % id ].play()
+			self.game.soundNamesToSounds[ "corkPop%d" % id ].play()
 
 	def registerEnd( self, endCell ):
 		self.endCells.append( endCell )

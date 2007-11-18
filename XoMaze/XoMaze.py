@@ -104,12 +104,12 @@ class XoMaze:
 			self.hasSound = True
 	
 		# Add any sounds you want here!!
-		self.soundNamesToSounds = { "gameOver" : None, "frogOfWar" : None, "trumpet" : None }
+		self.soundNamesToSounds = { "gameOver" : None, "frogOfWar" : None, "trumpet" : None, "start" : None }
 		for i in range( 4 ):
 			self.soundNamesToSounds[ "signalEnd%d" % i ] = None
 			self.soundNamesToSounds[ "signalFound%d" % i ] = None
 			self.soundNamesToSounds[ "signalHead%d" % i ] = None
-			self.soundNamesToSounds[ "uhOh%d" % i ] = None
+			self.soundNamesToSounds[ "corkPop%d" % i ] = None
 		
 		for soundName in self.soundNamesToSounds.keys():
 			fullname = os.path.join( 'data\sounds', soundName + ".ogg" )
@@ -208,7 +208,7 @@ class XoMaze:
 			elif event.key == K_4:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[4])
-			elif event.key == K_f:
+			elif event.key == K_f and (pygame.key.get_pressed()[K_RCTRL] or pygame.key.get_pressed()[K_LCTRL]):
 				self.fogOfWarEnabled = not self.fogOfWarEnabled
 
 		return True
@@ -250,9 +250,13 @@ class XoMaze:
 		self.fogOfWarSurface.fill( self.fogOfWarKeyColor )
 		fogDuration = 2.0
 		headsDuration = 1.5
+		#if self.hasSound:
+		#	self.scheduler.doLater( fogDuration/3.0, self.soundNamesToSounds[ "frogOfWar" ].play )
 		self.scheduler.doInterval( fogDuration, self.enterFogOfWar, waitBefore=0.0 )
 		self.scheduler.doInterval( headsDuration, self.maze.handleHeadsRollingAnimation, waitBefore=fogDuration )
 		self.scheduler.doLater( fogDuration + headsDuration, self.gameClock.start )
+		if self.hasSound:
+			self.scheduler.doLater( fogDuration + headsDuration, self.soundNamesToSounds[ "start" ].play )
 
 		self.isGameRunning = True
 
@@ -280,9 +284,10 @@ class XoMaze:
 		Everyone quit or everyone finished
 		'''
 		if self.hasSound:
-			self.soundNamesToSounds[ "gameOver" ].play()
+			#self.soundNamesToSounds[ "gameOver" ].play()
 			self.soundNamesToSounds[ "trumpet" ].play()
-		self.isGameRunning = False
+		#self.isGameRunning = False
+		self.gameClock.stop()
 		self.playerManager.celebrate()
 
 	def loadImage( self, name, colorkey=None ):
