@@ -53,6 +53,7 @@ class Maze:
 		self._game = game
 		self._xPixelOffset = 0
 		self._yPixelOffset = 0
+		self._headsRollingAnimationPortion = -1
 		self.initialize(xCellCount, yCellCount)
 	def initialize(self, xCellCount, yCellCount):
 		self._rowCount = yCellCount
@@ -145,7 +146,7 @@ class Maze:
 		visitedCellCount = 1
 		totalCellCount = self._rowCount * self._columnCount
 		
-		n = totalCellCount / 30
+		n = totalCellCount / 10
 		i = 0
 		while visitedCellCount < totalCellCount:
 			nextCell = self._selectRandomNeighborCellWithAllWallsInTact( currentCell )
@@ -157,8 +158,9 @@ class Maze:
 				i += 1
 				i %= n
 				if i == 0:
-					self.paint( self._game.boardSurface )
-					pygame.display.update()
+					pass
+					#self.paint( self._game.boardSurface )
+					#pygame.display.update()
 			else:
 				currentCell = cellStack.pop();
 		
@@ -317,7 +319,20 @@ class Maze:
 		if fill:
 			self.drawCircle(surface, fill, x, y, radius)
 		
-
+	def drawHeadRolling(self, surface, player, portion):
+		x, y0 = player.getPosition()
+		y0 += 0.3
+		y1 = y0 + 4.0
+		y = y0 + (y1-y0)*portion
+		self.drawO( surface, player.getStrokeColor(), player.getFillColor(), x, y )
+	
+	def handleHeadsRollingAnimation(self, portion):
+		if portion == 0.0:
+			self._game.playerManager.unattachHeads()
+		self._headsRollingAnimationPortion = portion
+		if portion == 1.0:
+			self._headsRollingAnimationPortion = -1
+		
 	def drawPlayer( self, surface, player ):
 		isSignaling = player.isSignaling()
 		x, y = player.getPosition()
@@ -442,6 +457,9 @@ class Maze:
 				self.drawPlayerPath( surface, player )
 			for player in self._game.playerManager.playerIdsToPlayers.values():
 				self.drawPlayer( surface, player )
+			if self._headsRollingAnimationPortion >= 0:
+				for player in self._game.playerManager.playerIdsToPlayers.values():
+					self.drawHeadRolling(surface, player, self._headsRollingAnimationPortion)
 
 #		self._x0 = None
 #		self._y0 = None

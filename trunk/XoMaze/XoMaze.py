@@ -240,7 +240,9 @@ class XoMaze:
 			self.fogOfWarPlayerIDsToLastPoints[id] = None
 		self._fogOfWarStartPoints = None
 		self.fogOfWarSurface.fill( self.fogOfWarKeyColor )
-		self.scheduler.doInterval( 6.0, self.enterFogOfWar, waitBefore=5.0 )
+		FOG_DURATION = 3.0
+		self.scheduler.doInterval( FOG_DURATION, self.enterFogOfWar, waitBefore=0.0 )
+		self.scheduler.doInterval( 1.5, self.maze.handleHeadsRollingAnimation, waitBefore=FOG_DURATION )
 
 		self.gameClock.start()
 
