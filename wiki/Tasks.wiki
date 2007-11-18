@@ -14,12 +14,9 @@
   * bug: heads can be placed on exit spots
 
  Shawn
-  * select difficulty dialog 
   * Fog of War image
   * Opening animation
   * Winning animation
-  * SVG icon
-  * signaling 
  
  Sabrina
   * Disable resetting of maze during the game
