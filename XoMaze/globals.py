@@ -5,7 +5,7 @@ CLOCKTICK = pygame.USEREVENT + 1
 
 # Milliseconds we will sleep each frame if there are no events,
 # this will update the clock every second
-clockSleepTime = 10
+clockSleepTime = 50
 
 # global variables
 hudHeight = 50
@@ -73,8 +73,7 @@ keyboardKeys = {
 	pygame.K_KP7 : [ 3, 4, ],
 }
 # Player variables
-playerXIncrement = 0.11
-playerYIncrement = 0.11
+playerSpeed = 5.0  # in cells per second
 playerColors = [
 	( ( 255.0, 0.0, 0.0 ), ( 0.0, 255.0, 0.0 ) ),
 	( ( 0.0, 0.0, 255.0 ), ( 255.0, 0.0, 0.0 ) ),

@@ -8,6 +8,7 @@ from Hud import Hud
 from GameTimer import GameTimer
 import globals
 from player.PlayerManager import PlayerManager
+import time
 
 try:
 	# if we're running on an evironment euivalent to the XO laptop
@@ -28,7 +29,7 @@ class XoMaze:
 		self.initVariables()
 		self.initPlayerManager()
 		self.initSounds()
-		self.pressedKeys = {}
+		self.pressedKeys = []
 		pygame.init()
 		pygame.font.init()
 		pygame.event.set_blocked( pygame.MOUSEMOTION )
@@ -62,6 +63,7 @@ class XoMaze:
 
 	def initVariables( self ):
 		self.numberOfPlayers = 4
+		self.lastTime = time.time()
 		
 		if emulatorMode:
 			# These are the directional keys on the laptop's joystick
@@ -109,6 +111,10 @@ class XoMaze:
 		This is the main game loop.
 		
 		'''			
+		t = time.time()
+		dt = t - self.lastTime
+		self.lastTime = t
+		
 		# check to see if game is over
 		
 		
@@ -124,10 +130,8 @@ class XoMaze:
 				return False
 		
 		# update player movement
-		for key, lastUpdateTime in self.pressedKeys.items():
-			if lastUpdateTime != 0:
-				self.playerManager.playerIdsToPlayers[ self.keysToDirections[key][0] ].move( self.keysToDirections[key][1], self.gameClock.getTime() - lastUpdateTime )
-				self.pressedKeys[key] = self.gameClock.getTime()
+		for key in self.pressedKeys:
+			self.playerManager.playerIdsToPlayers[ self.keysToDirections[key][0] ].move( self.keysToDirections[key][1], dt )
 				
 		# if game timer is running, update stuff
 		if updateVisuals and self.gameClock.isRunning():
@@ -178,16 +182,15 @@ class XoMaze:
 ###				print self.gameClock.getTime()
 		elif event.type == KEYUP:
 			# Handle any directional input
-			if event.key in self.keysToDirections.keys():
-				if event.key in self.pressedKeys:
-					self.pressedKeys[event.key] = 0										
+			if event.key in self.pressedKeys:
+				self.pressedKeys.remove( event.key )
 		elif event.type == KEYDOWN: # (I assume we want key down, not up)
 			if event.key == K_ESCAPE:
 				# TODO: Show a confirmation dialog maybe?
 				return False			
 			# Handle any directional input
 			if event.key in self.keysToDirections.keys():
-				self.pressedKeys[event.key] = self.gameClock.getTime()					
+				self.pressedKeys.append( event.key )
 			if event.key == K_SPACE:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[1])
