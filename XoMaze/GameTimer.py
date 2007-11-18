@@ -4,6 +4,10 @@ import time
 import datetime
 
 class GameTimer:
+	'''
+	This class both controls how often basic clock based updates occur and
+	is the time behind the game clock
+	'''
 	def __init__( self ):
 		# start game time
 		self.startTime = 0
@@ -21,5 +25,3 @@ class GameTimer:
 	def getTimeString( self ):
 		delta = datetime.timedelta( milliseconds=(pygame.time.get_ticks() - self.startTime) )
 		return time.strftime("%H:%M:%S",time.gmtime(delta.seconds))
-		
-#		.strftime("%M:%S")
