@@ -48,7 +48,7 @@ class Player:
 
 		oldCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
 
-		playerSpeed = math.sqrt( self.game.maze._rowCount*self.game.maze._columnCount )*playerSpeedConstant
+		playerSpeed = math.sqrt( self.game.maze._rowCount*self.game.maze._columnCount )*playerSpeedFactor
 		if oldCell.beenVisited:
 			playerSpeed *= playerSpeedVisitedFactor
 		delta = playerSpeed*dt

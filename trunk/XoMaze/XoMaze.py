@@ -40,6 +40,8 @@ class XoMaze:
 
 		self.scheduler = Scheduler( self )
 
+		pygame.time.set_timer( globals.CLOCKTICK, globals.clockSleepTime )
+
 		#eventwrap.install()
 		
 	def initScreen( self, width, height ):
@@ -62,6 +64,8 @@ class XoMaze:
 		self.fogOfWarSurface = pygame.Surface( (boardWidth, boardHeight) )
 
 	def initVariables( self ):
+		self.isGameRunning = False
+		
 		self.numberOfPlayers = 4
 		self.lastTime = time.time()
 		
@@ -130,24 +134,22 @@ class XoMaze:
 		
 		# Event Handling (controls)
 		# sleep if there is no event
-		updateVisuals = True # Don't we always want to update visuals?!
 		event = pygame.event.wait()
 
-		keepGoing = self.processMessages( event)
+		keepGoing = True
 		for event in pygame.event.get():
 			keepGoing = self.processMessages( event )
 			if keepGoing == False:
 				return False
-		
+
 		# update player movement
 		for key in self.pressedKeys:
 			self.playerManager.playerIdsToPlayers[ self.keysToDirections[key][0] ].move( self.keysToDirections[key][1], dt )
-				
-		# if game timer is running, update stuff
-		if updateVisuals and self.gameClock.isRunning():
-			# Update the maze!
-			self.maze.paint( self.boardSurface )
 
+		# Update the maze!
+		if self.isGameRunning:
+			self.maze.paint( self.boardSurface )
+	
 			# Draw fog of war into it's own surface
 			for id in self.playerManager.playerIdsToPlayers:
 				pointsToDraw = self.fogOfWarPlayerIDsToPointsToDraw[id]
@@ -160,12 +162,13 @@ class XoMaze:
 						lastPoint = point
 					self.fogOfWarPlayerIDsToLastPoints[id] = lastPoint
 					self.fogOfWarPlayerIDsToPointsToDraw[id] = []
-
+	
 			if self.fogOfWarEnabled:
 				self.boardSurface.blit( self.fogOfWarSurface, (0, 0) )
 
-			# Render that sucker
-			pygame.display.update()						
+		# Render that sucker
+		pygame.display.update()						
+
 		self.hud.update()
 		# Keep looping!
 		return keepGoing
@@ -189,7 +192,7 @@ class XoMaze:
 				# TODO: Show a confirmation dialog maybe?
 				return False			
 			# Handle any directional input
-			if event.key in self.keysToDirections.keys() and self.gameClock.isRunning():
+			if event.key in self.keysToDirections.keys() and self.gameClock.isRunning:
 				self.pressedKeys.append( event.key )
 			if event.key == K_SPACE:
 				# checkif this is relevant
@@ -224,6 +227,9 @@ class XoMaze:
 			traceback.print_exc()
 
 	def startNewGame( self, xCellNum, yCellNum ):
+		# make sure gameClock is stopped
+		self.gameClock.stop()
+		
 		# clear EVERYTHING
 		self.boardSurface.fill( (1.0, 1.0, 1.0) )
 		#self.hud.reset()
@@ -233,6 +239,7 @@ class XoMaze:
 		self.playerManager.reset()
 
 		self.maze.constructRandom()
+		self.maze.paint( self.boardSurface )
 
 		# Unfog entrance and exit
 		self.fogOfWarPlayerIDsToPointsToDraw = {}
@@ -242,11 +249,13 @@ class XoMaze:
 			self.fogOfWarPlayerIDsToLastPoints[id] = None
 		self._fogOfWarStartPoints = None
 		self.fogOfWarSurface.fill( self.fogOfWarKeyColor )
-		FOG_DURATION = 3.0
-		self.scheduler.doInterval( FOG_DURATION, self.enterFogOfWar, waitBefore=0.0 )
-		self.scheduler.doInterval( 1.5, self.maze.handleHeadsRollingAnimation, waitBefore=FOG_DURATION )
+		fogDuration = 3.0
+		headsDuration = 1.5
+		self.scheduler.doInterval( fogDuration, self.enterFogOfWar, waitBefore=0.0 )
+		self.scheduler.doInterval( headsDuration, self.maze.handleHeadsRollingAnimation, waitBefore=fogDuration )
+		self.scheduler.doLater( fogDuration + headsDuration, self.gameClock.start )
 
-		self.gameClock.start()
+		self.isGameRunning = True
 
 	def enterFogOfWar( self, t ):
 		if self._fogOfWarStartPoints is None:
@@ -273,6 +282,7 @@ class XoMaze:
 		'''
 		if self.hasSound:
 			self.soundNamesToSounds[ "gameOver" ].play()
+		self.isGameRunning = False
 		self.playerManager.celebrate()
 
 	def loadImage( self, name, colorkey=None ):

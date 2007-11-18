@@ -6,19 +6,30 @@ class Scheduler:
 		self.xoMaze = xoMaze
 		self.lastTime = time.time()
 		self.intervals = []
+		self.doLaters = []
 		
 	def doInterval( self, duration, func, waitBefore=0.0 ):
 		self.intervals.append( (duration, func, duration, waitBefore) )
+
+	def doLater( self, wait, func ):
+		self.doLaters.append( (wait, func) )
 
 	def update( self ):
 		t = time.time()
 		dt = t - self.lastTime
 		self.lastTime = t
-		
-		newIntervals = []
-		for interval in self.intervals:
-			duration, func, timeLeft, waitBefore = interval
 
+		newDoLaters = []
+		for wait, func in self.doLaters:
+			wait -= dt
+			if wait <= 0.0:
+				func()
+			else:
+				newDoLaters.append( (wait, func) )
+		self.doLaters = newDoLaters
+
+		newIntervals = []
+		for duration, func, timeLeft, waitBefore in self.intervals:
 			if waitBefore > 0.0:
 				waitBefore -= dt
 				if waitBefore <= 0.0:

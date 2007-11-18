@@ -67,10 +67,10 @@ keyboardKeys = {
 	pygame.K_KP4 : [ 3, 3, ],
 }
 # Player variables
-playerSpeedConstant = 0.21  # playerSpeed = sqrt( totalCellsInMaze )*playerSpeedConstant
-#playerSpeedConstant = 0.05  # playerSpeed = sqrt( totalCellsInMaze )*playerSpeedConstant
+playerSpeedFactor = 0.18  # playerSpeed = sqrt( totalCellsInMaze )*playerSpeedFactor
+#playerSpeedFactor = 0.05  # playerSpeed = sqrt( totalCellsInMaze )*playerSpeedFactor
 #playerSpeedVisitedFactor = 10.0
-playerSpeedVisitedFactor = 1.5
+playerSpeedVisitedFactor = 1.9
 playerColors = [
 	((0xFF,0xCE,0x00),(0x00,0x33,0xCC)),
 	((0xFF,0x85,0x00),(0x00,0x99,0x00)),

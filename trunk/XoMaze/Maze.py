@@ -55,6 +55,13 @@ class Maze:
 		self._yPixelOffset = 0
 		self._headsRollingAnimationPortion = -1
 		self.initialize(xCellCount, yCellCount)
+
+		# HACK:
+		self._x0 = 0
+		self._y0 = 0
+		self._w = 0
+		self._h = 0
+		self._cellSize = 0
 	def initialize(self, xCellCount, yCellCount):
 		self._rowCount = yCellCount
 		self._columnCount = xCellCount
