@@ -31,6 +31,7 @@ class XoMaze:
 		self.initPlayerManager()
 		self.initSounds()
 		self.pressedKeys = []
+		self.mazeComplexityLevel = 2
 		pygame.init()
 		pygame.font.init()
 		pygame.event.set_blocked( pygame.MOUSEMOTION )
@@ -84,7 +85,7 @@ class XoMaze:
 		self.fogOfWarEnabled = True
 		self.fogOfWarKeyColor = (0, 255, 0)
 		self.fogOfWarRadius = 60
-		self.fogOfWarStartRadius = 1000.0
+		self.fogOfWarStartRadius = 600.0
 		self.fogOfWarSurface.set_colorkey( self.fogOfWarKeyColor )
 		self.fogOfWarImage = self.loadImage( "cloud.png" )
 
@@ -111,7 +112,7 @@ class XoMaze:
 			self.soundNamesToSounds[ "uhOh%d" % i ] = None
 		
 		for soundName in self.soundNamesToSounds.keys():
-			fullname = os.path.join( 'data/sounds', soundName + ".ogg" )
+			fullname = os.path.join( 'data\sounds', soundName + ".ogg" )
 			try:
 			    sound = pygame.mixer.Sound( fullname )
 			except pygame.error, message:
@@ -143,8 +144,9 @@ class XoMaze:
 				return False
 
 		# update player movement
-		for key in self.pressedKeys:
-			self.playerManager.playerIdsToPlayers[ self.keysToDirections[key][0] ].move( self.keysToDirections[key][1], dt )
+		if self.gameClock.isRunning:
+			for key in self.pressedKeys:
+				self.playerManager.playerIdsToPlayers[ self.keysToDirections[key][0] ].move( self.keysToDirections[key][1], dt )
 
 		# Update the maze!
 		if self.isGameRunning:
@@ -192,20 +194,17 @@ class XoMaze:
 				# TODO: Show a confirmation dialog maybe?
 				return False			
 			# Handle any directional input
-			if event.key in self.keysToDirections.keys() and self.gameClock.isRunning:
-				self.pressedKeys.append( event.key )
-			if event.key == K_SPACE:
+			if event.key in self.keysToDirections.keys():
+				self.pressedKeys.append( event.key )	
+			if event.key == K_n and (pygame.key.get_pressed()[K_RCTRL] or pygame.key.get_pressed()[K_LCTRL]):
 				# checkif this is relevant
-				self.startNewGame(*globals.difficultyLevelToMazeSize[1])
+				self.startNewGame(*globals.difficultyLevelToMazeSize[self.mazeComplexityLevel])
 			elif event.key == K_1:
-				# checkif this is relevant
-				self.startNewGame(*globals.difficultyLevelToMazeSize[1])
+				self.mazeComplexityLevel = 1
 			elif event.key == K_2:
-				# checkif this is relevant
-				self.startNewGame(*globals.difficultyLevelToMazeSize[2])
+				self.mazeComplexityLevel = 2
 			elif event.key == K_3:
-				# checkif this is relevant
-				self.startNewGame(*globals.difficultyLevelToMazeSize[3])
+				self.mazeComplexityLevel = 3
 			elif event.key == K_4:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[4])
@@ -249,7 +248,7 @@ class XoMaze:
 			self.fogOfWarPlayerIDsToLastPoints[id] = None
 		self._fogOfWarStartPoints = None
 		self.fogOfWarSurface.fill( self.fogOfWarKeyColor )
-		fogDuration = 3.0
+		fogDuration = 2.0
 		headsDuration = 1.5
 		self.scheduler.doInterval( fogDuration, self.enterFogOfWar, waitBefore=0.0 )
 		self.scheduler.doInterval( headsDuration, self.maze.handleHeadsRollingAnimation, waitBefore=fogDuration )
