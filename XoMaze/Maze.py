@@ -51,6 +51,8 @@ class Cell:
 class Maze:
 	def __init__(self, game, xCellCount=8, yCellCount=6):
 		self._game = game
+		self._xPixelOffset = 0
+		self._yPixelOffset = 0
 		self.initialize(xCellCount, yCellCount)
 	def initialize(self, xCellCount, yCellCount):
 		self._rowCount = yCellCount
@@ -129,7 +131,8 @@ class Maze:
 		while r<self._rowCount:
 			c = 0
 			while c<self._columnCount:
-				for direction in self._cells[ r ][ c ].directions:
+				cell = self._cells[ r ][ c ]
+				for direction in cell.directions:
 					direction.isWalled = True
 				c += 1
 			r += 1
@@ -183,9 +186,9 @@ class Maze:
 					wallsToRemoveCount -= 1
 
 	def mapX( self, fx ):
-		return int( self._x0 + fx*self._cellSize + 0.5 )
+		return int( self._x0 + fx*self._cellSize + 0.5 ) + self._xPixelOffset
 	def mapY( self, fy ):
-		return int( ( self._y0 + self._h ) - (fy*self._cellSize) + 0.5 )
+		return int( ( self._y0 + self._h ) - (fy*self._cellSize) + 0.5 )  + self._yPixelOffset
 	
 	def mapPoint( self, fp ):
 		return self.mapX( fp[0] ), self.mapY( fp[1] )
@@ -297,34 +300,52 @@ class Maze:
 		self.drawPolygon( surface, color, [ce,p0a,p0b,cn,p1a,p1b,cw,p2a,p2b,cs,p3a,p3b,ce] )
 
 	def drawX( self, surface, stroke, fill, x, y, isSignaling ):
-		self._drawX( surface, stroke, x, y, isSignaling, 0.4, 0.08 )
-		self._drawX( surface, fill, x, y, isSignaling, 0.35, 0.04 )
+		if stroke:
+			self._drawX( surface, stroke, x, y, isSignaling, 0.4, 0.08 )
+		if fill:
+			self._drawX( surface, fill, x, y, isSignaling, 0.35, 0.04 )
 
 	def drawO( self, surface, stroke, fill, x, y ):
 		#x += offset
 		#y += offset
-		y += 0.25
-		radius = 0.15
-		self.drawCircle(surface, stroke, x, y, radius)
+		y += 0.3
+		radius = 0.125
+		if stroke:
+			self.drawCircle(surface, stroke, x, y, radius)
 		radius *= 0.75
-		self.drawCircle(surface, fill, x, y, radius)
+		if fill:
+			self.drawCircle(surface, fill, x, y, radius)
 		
 
 	def drawPlayer( self, surface, player ):
 		x = player.endCell.column + 0.5
 		y = player.endCell.row + 0.5
 		
-		if player.isFinished():
+		if False:#player.isFinished():
 			strokeColor = player.getStrokeColor()
 			fillColor = player.getFillColor()
+			self.drawX( surface, strokeColor, fillColor, x, y, False )
+			self.drawO( surface, strokeColor, fillColor, x, y )
 		else:
-			strokeColor = (64,64,64)
-			fillColor = blendColors( player.getFillColor(), (32,32,32))
+			shadow = (48,48,48)
+			highlight = (192,192,192)
+			#sunken = (128,128,128)
+			sunken = (48,48,64)
+			self._xPixelOffset = -1
+			self._yPixelOffset = -1
+			self.drawX( surface, shadow, None, x, y, False )
+			self.drawO( surface, shadow, None, x, y )
+			self._xPixelOffset = 1
+			self._yPixelOffset = 1
+			self.drawX( surface, highlight, None, x, y, False )
+			self.drawO( surface, highlight, None, x, y )
+			self._xPixelOffset = 0
+			self._yPixelOffset = 0
+			self.drawX( surface, sunken, None, x, y, False )
+			self.drawO( surface, sunken, None, x, y )
 		
 		isSignaling = player.isSignaling()
 
-		self.drawX( surface, strokeColor, fillColor, x, y, False )
-		self.drawO( surface, strokeColor, fillColor, x, y )
 
 		x, y = player.getPosition()
 
@@ -334,7 +355,6 @@ class Maze:
 		else:
 			x = player.headCell.column + 0.5
 			y = player.headCell.row + 0.5
-
 		self.drawO( surface, player.getStrokeColor(), player.getFillColor(), x, y )
 		
 	def drawPlayerPath( self, surface, player ):
