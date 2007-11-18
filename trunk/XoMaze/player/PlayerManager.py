@@ -17,8 +17,15 @@ class PlayerManager:
 	def reset( self ):
 		self.playersWhoHaveHeads = []
 		self.endCells = []
+		self.alreadySaidUhOhs = []
 		for player in self.playerIdsToPlayers.values():
 			player.reset()
+	
+	def playUhOh( self, id ):
+		if id in self.alreadySaidUhOhs:
+			return
+		self.alreadySaidUhOhs.append( id )
+		self.game.soundNamesToSounds[ "uhOh%d" % id ].play()
 
 	def registerEnd( self, endCell ):
 		self.endCells.append( endCell )
@@ -40,6 +47,10 @@ class PlayerManager:
 	def unattachHeads( self ):
 		for player in self.playerIdsToPlayers.values():
 			player.headAttached = False
+	
+	def celebrate( self ):
+		for player in self.playerIdsToPlayers.values():
+			player.celebrate()
 	
 	def foundHead( self, id ):
 		self.playersWhoHaveHeads.append( self.playerIdsToPlayers[ id ] )
