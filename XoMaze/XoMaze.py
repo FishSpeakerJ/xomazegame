@@ -30,7 +30,6 @@ class XoMaze:
 		self.initVariables()
 		self.initPlayerManager()
 		self.initSounds()
-		self.pressedKeys = []
 		self.mazeComplexityLevel = 2
 		pygame.init()
 		pygame.font.init()
@@ -104,12 +103,12 @@ class XoMaze:
 			self.hasSound = True
 	
 		# Add any sounds you want here!!
-		self.soundNamesToSounds = { "gameOver" : None, "frogOfWar" : None, "trumpet" : None, "start" : None }
+		self.soundNamesToSounds = { "gameOver" : None, "frogOfWar" : None, "trumpet" : None }
 		for i in range( 4 ):
 			self.soundNamesToSounds[ "signalEnd%d" % i ] = None
 			self.soundNamesToSounds[ "signalFound%d" % i ] = None
 			self.soundNamesToSounds[ "signalHead%d" % i ] = None
-			self.soundNamesToSounds[ "corkPop%d" % i ] = None
+			self.soundNamesToSounds[ "uhOh%d" % i ] = None
 		
 		for soundName in self.soundNamesToSounds.keys():
 			fullname = os.path.join( 'data\sounds', soundName + ".ogg" )
@@ -145,8 +144,11 @@ class XoMaze:
 
 		# update player movement
 		if self.gameClock.isRunning:
-			for key in self.pressedKeys:
-				self.playerManager.playerIdsToPlayers[ self.keysToDirections[key][0] ].move( self.keysToDirections[key][1], dt )
+			pressedKeys = pygame.key.get_pressed()
+			for key in self.keysToDirections.keys():
+				# check if key is pressed
+				if pressedKeys[key] == True:					
+					self.playerManager.playerIdsToPlayers[ self.keysToDirections[key][0] ].move( self.keysToDirections[key][1], dt )
 
 		# Update the maze!
 		if self.isGameRunning:
@@ -185,17 +187,10 @@ class XoMaze:
 			self.playerManager.checkForSnapDelays()
 		elif event.type == globals.CELEBRATE:
 			self.playerManager.celebrate()		
-		elif event.type == KEYUP:
-			# Handle any directional input
-			if event.key in self.pressedKeys:
-				self.pressedKeys.remove( event.key )
 		elif event.type == KEYDOWN: # (I assume we want key down, not up)
 			if event.key == K_ESCAPE:
 				# TODO: Show a confirmation dialog maybe?
 				return False			
-			# Handle any directional input
-			if event.key in self.keysToDirections.keys():
-				self.pressedKeys.append( event.key )	
 			if event.key == K_n and (pygame.key.get_pressed()[K_RCTRL] or pygame.key.get_pressed()[K_LCTRL]):
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[self.mazeComplexityLevel])
@@ -208,7 +203,7 @@ class XoMaze:
 			elif event.key == K_4:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[4])
-			elif event.key == K_f and (pygame.key.get_pressed()[K_RCTRL] or pygame.key.get_pressed()[K_LCTRL]):
+			elif event.key == K_f:
 				self.fogOfWarEnabled = not self.fogOfWarEnabled
 
 		return True
@@ -250,13 +245,9 @@ class XoMaze:
 		self.fogOfWarSurface.fill( self.fogOfWarKeyColor )
 		fogDuration = 2.0
 		headsDuration = 1.5
-		#if self.hasSound:
-		#	self.scheduler.doLater( fogDuration/3.0, self.soundNamesToSounds[ "frogOfWar" ].play )
 		self.scheduler.doInterval( fogDuration, self.enterFogOfWar, waitBefore=0.0 )
 		self.scheduler.doInterval( headsDuration, self.maze.handleHeadsRollingAnimation, waitBefore=fogDuration )
 		self.scheduler.doLater( fogDuration + headsDuration, self.gameClock.start )
-		if self.hasSound:
-			self.scheduler.doLater( fogDuration + headsDuration, self.soundNamesToSounds[ "start" ].play )
 
 		self.isGameRunning = True
 
@@ -284,10 +275,9 @@ class XoMaze:
 		Everyone quit or everyone finished
 		'''
 		if self.hasSound:
-			#self.soundNamesToSounds[ "gameOver" ].play()
+			self.soundNamesToSounds[ "gameOver" ].play()
 			self.soundNamesToSounds[ "trumpet" ].play()
-		#self.isGameRunning = False
-		self.gameClock.stop()
+		self.isGameRunning = False
 		self.playerManager.celebrate()
 
 	def loadImage( self, name, colorkey=None ):
