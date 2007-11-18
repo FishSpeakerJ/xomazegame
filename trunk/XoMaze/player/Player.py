@@ -170,7 +170,6 @@ class Player:
 			self.signaling = False
 		else:
 			self.signaling = True
-		pygame.time.set_timer( CELEBRATE, 300 )
 		
 	def reset( self ):
 		'''
