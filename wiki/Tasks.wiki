@@ -3,7 +3,6 @@
 = Functionality =
  Jason
   * Fog of War intro
-  * Speed tweaking
   * faster movement on pre-walked paths
 
  Dennis
