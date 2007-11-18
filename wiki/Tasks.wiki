@@ -2,8 +2,7 @@
 
 = Functionality =
  Jason
-  * Fog of War intro
-  * faster movement on pre-walked paths
+  * all fog of war vanishes
 
  Dennis
   * ~~better path line colors~~
@@ -53,15 +52,15 @@
 
 = Game Walkthrough =
   # splash screen with instructions
-  # character visible
-  # maze
-  # maze generation
-  # fog of war
+  # ~~character visible~~
+  # ~~maze~~
+  # ~~maze generation~~
+  # ~~fog of war~~
   # sound hit & timer start
-  # play
-  # pleasing sound when you find head
-  # pleasing sound when you reach end
-  # fun animation
-  # all fog of war vanishs
+  # ~~play~~
+  # ~~pleasing sound when you find head~~
+  # ~~pleasing sound when you reach end~~
+  # ~~fun animation~~
+  # all fog of war vanishes
   # spacebar replay prompt
   # select difficulty
