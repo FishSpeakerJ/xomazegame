@@ -145,7 +145,7 @@ class Maze:
 		visitedCellCount = 1
 		totalCellCount = self._rowCount * self._columnCount
 		
-		n = totalCellCount / 15
+		n = totalCellCount / 30
 		i = 0
 		while visitedCellCount < totalCellCount:
 			nextCell = self._selectRandomNeighborCellWithAllWallsInTact( currentCell )
