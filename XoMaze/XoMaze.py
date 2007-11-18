@@ -57,9 +57,6 @@ class XoMaze:
 		self.maze = Maze( self )
 
 		self.fogOfWarSurface = pygame.Surface( (boardWidth, boardHeight) )
-		self.fogOfWarKeyColor = (0, 255, 0)
-		self.fogOfWarRadius = 60
-		self.fogOfWarSurface.set_colorkey( self.fogOfWarKeyColor )
 
 	def initVariables( self ):
 		self.numberOfPlayers = 4
@@ -77,6 +74,11 @@ class XoMaze:
 		for i in range( self.numberOfPlayers ):
 			self.fogOfWarPlayerIDsToPointsToDraw[i] = []
 			self.fogOfWarPlayerIDsToLastPoints[i] = None
+		self.fogOfWarEnabled = True
+		self.fogOfWarKeyColor = (0, 255, 0)
+		self.fogOfWarRadius = 60
+		self.fogOfWarSurface.set_colorkey( self.fogOfWarKeyColor )
+		self.fogOfWarImage = self.loadImage( "cloud.png" )
 
 		# DEBUG:
 #		self.fogOfWarPlayerIDsToPointsToDraw[0] = [(100, 100), (200, 100), (300, 300), (500, 600), (600, 500)]
@@ -165,7 +167,8 @@ class XoMaze:
 #				self.boardSurface.blit( self.fogOfWarSurface, (0, 0), dirtyRect )
 #			else:
 #				self.boardSurface.blit( self.fogOfWarSurface, (0, 0) )
-			self.boardSurface.blit( self.fogOfWarSurface, (0, 0) )
+			if self.fogOfWarEnabled:
+				self.boardSurface.blit( self.fogOfWarSurface, (0, 0) )
 
 			# Render that sucker
 			pygame.display.update()						
@@ -203,6 +206,8 @@ class XoMaze:
 			elif event.key == K_3:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[3])
+			elif event.key == K_f:
+				self.fogOfWarEnabled = not self.fogOfWarEnabled
 				
 		return True
 
@@ -221,13 +226,32 @@ class XoMaze:
 	def startNewGame( self, xCellNum, yCellNum ):
 		# clear EVERYTHING
 		self.boardSurface.fill( (1.0, 1.0, 1.0) )
+#		self.fogOfWarSurface.fill( (0.0, 0.0, 0.0) )
+		self.fogOfWarSurface.blit( self.fogOfWarImage, (0.0, 0.0) )
 		#self.hud.reset()
 		# create the new maze
 		self.maze.initialize(xCellNum,yCellNum)
 		# setup each player
 		self.playerManager.reset()
-		
+
 		self.maze.constructRandom()
+
+		# Unfog entrance and exit
+		self.fogOfWarPlayerIDsToPointsToDraw = {}
+		self.fogOfWarPlayerIDsToLastPoints = {}
+		for id in self.playerManager.playerIdsToPlayers:
+			player = self.playerManager.playerIdsToPlayers[id]
+			x, y = player.position
+			gx = self.maze.mapX( x )
+			gy = self.maze.mapY( y )
+			pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, (gx, gy), self.fogOfWarRadius )
+
+			endX, endY = self.maze.mapCell( player.endCell, 0.5 )
+			pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, (endX, endY), self.fogOfWarRadius )
+
+			self.fogOfWarPlayerIDsToPointsToDraw[id] = []
+			self.fogOfWarPlayerIDsToLastPoints[id] = None
+		
 		self.gameClock.start()
 
 	def gameOver( self ):
@@ -235,5 +259,14 @@ class XoMaze:
 		Everyone quit or everyone finished
 		'''
 		pass
-		
+
+	def loadImage( self, name, colorkey=None ):
+		fullname = os.path.join( "data", name )
+		image = pygame.image.load( fullname )
+		image = image.convert()
+		if colorkey is not None:
+			if colorkey is -1:
+				colorkey = image.get_at( (0, 0) )
+			image.set_colorkey( colorkey )
+		return image
 
