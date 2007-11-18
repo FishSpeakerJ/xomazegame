@@ -1,7 +1,13 @@
 activity.py
+GameTimer.py
+globals.py
+Hud.py
 Maze.py
 XoMaze.py
 runXoMaze.py
+player/__init__.py
+player/Player.py
+player/PlayerManager.py
 olpcgames/canvas.py
 olpcgames/video.py
 olpcgames/gtkEvent.py
