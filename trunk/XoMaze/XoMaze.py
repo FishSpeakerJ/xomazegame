@@ -158,7 +158,7 @@ class XoMaze:
 			self.hasSound = True
 	
 		# Add any sounds you want here!!
-		self.soundNamesToSounds = { "gameOver" : None, "frogOfWar" : None, "trumpet" : None, "start" : None }
+		self.soundNamesToSounds = { "gameOver" : None, "trumpet" : None, "start" : None }
 		for i in range( 4 ):
 			self.soundNamesToSounds[ "signalEnd%d" % i ] = None
 			self.soundNamesToSounds[ "signalFound%d" % i ] = None
@@ -166,7 +166,7 @@ class XoMaze:
 			self.soundNamesToSounds[ "corkPop%d" % i ] = None
 		
 		for soundName in self.soundNamesToSounds.keys():
-			fullname = os.path.join( 'data\sounds', soundName + ".ogg" )
+			fullname = os.path.join( 'data', 'sounds', soundName + ".ogg" )
 			try:
 			    sound = pygame.mixer.Sound( fullname )
 			except pygame.error, message:
