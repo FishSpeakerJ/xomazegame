@@ -68,9 +68,9 @@ keyboardKeys = {
 }
 # Player variables
 playerSpeedFactor = 0.18  # playerSpeed = sqrt( totalCellsInMaze )*playerSpeedFactor
+playerSpeedVisitedFactor = 1.9
 #playerSpeedFactor = 0.05  # playerSpeed = sqrt( totalCellsInMaze )*playerSpeedFactor
 #playerSpeedVisitedFactor = 10.0
-playerSpeedVisitedFactor = 1.9
 playerColors = [
 	((0xFF,0xCE,0x00),(0x00,0x33,0xCC)),
 	((0xFF,0x85,0x00),(0x00,0x99,0x00)),
