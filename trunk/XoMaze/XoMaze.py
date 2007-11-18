@@ -140,32 +140,18 @@ class XoMaze:
 			self.maze.paint( self.boardSurface )
 
 			# Draw fog of war into it's own surface
-#			dirtyRects = []
 			for id in self.playerManager.playerIdsToPlayers:
 				pointsToDraw = self.fogOfWarPlayerIDsToPointsToDraw[id]
 				if len( pointsToDraw ) > 0:
 					lastPoint = self.fogOfWarPlayerIDsToLastPoints[id]
 					for point in pointsToDraw:
 						pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, point, self.fogOfWarRadius )
-#						dirtyRects.append( pygame.Rect( point[0] - self.fogOfWarRadius, point[1] - self.fogOfWarRadius, 2*self.fogOfWarRadius, 2*self.fogOfWarRadius ) )
 						if lastPoint is not None:
 							pygame.draw.line( self.fogOfWarSurface, self.fogOfWarKeyColor, lastPoint, point, self.fogOfWarRadius )
 						lastPoint = point
 					self.fogOfWarPlayerIDsToLastPoints[id] = lastPoint
 					self.fogOfWarPlayerIDsToPointsToDraw[id] = []
 
-#			if len( dirtyRects ) > 1:
-#				dirtyRect = dirtyRects[0].unionall( dirtyRects[1:] )
-#			elif len( dirtyRects ) == 1:
-#				dirtyRect = dirtyRects[0]
-#			else:
-#				dirtyRect = None
-
-			# Blit fog of war onto board
-#			if dirtyRect is not None:
-#				self.boardSurface.blit( self.fogOfWarSurface, (0, 0), dirtyRect )
-#			else:
-#				self.boardSurface.blit( self.fogOfWarSurface, (0, 0) )
 			if self.fogOfWarEnabled:
 				self.boardSurface.blit( self.fogOfWarSurface, (0, 0) )
 
@@ -247,11 +233,13 @@ class XoMaze:
 			gy = self.maze.mapY( y )
 			pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, (gx, gy), self.fogOfWarRadius )
 
-			endX, endY = self.maze.mapCell( player.endCell, 0.5 )
-			pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, (endX, endY), self.fogOfWarRadius )
-
 			self.fogOfWarPlayerIDsToPointsToDraw[id] = []
 			self.fogOfWarPlayerIDsToLastPoints[id] = None
+
+		for endCell in self.playerManager.endCells:
+			endX, endY = self.maze.mapCell( endCell, 0.5 )
+			pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, (endX, endY), self.fogOfWarRadius )
+
 		
 		self.gameClock.start()
 
