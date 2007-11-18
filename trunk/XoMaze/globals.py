@@ -80,8 +80,8 @@ playerSpeedConstant = 0.21  # playerSpeed = sqrt( totalCellsInMaze )*playerSpeed
 #playerSpeedVisitedFactor = 10.0
 playerSpeedVisitedFactor = 1.5
 playerColors = [
-	((255.0, 0.0, 0.0), (0.0, 255.0, 0.0)),
-	((0.0, 0.0, 255.0), ( 55.0, 0.0, 0.0)),
-	((255.0, 255.0, 0.0), (0.0, 255.0, 255.0)),
-	((0.0, 255.0, 0.0), (255.0, 0.0, 255.0)),
+	((0xFF,0xCE,0x00),(0x00,0x33,0xCC)),
+	((0xFF,0x85,0x00),(0x00,0x99,0x00)),
+	((0xFF,0xFF,0x9F),(0x66,0x00,0x99)),
+	((0x80,0x8F,0xFF),(0xFF,0x00,0x00)),
 ]
