@@ -79,7 +79,7 @@ class XoMaze:
 	
 		# Add any sounds you want here!!
 		self.soundNamesToSounds = {
-			"hitWall" : None,
+			#"hitWall" : None,
 		}
 		
 		for soundName in self.soundNamesToSounds.keys():
