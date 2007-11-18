@@ -116,15 +116,12 @@ class XoMaze:
 		# sleep if there is no event
 		updateVisuals = True # Don't we always want to update visuals?!
 		event = pygame.event.wait()
-#		if event.type != globals.CLOCKTICK:
-#			updateVisuals = True
+
 		keepGoing = self.processMessages( event)
 		for event in pygame.event.get():
 			keepGoing = self.processMessages( event )
 			if keepGoing == False:
 				return False
-#			if event.type != globals.CLOCKTICK:
-#				updateVisuals = True
 		
 		# update player movement
 		for key, lastUpdateTime in self.pressedKeys.items():
