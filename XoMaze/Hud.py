@@ -6,6 +6,7 @@ class Hud:
 		self.surface = game.hudSurface
 		# Create a font
 		self.font = pygame.font.Font(None, 30)
+
 		
 	def update( self ):
 		# Render the text
@@ -21,5 +22,5 @@ class Hud:
 
 		# Blit the text
 		self.surface.blit(text, textRect)
-		# update the subparts
 		pygame.display.update( self.surface.get_rect() )
+#		self.game.addDirtyRect( self.surface.get_rect() )
