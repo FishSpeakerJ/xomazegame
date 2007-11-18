@@ -42,6 +42,9 @@ class Player:
 		if direction == 4:
 			self.signaling = True
 			return
+		# If I don't want to move because I've just been snapped... return
+		if self.snapDelayed:
+			return
 
 		oldCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
 
@@ -119,8 +122,12 @@ class Player:
 					self.game.playerManager.finished( self.id )
 					self.game.soundNamesToSounds[ "signalEnd%d" % self.id ].play()
 					self.position = ( currentCell.column + 0.5, currentCell.row + 0.5 )
+					pygame.time.set_timer( DELAYSNAP, 500 )
+					self.snapDelayed = True
 					self.game.onPlayerPositionChange( self.id, self.position )
-
+	
+	def checkSnapDelay( self ):
+		self.snapDelayed = False
 
 	def checkForHead( self ):
 		currentCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
@@ -141,6 +148,7 @@ class Player:
 		self.oldDirection = -1
 		self.headAttached = False
 		self.signaling = False
+		self.snapDelayed = False
 		x = int( self.game.maze.getXCellCount() / 2.0 )
 		x = int( x - float(self.game.numberOfPlayers / 2.0 ) ) + self.id*1.0 + self.offset
 		self.position = ( x, 0.5 )

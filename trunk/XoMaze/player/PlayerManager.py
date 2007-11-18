@@ -29,6 +29,10 @@ class PlayerManager:
 		else:
 			return False
 
+	def checkForSnapDelays( self ):
+		for player in self.playerIdsToPlayers.values():
+			player.checkSnapDelay()
+
 	def checkForHeads( self ):
 		for player in self.playerIdsToPlayers.values():
 			player.checkForHead()
