@@ -8,7 +8,6 @@ class Scheduler:
 		self.intervals = []
 		
 	def doInterval( self, duration, func, waitBefore=0.0 ):
-		print "doInterval"
 		self.intervals.append( (duration, func, duration, waitBefore) )
 
 	def update( self ):
@@ -19,21 +18,22 @@ class Scheduler:
 		newIntervals = []
 		for interval in self.intervals:
 			duration, func, timeLeft, waitBefore = interval
-			print waitBefore
 
 			if waitBefore > 0.0:
 				waitBefore -= dt
 				if waitBefore <= 0.0:
 					func( 0.0 )
 
+			kill = False
 			if waitBefore <= 0.0:
 				timeLeft -= dt
 				if timeLeft <= 0.0:
 					func( 1.0 )
-					return
+					kill = True
 				else:
 					func( (duration - timeLeft)/duration )
-			newIntervals.append( (duration, func, timeLeft, waitBefore) )
+			if not kill:
+				newIntervals.append( (duration, func, timeLeft, waitBefore) )
 		self.intervals = newIntervals
 
 
