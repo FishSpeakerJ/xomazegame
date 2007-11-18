@@ -23,7 +23,6 @@ class Player:
 		self.offset = 1.0 / ( self.game.numberOfPlayers + 3.0 ) * ( self.id + 2 )
 		self.headAttached = False
 		self.signaling = False
-#		self.
 		self.directionToStringDirection = {
 			0 : "north",
 			1 : "east",
@@ -72,9 +71,6 @@ class Player:
 			
 			print "  current cell %s " % currentCell
 			print "  potential cell %s " % potentialCell
-#			print "current cell's walls are : north = %s, east = %s, south = %s, west = %s " % ( currentCell.north.isWalled, currentCell.east.isWalled, currentCell.south.isWalled, currentCell.west.isWalled )
-#			print "potential cell's walls are : north = %s, east = %s, south = %s, west = %s " % ( potentialCell.north.isWalled, potentialCell.east.isWalled, potentialCell.south.isWalled, potentialCell.west.isWalled )
-			
 		self.oldDirection = direction
 		
 		oldCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
@@ -104,15 +100,32 @@ class Player:
 		currentCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
 		if currentCell != oldCell:
 			self.path.append( oldCell )
+			currentCell.beenVisited = True
 	
 			if currentCell == self.headCell and not self.headAttached:
 				self.game.playerManager.foundHead( self.id )
 				self.headAttached = True
-				
-			if currentCell == self.endCell:
+				currentCell.isContainingHead = False
+			
+			# We've got a head... it isn't mine, let's check back later!
+			if currentCell.isContainingHead:
+				pygame.time.set_timer(globals.CHECKHEADS, 250 )
+
+			if self.game.playerManager.checkForEnd( currentCell ):
 				if self.headAttached:
 					self.game.playerManager.finished( self.id )
-		
+
+	def checkForHead( self ):
+		currentCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
+		if currentCell.isContainingHead:
+			if self.signaling:
+				self.signaling = False
+			else:
+				self.signaling = True
+		else:
+			self.signaling = False
+		pygame.time.set_timer( globals.CHECKHEADS, 300 )
+
 	def reset( self ):
 		'''
 		Resets the player to the bottom of the maze, offset based on his id
@@ -124,15 +137,16 @@ class Player:
 		x = int( x - float(self.game.numberOfPlayers / 2.0 ) ) + self.id*1.0 + self.offset
 		self.position = ( x, 0.5 )
 		self.beginCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) ) 
-		self.headCell = self.game.maze.getRandomCell()
-		self.endCell = self.game.maze.getCellXY( *self.getDiscretePosition( ( self.position[0], self.position[1] + self.game.maze.getYCellCount() - 1 ) ) )
+		self.headCell = self.game.maze.getRandomUnusedCell()
+		self.headCell.isContainingHead = True
+		self.game.playerManager.registerEnd( self.game.maze.getCellXY( *self.getDiscretePosition( ( self.position[0], self.position[1] + self.game.maze.getYCellCount() - 1 ) ) ) )
 		self.path = [ self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) ) ]
 
 	def getPath( self ):
 		return self.path
 
 	def isFinished( self ):
-		if self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) ) == self.endCell and self.headAttached:
+		if self.game.playerManager.checkForEnd( self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) ) ) and self.headAttached:
 			return True
 		else:
 			return False
