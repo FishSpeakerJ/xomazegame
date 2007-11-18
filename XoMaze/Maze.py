@@ -28,6 +28,8 @@ class Cell:
 		self.south = Direction()
 		self.west = Direction()
 		self.directions = ( self.north, self.east, self.south, self.west )
+		self.beenVisited = False
+		self.isContainingHead = False
 	def generateRandom(self):
 		self.north.isWalled = generateRandomBoolean()
 		self.east.isWalled = generateRandomBoolean()
@@ -41,6 +43,8 @@ class Cell:
 				direction.isWalled = False
 				return
 		raise "did not knock down wall"
+	def getRandomDirection( self ):
+		return self.directions[ random.randint( 0, 3 ) ]
 	def __repr__( self ):
 		return "(x=" + `self.column` + ",y=" + `self.row` + ")"
 
@@ -91,6 +95,12 @@ class Maze:
 		r = random.randint( 0, self._rowCount-1 )
 		c = random.randint( 0, self._columnCount-1 )
 		return self._getCellRC( r, c )
+
+	def getRandomUnusedCell(self):
+		r = random.randint( 2, self._rowCount-3 )
+		c = random.randint( 0, self._columnCount-1 )
+		return self._getCellRC( r, c )
+
 	def _selectRandomNeighborCellWithAllWallsInTact(self, cell):
 		allWallsInTactNeighbors = []
 		for direction in cell.directions:
@@ -114,7 +124,7 @@ class Maze:
 		self._clearWallsBetween( player.endCell, player.endCell.west.neighbor )
 		self._clearWallsBetween( player.endCell, player.endCell.south.neighbor )
 	
-	def constructRandom(self):		
+	def constructRandom(self, portionOfWallsToBeRemoved=0.025):		
 		r = 0
 		while r<self._rowCount:
 			c = 0
@@ -151,6 +161,26 @@ class Maze:
 			for player in self._game.playerManager.playerIdsToPlayers.values():
 				self._clearStartAndEndWallsForPlayer( player )
 				print player
+
+		wallCount = 0
+		r = 0
+		while r<self._rowCount:
+			c = 0
+			while c<self._columnCount:
+				for direction in self._cells[ r ][ c ].directions:
+					if direction.isWalled:
+						wallCount += 1
+				c += 1
+			r += 1
+		
+		wallsToRemoveCount = wallCount * portionOfWallsToBeRemoved
+		while wallsToRemoveCount > 0:
+			cell = self.getRandomCell()
+			direction = cell.getRandomDirection()
+			if direction.neighbor:
+				if direction.isWalled:
+					self._clearWallsBetween( cell, direction.neighbor )
+					wallsToRemoveCount -= 1
 
 	def mapX( self, fx ):
 		return int( self._x0 + fx*self._cellSize + 0.5 )
@@ -336,8 +366,9 @@ class Maze:
 				self.drawPath( surface, strokeColor, fillColor, player.offset, player.isSignaling(), prunedPath )
 		
 	def paint(self, surface):
-		self._w = surface.get_width()
-		self._h = surface.get_height()
+		PAD = 4
+		self._w = surface.get_width() - PAD
+		self._h = surface.get_height() - PAD
 		cellWidth = self._w/self._columnCount
 		cellHeight = self._h/self._rowCount
 		self._cellSize = min( cellWidth, cellHeight )
@@ -370,14 +401,14 @@ class Maze:
 			c = 0
 			while c<self._columnCount:
 				cell = self._cells[ r ][ c ]
-				if cell.north.isWalled:
-					if cell.column == 0:
-						self.drawLine( surface, white, c+pad0, r+pad1, c+pad1, r+pad1, wallWidth )
+				if cell.south.isWalled:
+					if cell.row == 0:
+						self.drawLine( surface, white, c+pad0, r+pad0, c+pad1, r+pad0, wallWidth )
 				if cell.west.isWalled:
 					if cell.column == 0:
 						self.drawLine( surface, white, c+pad0, r+pad0, c+pad0, r+pad1, wallWidth )
-				if cell.south.isWalled:
-					self.drawLine( surface, white, c+pad0, r+pad0, c+pad1, r+pad0, wallWidth )
+				if cell.north.isWalled:
+					self.drawLine( surface, white, c+pad0, r+pad1, c+pad1, r+pad1, wallWidth )
 				if cell.east.isWalled:
 					self.drawLine( surface, white, c+pad1, r+pad0, c+pad1, r+pad1, wallWidth )
 				c += 1
