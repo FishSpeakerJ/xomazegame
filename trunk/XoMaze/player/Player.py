@@ -135,7 +135,7 @@ class Player:
 			
 			# We've got a head... it isn't mine, let's check back later!
 			if currentCell.isContainingHead:
-				pygame.time.set_timer( CHECKHEADS, 250 )
+				self.game.scheduler.doLater( 0.25, self.checkForHead )
 
 			if self.game.playerManager.checkForEnd( currentCell, self.id ):
 				if self.headAttached:
@@ -143,7 +143,7 @@ class Player:
 					if self.game.hasSound:
 						self.game.soundNamesToSounds[ "signalEnd%d" % self.id ].play()
 					self.position = ( currentCell.column + 0.5, currentCell.row + 0.5 )
-					pygame.time.set_timer( DELAYSNAP, 500 )
+					self.game.scheduler.doLater( 0.5, self.checkSnapDelay )
 					self.snapDelayed = True
 					self.game.onPlayerPositionChange( self.id, self.position )
 	
@@ -159,9 +159,9 @@ class Player:
 				self.signaling = True
 				if self.game.hasSound:
 					self.game.soundNamesToSounds[ "signalFound%d" % self.id ].play()
+			self.game.scheduler.doLater( 0.37, self.checkForHead )
 		else:
 			self.signaling = False
-		pygame.time.set_timer( CHECKHEADS, 300 )
 
 	def celebrate( self ):
 		if not self.isFinished():

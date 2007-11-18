@@ -216,12 +216,6 @@ class XoMaze:
 		# Gotta have this if we want to exit nicely
 		if event.type == QUIT:
 			return False
-		elif event.type == globals.CHECKHEADS:
-			self.playerManager.checkForHeads()
-		elif event.type == globals.DELAYSNAP:
-			self.playerManager.checkForSnapDelays()
-		elif event.type == globals.CELEBRATE:
-			self.playerManager.celebrate()		
 		elif event.type == KEYDOWN: # (I assume we want key down, not up)
 			if event.key == K_ESCAPE:
 				# TODO: Show a confirmation dialog maybe?
@@ -322,6 +316,7 @@ class XoMaze:
 			self.soundNamesToSounds[ "trumpet" ].play()
 #		self.isGameRunning = False
 		self.scheduler.doInterval( 2.0, self.exitFogOfWar )
+		self.playerManager.doCelebrate = True
 		self.playerManager.celebrate()
 		self.gameClock.stop()
 

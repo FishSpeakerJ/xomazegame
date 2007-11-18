@@ -11,6 +11,7 @@ class PlayerManager:
 	def __init__( self, game ):
 		self.game = game
 		self.playerIdsToPlayers = {}
+		self.doCelebrate = False
 		
 		for i in range( self.game.numberOfPlayers ):
 			self.playerIdsToPlayers[ i ] = Player( self.game, i )
@@ -19,8 +20,7 @@ class PlayerManager:
 		self.playersWhoHaveHeads = []
 		self.endCells = []
 		self.alreadySaidUhOhs = []
-		pygame.time.set_timer( CELEBRATE, 0 )
-		pygame.time.set_timer( CHECKHEADS, 0 )
+		self.doCelebrate = False
 		for player in self.playerIdsToPlayers.values():
 			player.reset()
 	
@@ -60,7 +60,8 @@ class PlayerManager:
 	def celebrate( self ):
 		for player in self.playerIdsToPlayers.values():
 			player.celebrate()
-		pygame.time.set_timer( CELEBRATE, 300 )
+		if self.doCelebrate:
+			self.game.scheduler.doLater( 0.3, self.celebrate )
 		
 	def foundHead( self, id ):
 		self.playersWhoHaveHeads.append( self.playerIdsToPlayers[ id ] )
