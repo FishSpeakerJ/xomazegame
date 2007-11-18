@@ -39,7 +39,21 @@
 
 
 
+= Sounds = 
+  * start
+  * win
+  * signaling for head
+  * signaling for exit path
+  * found MY head
+  * enter hole with head
+  * enter hole without head
+  * optional music
+  * difficulty pick
 
+
+
+
+= Game Walkthrough =
   # splash screen with instructions
   # character visible
   # maze
