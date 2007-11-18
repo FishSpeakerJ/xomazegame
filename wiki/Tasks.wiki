@@ -2,7 +2,6 @@
 
 = Functionality =
  Jason
-  * speed on beenVisited bug
   * two button bug
 
  Dennis
