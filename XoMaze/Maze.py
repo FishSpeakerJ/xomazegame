@@ -158,6 +158,9 @@ class Maze:
 	def mapY( self, fy ):
 		return int( ( self._y0 + self._h ) - (fy*self._cellSize) + 0.5 )
 	
+	def mapPoint( self, fp ):
+		return self.mapX( fp[0] ), self.mapY( fp[1] )
+	
 	def mapWidth( self, fw ):
 		return int( fw*self._cellSize + 0.5 )
 	def mapHeight( self, fh ):
@@ -167,9 +170,17 @@ class Maze:
 		pygame.draw.line( surface, color, (self.mapX(ax), self.mapY(ay)), (self.mapX(bx), self.mapY(by)), int( width ) )
 
 	def drawCircle( self, surface, color, cx, cy, radius ):
-		rect = (self.mapX(cx-radius), self.mapY(cy+radius), self.mapWidth(radius+radius), self.mapHeight(radius+radius))
+		rect = (self.mapX(cx-radius), self.mapY(cy+radius), self.mapWidth(radius+radius)+1, self.mapHeight(radius+radius)+1)
 		pygame.draw.ellipse( surface, color, rect )
 	
+	def drawPolygon( self, surface, color, points ):
+		pixelPoints = [ None ]*len(points)
+		i = 0
+		n = len( pixelPoints )
+		while i<n:
+			pixelPoints[ i ] = self.mapPoint( points[ i ] )
+			i += 1
+		pygame.draw.polygon( surface, color, pixelPoints )
 	
 	def drawPathStart( self, surface, color, offset, cell ):
 		self._prevDrawCell = cell
@@ -190,7 +201,7 @@ class Maze:
 			self.drawPathNextCell( surface, color, offset, nextCell )
 		self.drawPathEnd( surface, color, offset )
 
-	def drawX( self, surface, stroke, fill, x, y, isSignaling ):
+	def __drawX( self, surface, stroke, fill, x, y, isSignaling ):
 		lineWidth = self.mapWidth(0.2)
 		radius = 0.25
 		if isSignaling:
@@ -210,6 +221,47 @@ class Maze:
 		else:
 			self.drawLine( surface, fill, x-radius, y-radius, x+radius, y+radius, lineWidth )
 			self.drawLine( surface, fill, x-radius, y+radius, x+radius, y-radius, lineWidth )
+
+
+	def _drawX( self, surface, color, x, y, isSignaling, radius, capRadius ):
+		if isSignaling:
+			cosTheta = 0.499
+			sinTheta = 0.866
+		else:
+			cosTheta = 0.707
+			sinTheta = 0.707
+
+		capRadiusSinTheta = capRadius*0.707
+		
+		p0 = x+radius*cosTheta, y+radius*sinTheta
+		p1 = x-radius*cosTheta, y+radius*sinTheta
+		p2 = x-radius*cosTheta, y-radius*sinTheta
+		p3 = x+radius*cosTheta, y-radius*sinTheta
+
+		p0a = p0[0]+capRadiusSinTheta, p0[1]-capRadiusSinTheta
+		p0b = p0[0]-capRadiusSinTheta, p0[1]+capRadiusSinTheta
+		p1a = p1[0]+capRadiusSinTheta, p1[1]+capRadiusSinTheta
+		p1b = p1[0]-capRadiusSinTheta, p1[1]-capRadiusSinTheta
+		p2a = p2[0]-capRadiusSinTheta, p2[1]+capRadiusSinTheta
+		p2b = p2[0]+capRadiusSinTheta, p2[1]-capRadiusSinTheta
+		p3a = p3[0]-capRadiusSinTheta, p3[1]-capRadiusSinTheta
+		p3b = p3[0]+capRadiusSinTheta, p3[1]+capRadiusSinTheta
+
+		ce = (x+capRadius, y)
+		cn = (x, y+capRadius)
+		cw = (x-capRadius, y)
+		cs = (x, y-capRadius)
+
+		self.drawCircle( surface, color, p0[0], p0[1], capRadius ) 
+		self.drawCircle( surface, color, p1[0], p1[1], capRadius ) 
+		self.drawCircle( surface, color, p2[0], p2[1], capRadius ) 
+		self.drawCircle( surface, color, p3[0], p3[1], capRadius )
+
+		self.drawPolygon( surface, color, [ce,p0a,p0b,cn,p1a,p1b,cw,p2a,p2b,cs,p3a,p3b,ce] )
+
+	def drawX( self, surface, stroke, fill, x, y, isSignaling ):
+		self._drawX( surface, stroke, x, y, isSignaling, 0.4, 0.08 )
+		self._drawX( surface, fill, x, y, isSignaling, 0.35, 0.04 )
 
 	def drawO( self, surface, stroke, fill, x, y ):
 		#x += offset
@@ -297,24 +349,31 @@ class Maze:
 		yellow = (255,255,0)
 		red = (255,0,0)
 		green = (0,255,0)
+		gray = (128,128,128)
+
 
 		pygame.draw.rect( surface, black, (self._x0, self._y0, self._w, self._h) )
 
-		pad0 = 0.025
+		#self._drawX( surface, red, yellow, 5, 5, True )
+
+		pad0 = 0.0
 		pad1 = 1.0-pad0
 		r = 0
+		wallWidth = self.mapWidth(0.05)
 		while r<self._rowCount:
 			c = 0
 			while c<self._columnCount:
 				cell = self._cells[ r ][ c ]
 				if cell.north.isWalled:
-					self.drawLine( surface, yellow, c+pad0, r+pad1, c+pad1, r+pad1 )
+					if cell.column == 0:
+						self.drawLine( surface, white, c+pad0, r+pad1, c+pad1, r+pad1, wallWidth )
 				if cell.west.isWalled:
-					self.drawLine( surface, yellow, c+pad0, r+pad0, c+pad0, r+pad1 )
+					if cell.column == 0:
+						self.drawLine( surface, white, c+pad0, r+pad0, c+pad0, r+pad1, wallWidth )
 				if cell.south.isWalled:
-					self.drawLine( surface, white, c+pad0, r+pad0, c+pad1, r+pad0 )
+					self.drawLine( surface, white, c+pad0, r+pad0, c+pad1, r+pad0, wallWidth )
 				if cell.east.isWalled:
-					self.drawLine( surface, white, c+pad1, r+pad0, c+pad1, r+pad1 )
+					self.drawLine( surface, white, c+pad1, r+pad0, c+pad1, r+pad1, wallWidth )
 				c += 1
 			r += 1
 		
