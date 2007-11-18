@@ -5,7 +5,7 @@ class Hud:
 		self.game = game
 		self.surface = game.hudSurface
 		# Create a font
-		self.font = pygame.font.Font(None, 30)
+		self.font = pygame.font.Font(None, 60)
 
 	def update( self ):
 		# Render the text
