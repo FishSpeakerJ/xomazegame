@@ -2,9 +2,7 @@
 
 = Functionality =
  Jason
-  * Show exit in fog of war
-  * Fog of War entrance
-  * Show players in the beginning of fog of war
+  * Fog of War intro
   * Speed tweaking
   * Possible performance bug (Sabrina's laptop)
   * faster movement on pre-walked paths
