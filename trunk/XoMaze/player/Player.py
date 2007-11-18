@@ -124,7 +124,7 @@ class Player:
 		currentCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
 		if currentCell != oldCell:
 			self.path.append( oldCell )
-			currentCell.beenVisited = True
+			oldCell.beenVisited = True
 	
 			if currentCell == self.headCell and not self.headAttached:
 				self.game.playerManager.foundHead( self.id )
