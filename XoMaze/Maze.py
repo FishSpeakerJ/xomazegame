@@ -307,11 +307,11 @@ class Maze:
 		if fill:
 			self._drawX( surface, fill, x, y, isSignaling, 0.35, 0.04 )
 
-	def drawO( self, surface, stroke, fill, x, y ):
+	def drawO( self, surface, stroke, fill, x, y, factor=1.0 ):
 		#x += offset
 		#y += offset
 		y += 0.3
-		radius = 0.125
+		radius = 0.125*factor
 		if stroke:
 			self.drawCircle(surface, stroke, x, y, radius)
 		radius *= 0.75
@@ -324,11 +324,12 @@ class Maze:
 		x, y = player.getPosition()
 		self.drawX( surface, player.getStrokeColor(), player.getFillColor(), x, y, isSignaling )
 		if player.headAttached:
-			pass
+			factor = 1.0
 		else:
+			factor = 2.0
 			x = player.headCell.column + 0.5
 			y = player.headCell.row + 0.5
-		self.drawO( surface, player.getStrokeColor(), player.getFillColor(), x, y )
+		self.drawO( surface, player.getStrokeColor(), player.getFillColor(), x, y, factor )
 	
 	def drawDockingBays( self, surface ):
 		for cell in self._game.playerManager.endCells:
