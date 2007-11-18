@@ -13,10 +13,11 @@ bottomMargin = 20
 
 # maze sizes
 difficultyLevelToMazeSize = {
- 1:( 10,10),
+ 1:( 10, 10 ),
  2:( 30, 20 ),
- 3:( 50, 30 )
-}
+ 3:( 50, 30 ),
+ 4:( 80, 50 ),
+} 
 
 emulatorKeys = {
 	pygame.K_KP8 : [ 0, 0, ],
@@ -73,10 +74,10 @@ keyboardKeys = {
 	pygame.K_KP7 : [ 3, 4, ],
 }
 # Player variables
-playerSpeed = 8.0  # in cells per second
+playerSpeedConstant = 4.5  # playerSpeed = sqrt( totalCellsInMaze )/playerSpeedConstant
 playerColors = [
-	( ( 255.0, 0.0, 0.0 ), ( 0.0, 255.0, 0.0 ) ),
-	( ( 0.0, 0.0, 255.0 ), ( 255.0, 0.0, 0.0 ) ),
-	( ( 255.0, 255.0, 0.0 ), ( 0.0, 255.0, 255.0 ) ),
-	( ( 0.0, 255.0, 0.0 ), ( 255.0, 0.0, 255.0 ) ),
+	((255.0, 0.0, 0.0), (0.0, 255.0, 0.0)),
+	((0.0, 0.0, 255.0), ( 55.0, 0.0, 0.0)),
+	((255.0, 255.0, 0.0), (0.0, 255.0, 255.0)),
+	((0.0, 255.0, 0.0), (255.0, 0.0, 255.0)),
 ]
