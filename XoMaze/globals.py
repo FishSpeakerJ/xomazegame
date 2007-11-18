@@ -6,7 +6,7 @@ CHECKHEADS = pygame.USEREVENT + 2
 
 # Milliseconds we will sleep each frame if there are no events,
 # this will update the clock every second
-clockSleepTime = 50
+clockSleepTime = 10
 
 # global variables
 hudHeight = 50
@@ -75,7 +75,9 @@ keyboardKeys = {
 	pygame.K_KP7 : [ 3, 4, ],
 }
 # Player variables
-playerSpeedConstant = 4.5  # playerSpeed = sqrt( totalCellsInMaze )/playerSpeedConstant
+#playerSpeedConstant = 0.21  # playerSpeed = sqrt( totalCellsInMaze )*playerSpeedConstant
+playerSpeedConstant = 0.21  # playerSpeed = sqrt( totalCellsInMaze )*playerSpeedConstant
+playerSpeedVisitedFactor = 1.5
 playerColors = [
 	((255.0, 0.0, 0.0), (0.0, 255.0, 0.0)),
 	((0.0, 0.0, 255.0), ( 55.0, 0.0, 0.0)),

@@ -43,7 +43,11 @@ class Player:
 			self.signaling = True
 			return
 
-		playerSpeed = math.sqrt( self.game.maze._rowCount*self.game.maze._columnCount )/playerSpeedConstant
+		oldCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
+
+		playerSpeed = math.sqrt( self.game.maze._rowCount*self.game.maze._columnCount )*playerSpeedConstant
+		if oldCell.beenVisited:
+			playerSpeed *= playerSpeedVisitedFactor
 		delta = playerSpeed*dt
 		delta = min( delta, 0.49 )
 
@@ -73,8 +77,6 @@ class Player:
 			print "  potential cell %s " % potentialCell
 		self.oldDirection = direction
 		
-		oldCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
-
 		# Check for walls if I'm past the center of the cell (in the direction of travel)
 		directionObject = getattr( oldCell, self.directionToStringDirection[direction] )
 		if directionObject.isWalled:
