@@ -37,6 +37,10 @@ class PlayerManager:
 		for player in self.playerIdsToPlayers.values():
 			player.checkForHead()
 	
+	def unattachHeads( self ):
+		for player in self.playerIdsToPlayers.values():
+			player.headAttached = False
+	
 	def foundHead( self, id ):
 		self.playersWhoHaveHeads.append( self.playerIdsToPlayers[ id ] )
 	
