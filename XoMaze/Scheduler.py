@@ -14,6 +14,12 @@ class Scheduler:
 	def doLater( self, wait, func ):
 		self.doLaters.append( (wait, func) )
 
+	def removeInterval( self, func ):
+		for interval in self.intervals:
+			if interval[1] == func:
+				self.intervals.remove(interval)
+				break		
+		
 	def update( self ):
 		t = time.time()
 		dt = t - self.lastTime
