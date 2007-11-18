@@ -169,9 +169,5 @@ class Player:
 		'''
 		Wave and change strong path to where you are
 		'''
-		if self.signaling:
-			self.signaling = False
-			return True
-		return False
-		
+		return self.signaling
 
