@@ -85,6 +85,7 @@ class XoMaze:
 		self.fogOfWarKeyColor = (0, 255, 0)
 		self.fogOfWarRadius = 60
 		self.fogOfWarStartRadius = 600.0
+		self.fogOfWarGameOverRadius = 800.0
 		self.fogOfWarSurface.set_colorkey( self.fogOfWarKeyColor )
 		self.fogOfWarImage = self.loadImage( "cloud.png" )
 
@@ -192,8 +193,11 @@ class XoMaze:
 				# TODO: Show a confirmation dialog maybe?
 				return False			
 			if event.key == K_n and (pygame.key.get_pressed()[K_RCTRL] or pygame.key.get_pressed()[K_LCTRL]):
-				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[self.mazeComplexityLevel])
+			elif event.key == K_f and (pygame.key.get_pressed()[K_RCTRL] or pygame.key.get_pressed()[K_LCTRL]):
+				self.fogOfWarEnabled = not self.fogOfWarEnabled
+			elif event.key == K_x and (pygame.key.get_pressed()[K_RCTRL] or pygame.key.get_pressed()[K_LCTRL]):
+				self.gameOver()
 			elif event.key == K_1:
 				self.mazeComplexityLevel = 1
 			elif event.key == K_2:
@@ -203,8 +207,6 @@ class XoMaze:
 			elif event.key == K_4:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[4])
-			elif event.key == K_f:
-				self.fogOfWarEnabled = not self.fogOfWarEnabled
 
 		return True
 
@@ -271,6 +273,11 @@ class XoMaze:
 		radius = self.fogOfWarStartRadius + t*(self.fogOfWarRadius - self.fogOfWarStartRadius)
 		for point in self._fogOfWarStartPoints:
 			pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, point, radius )
+	
+	def exitFogOfWar( self, t ):
+		radius = 1 + t*(self.fogOfWarGameOverRadius - 1)
+		w, h = self.fogOfWarSurface.get_width(), self.fogOfWarSurface.get_height()
+		pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, (w/2, h/2), radius )
 
 	def gameOver( self ):
 		'''
@@ -279,8 +286,10 @@ class XoMaze:
 		if self.hasSound:
 			#self.soundNamesToSounds[ "gameOver" ].play()
 			self.soundNamesToSounds[ "trumpet" ].play()
-		#self.isGameRunning = False
+#		self.isGameRunning = False
+		self.scheduler.doInterval( 2.0, self.exitFogOfWar )
 		self.playerManager.celebrate()
+		self.gameClock.stop()
 
 	def loadImage( self, name, colorkey=None ):
 		fullname = os.path.join( "data", name )
