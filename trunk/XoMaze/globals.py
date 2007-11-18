@@ -7,7 +7,7 @@ DELAYSNAP = pygame.USEREVENT + 3
 
 # Milliseconds we will sleep each frame if there are no events,
 # this will update the clock every second
-clockSleepTime = 10
+clockSleepTime = 15
 
 # global variables
 hudHeight = 50
