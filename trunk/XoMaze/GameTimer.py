@@ -8,10 +8,10 @@ class GameTimer:
 
 	def start( self ):
 		self.totalTime = 1
-		pygame.time.set_timer(globals.CLOCKTICK, globals.sleepTime )
+		pygame.time.set_timer(globals.CLOCKTICK, globals.clockSleepTime )
 		
 	def resume( self ):
-		pygame.time.set_timer(globals.CLOCKTICK, globals.sleepTime )
+		pygame.time.set_timer(globals.CLOCKTICK, globals.clockSleepTime )
 		
 	def pause( self ):
 		pygame.time.set_timer(0)

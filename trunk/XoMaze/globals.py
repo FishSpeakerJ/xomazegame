@@ -3,8 +3,9 @@ import pygame
 # custom events
 CLOCKTICK = pygame.USEREVENT + 1
 
-# Milliseconds we will sleep each frame if there are no events
-sleepTime = 10
+# Milliseconds we will sleep each frame if there are no events,
+# this will update the clock every second
+clockSleepTime = 10
 
 # global variables
 hudHeight = 50
