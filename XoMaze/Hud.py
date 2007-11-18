@@ -7,11 +7,14 @@ class Hud:
 		# Create a font
 		self.font = pygame.font.Font(None, 30)
 
-		
 	def update( self ):
 		# Render the text
-		text = self.font.render(self.game.gameClock.getTimeString(), True, 
-						(255, 255, 255), (0, 0, 0))
+		if self.game.gameClock.isRunning:
+			text = self.font.render(self.game.gameClock.getTimeString(), True, 
+			                        (255, 255, 255), (0, 0, 0))
+		else:
+			text = self.font.render("00:00", True, 
+			                        (255, 255, 255), (0, 0, 0))
 
 		# Create a rectangle
 		textRect = text.get_rect()
