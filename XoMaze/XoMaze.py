@@ -9,6 +9,7 @@ from GameTimer import GameTimer
 import globals
 from player.PlayerManager import PlayerManager
 import time
+from Scheduler import Scheduler
 
 try:
 	# if we're running on an evironment euivalent to the XO laptop
@@ -36,7 +37,9 @@ class XoMaze:
 		pygame.event.set_blocked( pygame.VIDEORESIZE )
 		pygame.event.set_blocked( pygame.VIDEOEXPOSE )
 		pygame.event.set_blocked( pygame.ACTIVEEVENT )
-				
+
+		self.scheduler = Scheduler( self )
+
 		#eventwrap.install()
 		
 	def initScreen( self, width, height ):
@@ -77,6 +80,7 @@ class XoMaze:
 		self.fogOfWarEnabled = True
 		self.fogOfWarKeyColor = (0, 255, 0)
 		self.fogOfWarRadius = 60
+		self.fogOfWarStartRadius = 1000.0
 		self.fogOfWarSurface.set_colorkey( self.fogOfWarKeyColor )
 		self.fogOfWarImage = self.loadImage( "cloud.png" )
 
@@ -118,6 +122,8 @@ class XoMaze:
 		t = time.time()
 		dt = t - self.lastTime
 		self.lastTime = t
+
+		self.scheduler.update()
 		
 		# check to see if game is over
 		
@@ -218,8 +224,6 @@ class XoMaze:
 	def startNewGame( self, xCellNum, yCellNum ):
 		# clear EVERYTHING
 		self.boardSurface.fill( (1.0, 1.0, 1.0) )
-#		self.fogOfWarSurface.fill( (0.0, 0.0, 0.0) )
-		self.fogOfWarSurface.blit( self.fogOfWarImage, (0.0, 0.0) )
 		#self.hud.reset()
 		# create the new maze
 		self.maze.initialize(xCellNum,yCellNum)
@@ -232,22 +236,33 @@ class XoMaze:
 		self.fogOfWarPlayerIDsToPointsToDraw = {}
 		self.fogOfWarPlayerIDsToLastPoints = {}
 		for id in self.playerManager.playerIdsToPlayers:
-			player = self.playerManager.playerIdsToPlayers[id]
-			x, y = player.position
-			gx = self.maze.mapX( x )
-			gy = self.maze.mapY( y )
-			pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, (gx, gy), self.fogOfWarRadius )
-
 			self.fogOfWarPlayerIDsToPointsToDraw[id] = []
 			self.fogOfWarPlayerIDsToLastPoints[id] = None
+		self._fogOfWarStartPoints = None
+		self.scheduler.doInterval( 6.0, self.enterFogOfWar, waitBefore=5.0 )
 
-		for endCell in self.playerManager.endCells:
-			endX, endY = self.maze.mapCell( endCell, 0.5 )
-			pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, (endX, endY), self.fogOfWarRadius )
-
-		
 		self.gameClock.start()
 
+	def enterFogOfWar( self, t ):
+		print "enterFogOfWar", t
+		if self._fogOfWarStartPoints is None:
+			self._fogOfWarStartPoints = []
+			for id in self.playerManager.playerIdsToPlayers:
+				player = self.playerManager.playerIdsToPlayers[id]
+				x, y = player.position
+				gx = self.maze.mapX( x )
+				gy = self.maze.mapY( y )
+				self._fogOfWarStartPoints.append( (gx, gy) )
+	
+			for endCell in self.playerManager.endCells:
+				endX, endY = self.maze.mapCell( endCell, 0.5 )
+				self._fogOfWarStartPoints.append( (endX, endY) )
+		
+		self.fogOfWarSurface.blit( self.fogOfWarImage, (0.0, 0.0) )
+		radius = self.fogOfWarStartRadius + t*(self.fogOfWarRadius - self.fogOfWarStartRadius)
+		for point in self._fogOfWarStartPoints:
+			pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, point, radius )
+	
 	def gameOver( self ):
 		'''
 		Everyone quit or everyone finished
