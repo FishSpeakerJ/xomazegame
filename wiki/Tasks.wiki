@@ -1,3 +1,8 @@
+good ideas
+
+when you get your head back, can reveal more of fog of war
+
+
 #summary What needs implementing and who's on it
 
 = Functionality =
