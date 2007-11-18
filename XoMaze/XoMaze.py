@@ -239,12 +239,12 @@ class XoMaze:
 			self.fogOfWarPlayerIDsToPointsToDraw[id] = []
 			self.fogOfWarPlayerIDsToLastPoints[id] = None
 		self._fogOfWarStartPoints = None
+		self.fogOfWarSurface.fill( self.fogOfWarKeyColor )
 		self.scheduler.doInterval( 6.0, self.enterFogOfWar, waitBefore=5.0 )
 
 		self.gameClock.start()
 
 	def enterFogOfWar( self, t ):
-		print "enterFogOfWar", t
 		if self._fogOfWarStartPoints is None:
 			self._fogOfWarStartPoints = []
 			for id in self.playerManager.playerIdsToPlayers:
