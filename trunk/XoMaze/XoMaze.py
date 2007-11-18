@@ -11,7 +11,7 @@ from player.PlayerManager import PlayerManager
 
 try:
 	# if we're running on an evironment euivalent to the XO laptop
-	from olpcgames import eventwrap
+	import olpcgames
 	emulatorMode = True
 	width=1200.0
 	height=825.0
@@ -96,7 +96,7 @@ class XoMaze:
 		}
 		
 		for soundName in self.soundNamesToSounds.keys():
-			fullname = os.path.join( 'data\sounds', soundName + ".ogg" )
+			fullname = os.path.join( 'data/sounds', soundName + ".ogg" )
 			try:
 			    sound = pygame.mixer.Sound( fullname )
 			except pygame.error, message:
@@ -165,7 +165,7 @@ class XoMaze:
 
 			# Render that sucker
 			pygame.display.update()						
-				
+		self.hud.update()
 		# Keep looping!
 		return keepGoing
 		
@@ -173,9 +173,9 @@ class XoMaze:
 		# Gotta have this if we want to exit nicely
 		if event.type == QUIT:
 			return False
-		elif event.type == globals.CLOCKTICK:
-			self.gameClock.update()
-#				print self.gameClock.getTime()
+#		elif event.type == globals.CLOCKTICK:
+#			self.gameClock.update()
+###				print self.gameClock.getTime()
 		elif event.type == KEYUP:
 			# Handle any directional input
 			if event.key in self.keysToDirections.keys():
