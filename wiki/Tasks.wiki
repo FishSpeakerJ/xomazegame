@@ -31,12 +31,7 @@
   * Control instructions
   * Splash screen
   * Maze size tweaking
-
-
-
   * subupdate rects for optimization
-
-
 
 = Sounds = 
   * start
@@ -49,20 +44,17 @@
   * optional music
   * difficulty pick
 
-
-
-
 = Game Walkthrough =
   # splash screen with instructions
   # ~~character visible~~
   # ~~maze~~
   # ~~maze generation~~
   # ~~fog of war~~
-  # sound hit & timer start
+  # ~~sound hit & timer start~~
   # ~~play~~
   # ~~pleasing sound when you find head~~
   # ~~pleasing sound when you reach end~~
   # ~~fun animation~~
-  # all fog of war vanishes
+  # ~~all fog of war vanishes~~
   # spacebar replay prompt
-  # select difficulty
+  # XX select difficulty
