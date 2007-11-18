@@ -118,6 +118,9 @@ class Player:
 				if self.headAttached:
 					self.game.playerManager.finished( self.id )
 					self.game.soundNamesToSounds[ "signalEnd%d" % self.id ].play()
+					self.position = ( currentCell.column + 0.5, currentCell.row + 0.5 )
+					self.game.onPlayerPositionChange( self.id, self.position )
+
 
 	def checkForHead( self ):
 		currentCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
