@@ -44,8 +44,8 @@ class Player:
 			self.signaling = True
 			return
 
-		dt = min( dt, 0.07 )
 		delta = playerSpeed*dt
+		delta = min( delta, 0.49 )
 
 		if direction == 0:  # North
 			directionVector = (0.0, 1.0)

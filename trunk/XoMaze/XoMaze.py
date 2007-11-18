@@ -111,8 +111,7 @@ class XoMaze:
 	def update( self ):
 		'''
 		This is the main game loop.
-		
-		'''			
+		'''
 		t = time.time()
 		dt = t - self.lastTime
 		self.lastTime = t

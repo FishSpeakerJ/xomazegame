@@ -73,7 +73,7 @@ keyboardKeys = {
 	pygame.K_KP7 : [ 3, 4, ],
 }
 # Player variables
-playerSpeed = 5.0  # in cells per second
+playerSpeed = 8.0  # in cells per second
 playerColors = [
 	( ( 255.0, 0.0, 0.0 ), ( 0.0, 255.0, 0.0 ) ),
 	( ( 0.0, 0.0, 255.0 ), ( 255.0, 0.0, 0.0 ) ),
