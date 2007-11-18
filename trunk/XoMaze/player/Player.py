@@ -58,7 +58,7 @@ class Player:
 		
 		potentialPosition = [self.position[0] + delta*directionVector[0], self.position[1] + delta*directionVector[1]]
 		
-		if False and self.id == 2:
+		if self.id == 2:
 			print "Player 0 move"
 			print "  dt:", dt
 			print "  delta:", delta
@@ -87,10 +87,10 @@ class Player:
 				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
 			elif (direction == 2) and (math.modf( potentialPosition[1] )[0] < 0.5):  # South
 				potentialPosition[1] = int( potentialPosition[1] ) + 0.5
-			elif math.modf( potentialPosition[0] )[0] < 0.5:  # West
+			elif (direction == 3) and (math.modf( potentialPosition[0] )[0] < 0.5):  # West
 				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
 		else:
-			if directionVector[0] == 0:
+			if directionVector[0] == 0.0:
 				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
 			else:
 				potentialPosition[1] = int( potentialPosition[1] ) + 0.5
