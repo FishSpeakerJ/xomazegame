@@ -10,7 +10,7 @@ def blendColors( a, b ):
 	br, bg, bb = b
 	return (ar+br)/2,(ag+bg)/2,(ab+bb)/2
 
-def halfColor( a, factor=6 ):
+def factorColor( a, factor=2 ):
 	ar, ag, ab = a
 	return ar/factor, ag/factor, ab/factor
 
@@ -45,9 +45,9 @@ class Cell:
 		return "(x=" + `self.column` + ",y=" + `self.row` + ")"
 
 class Maze:
-	def __init__(self, game, xCellCount=1, yCellCount=1):
+	def __init__(self, game, xCellCount=8, yCellCount=6):
 		self._game = game
-		#self.initialize(xCellCount, yCellCount)
+		self.initialize(xCellCount, yCellCount)
 	def initialize(self, xCellCount, yCellCount):
 		self._rowCount = yCellCount
 		self._columnCount = xCellCount
@@ -182,24 +182,32 @@ class Maze:
 			i += 1
 		pygame.draw.polygon( surface, color, pixelPoints )
 	
-	def drawPathStart( self, surface, color, offset, cell ):
-		self._prevDrawCell = cell
-		self.drawCircle( surface, color, cell.column+offset, cell.row+offset, 0.1 )
+	def mapCell( self, cell, offset ):
+		return ( self.mapX( cell.column+offset ), self.mapY( cell.row+offset ) )
+	def drawPathStart( self, offset, cell ):
+		self._points = []
+		self._points.append( self.mapCell( cell, offset ) )
 		
-	def drawPathNextCell( self, surface, color, offset, cell ):
-		self.drawLine( surface, color, cell.column+offset, cell.row+offset, self._prevDrawCell.column+offset, self._prevDrawCell.row+offset )
-		self.drawCircle( surface, color, cell.column+offset, cell.row+offset, 0.1 )
-		self._prevDrawCell = cell
+	def drawPathNextCell( self, offset, cell ):
+		self._points.append( self.mapCell( cell, offset ) )
 
-	def drawPathEnd( self, surface, color, offset ):
-		self._prevDrawCell = None
-	
-	def drawPath( self, surface, color, offset, path ):
+	def drawPathEnd( self, surface, stroke, fill, isSignaling ):
+		if isSignaling and stroke:
+			width = 0.2
+			lineWidth = self.mapWidth( width )
+			pygame.draw.lines( surface, stroke, False, self._points, lineWidth )
+		else:
+			width = 0.05
+			
+		lineWidth = max( self.mapWidth( width*0.5 ), 1 )
+		pygame.draw.lines( surface, fill, False, self._points, lineWidth )
+
+	def drawPath( self, surface, stroke, fill, offset, isSignaling, path ):
 		currentCell = path[ 0 ]
-		self.drawPathStart( surface, color, offset, path[ 0 ] )
+		self.drawPathStart( offset, path[ 0 ] )
 		for nextCell in path[ 0: ]:
-			self.drawPathNextCell( surface, color, offset, nextCell )
-		self.drawPathEnd( surface, color, offset )
+			self.drawPathNextCell( offset, nextCell )
+		self.drawPathEnd( surface, stroke, fill, isSignaling )
 
 	def __drawX( self, surface, stroke, fill, x, y, isSignaling ):
 		lineWidth = self.mapWidth(0.2)
@@ -267,8 +275,7 @@ class Maze:
 		#x += offset
 		#y += offset
 		y += 0.25
-			
-		radius = 0.2
+		radius = 0.15
 		self.drawCircle(surface, stroke, x, y, radius)
 		radius *= 0.75
 		self.drawCircle(surface, fill, x, y, radius)
@@ -282,25 +289,13 @@ class Maze:
 		fillColor = blendColors( player.getFillColor(), (32,32,32))
 		
 		isSignaling = player.isSignaling()
+
 		self.drawX( surface, strokeColor, fillColor, x, y, False )
 		self.drawO( surface, strokeColor, fillColor, x, y )
 
 		x, y = player.getPosition()
 
 		self.drawX( surface, player.getStrokeColor(), player.getFillColor(), x, y, isSignaling )
-		
-#		lineWidth = self.mapWidth(0.2)
-#		radius = 0.25
-#		color = player.getStrokeColor()
-#		self.drawLine( surface, color, x-radius, y-radius, x+radius, y+radius, lineWidth )
-#		self.drawLine( surface, color, x-radius, y+radius, x+radius, y-radius, lineWidth )
-
-#		lineWidth *= 0.5
-#		radius *= 0.75
-#		color = player.getFillColor()
-#		self.drawLine( surface, color, x-radius, y-radius, x+radius, y+radius, lineWidth )
-#		self.drawLine( surface, color, x-radius, y+radius, x+radius, y-radius, lineWidth )
-		
 		if player.headAttached:
 			pass
 		else:
@@ -309,9 +304,15 @@ class Maze:
 
 		self.drawO( surface, player.getStrokeColor(), player.getFillColor(), x, y )
 		
+	def drawPlayerPath( self, surface, player ):
+		#strokeColor = blendColors( player.getStrokeColor(), (32,32,32))
+		#fillColor = blendColors( player.getFillColor(), (32,32,32))
+		strokeColor = player.getStrokeColor()
+		fillColor = player.getFillColor()
+				
 		path = player.getPath()
 		if len( path ):
-			self.drawPath( surface, halfColor( player.getFillColor() ), player.offset, path )
+			self.drawPath( surface, None, factorColor( player.getFillColor() ), player.offset, player.isSignaling(), path )
 			
 			prunedPath = path[:]
 			
@@ -328,7 +329,7 @@ class Maze:
 				i += 1
 
 			if len( prunedPath ):
-				self.drawPath( surface, fillColor, player.offset, prunedPath )
+				self.drawPath( surface, strokeColor, fillColor, player.offset, player.isSignaling(), prunedPath )
 		
 	def paint(self, surface):
 		self._w = surface.get_width()
@@ -352,7 +353,8 @@ class Maze:
 		gray = (128,128,128)
 
 
-		pygame.draw.rect( surface, black, (self._x0, self._y0, self._w, self._h) )
+		#pygame.draw.rect( surface, black, (self._x0, self._y0, self._w, self._h) )
+		pygame.draw.rect( surface, black, (0, 0, surface.get_width(), surface.get_height()) )
 
 		#self._drawX( surface, red, yellow, 5, 5, True )
 
@@ -378,6 +380,8 @@ class Maze:
 			r += 1
 		
 		if self._game.playerManager:
+			for player in self._game.playerManager.playerIdsToPlayers.values():
+				self.drawPlayerPath( surface, player )
 			for player in self._game.playerManager.playerIdsToPlayers.values():
 				self.drawPlayer( surface, player )
 
