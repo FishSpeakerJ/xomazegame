@@ -184,13 +184,6 @@ class XoMaze:
 
 		self.scheduler.update()
 		
-		# check to see if game is over
-		
-		
-		# Event Handling (controls)
-		# sleep if there is no event
-		event = pygame.event.wait()
-
 		keepGoing = True
 		for event in pygame.event.get():
 			keepGoing = self.processMessages( event )
