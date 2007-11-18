@@ -30,8 +30,13 @@ class PlayerManager:
 	def registerEnd( self, endCell ):
 		self.endCells.append( endCell )
 
-	def checkForEnd( self, endCell ):
+	def checkForEnd( self, endCell, idChecking ):
 		if endCell in self.endCells:
+			for player in self.playerIdsToPlayers.values():
+				if player.id == idChecking:
+					continue
+				if endCell == self.game.maze.getCellXY( *player.getDiscretePosition( player.position ) ):
+					return False
 			return True
 		else:
 			return False

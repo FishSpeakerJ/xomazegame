@@ -118,7 +118,7 @@ class Player:
 			if currentCell.isContainingHead:
 				pygame.time.set_timer( CHECKHEADS, 250 )
 
-			if self.game.playerManager.checkForEnd( currentCell ):
+			if self.game.playerManager.checkForEnd( currentCell, self.id ):
 				if self.headAttached:
 					self.game.playerManager.finished( self.id )
 					if self.game.hasSound:
@@ -174,7 +174,7 @@ class Player:
 		return self.path
 
 	def isFinished( self ):
-		if self.game.playerManager.checkForEnd( self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) ) ) and self.headAttached:
+		if self.game.playerManager.checkForEnd( self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) ), self.id ) and self.headAttached:
 			return True
 		else:
 			return False
