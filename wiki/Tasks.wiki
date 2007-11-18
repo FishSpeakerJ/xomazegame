@@ -14,6 +14,7 @@
   * Render order of avatars and paths
   * Path pruning & diagonals
   * Maze openness tweaking
+  * bug: heads can be placed on exit spots
 
  Shawn
   * select difficulty dialog 
