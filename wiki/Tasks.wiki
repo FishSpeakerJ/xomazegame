@@ -8,6 +8,7 @@
   * Show players in the beginning of fog of war
   * Speed tweaking
   * Possible performance bug (Sabrina's laptop)
+  * faster movement on pre-walked paths
 
  Dennis
   * better path line colors
