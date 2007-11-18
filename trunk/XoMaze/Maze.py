@@ -227,11 +227,11 @@ class Maze:
 
 	def drawPathEnd( self, surface, stroke, fill, isSignaling ):
 		if isSignaling and stroke:
-			width = 0.2
+			width = 0.15
 			lineWidth = self.mapWidth( width )
 			pygame.draw.lines( surface, stroke, False, self._points, lineWidth )
 		else:
-			width = 0.05
+			width = 0.075
 			
 		lineWidth = max( self.mapWidth( width*0.5 ), 1 )
 		pygame.draw.lines( surface, fill, False, self._points, lineWidth )
@@ -310,7 +310,6 @@ class Maze:
 	def drawO( self, surface, stroke, fill, x, y, factor=1.0 ):
 		#x += offset
 		#y += offset
-		y += 0.3
 		radius = 0.125*factor
 		if stroke:
 			self.drawCircle(surface, stroke, x, y, radius)
@@ -325,6 +324,7 @@ class Maze:
 		self.drawX( surface, player.getStrokeColor(), player.getFillColor(), x, y, isSignaling )
 		if player.headAttached:
 			factor = 1.0
+			y += 0.3
 		else:
 			factor = 2.0
 			x = player.headCell.column + 0.5
@@ -411,7 +411,7 @@ class Maze:
 		pad0 = 0.0
 		pad1 = 1.0-pad0
 		r = 0
-		wallWidth = self.mapWidth(0.05)
+		wallWidth = self.mapWidth(0.1)
 		while r<self._rowCount:
 			c = 0
 			while c<self._columnCount:
