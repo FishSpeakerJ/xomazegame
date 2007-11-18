@@ -117,14 +117,16 @@ class Maze:
 	def _clearWallsBetween( self, a, b ):
 		a.knockDownWallToward( b )
 		b.knockDownWallToward( a )
-	def _clearStartAndEndWallsForPlayer( self, player ):
+	def _clearStartWallsForPlayer( self, player ):
 		self._clearWallsBetween( player.beginCell, player.beginCell.east.neighbor )
 		self._clearWallsBetween( player.beginCell, player.beginCell.west.neighbor )
 		self._clearWallsBetween( player.beginCell, player.beginCell.north.neighbor )
 
-		self._clearWallsBetween( player.endCell, player.endCell.east.neighbor )
-		self._clearWallsBetween( player.endCell, player.endCell.west.neighbor )
-		self._clearWallsBetween( player.endCell, player.endCell.south.neighbor )
+	def _clearEndWalls( self ):
+		for cell in self._game.playerManager.endCells:
+			self._clearWallsBetween( cell, cell.east.neighbor )
+			self._clearWallsBetween( cell, cell.west.neighbor )
+			self._clearWallsBetween( cell, cell.south.neighbor )
 	
 	def constructRandom(self, portionOfWallsToBeRemoved=0.025):		
 		r = 0
@@ -162,8 +164,8 @@ class Maze:
 		
 		if self._game.playerManager:
 			for player in self._game.playerManager.playerIdsToPlayers.values():
-				self._clearStartAndEndWallsForPlayer( player )
-				print player
+				self._clearStartWallsForPlayer( player )
+			self._clearEndWalls()
 
 		wallCount = 0
 		r = 0
@@ -318,15 +320,20 @@ class Maze:
 		
 
 	def drawPlayer( self, surface, player ):
-		x = player.endCell.column + 0.5
-		y = player.endCell.row + 0.5
-		
-		if False:#player.isFinished():
-			strokeColor = player.getStrokeColor()
-			fillColor = player.getFillColor()
-			self.drawX( surface, strokeColor, fillColor, x, y, False )
-			self.drawO( surface, strokeColor, fillColor, x, y )
+		isSignaling = player.isSignaling()
+		x, y = player.getPosition()
+		self.drawX( surface, player.getStrokeColor(), player.getFillColor(), x, y, isSignaling )
+		if player.headAttached:
+			pass
 		else:
+			x = player.headCell.column + 0.5
+			y = player.headCell.row + 0.5
+		self.drawO( surface, player.getStrokeColor(), player.getFillColor(), x, y )
+	
+	def drawDockingBays( self, surface ):
+		for cell in self._game.playerManager.endCells:
+			x = cell.column + 0.5
+			y = cell.row + 0.5
 			shadow = (48,48,48)
 			highlight = (192,192,192)
 			#sunken = (128,128,128)
@@ -343,20 +350,7 @@ class Maze:
 			self._yPixelOffset = 0
 			self.drawX( surface, sunken, None, x, y, False )
 			self.drawO( surface, sunken, None, x, y )
-		
-		isSignaling = player.isSignaling()
-
-
-		x, y = player.getPosition()
-
-		self.drawX( surface, player.getStrokeColor(), player.getFillColor(), x, y, isSignaling )
-		if player.headAttached:
-			pass
-		else:
-			x = player.headCell.column + 0.5
-			y = player.headCell.row + 0.5
-		self.drawO( surface, player.getStrokeColor(), player.getFillColor(), x, y )
-		
+	
 	def drawPlayerPath( self, surface, player ):
 		#strokeColor = blendColors( player.getStrokeColor(), (32,32,32))
 		#fillColor = blendColors( player.getFillColor(), (32,32,32))
@@ -412,7 +406,7 @@ class Maze:
 		pygame.draw.rect( surface, black, (0, 0, surface.get_width(), surface.get_height()) )
 
 		#self._drawX( surface, red, yellow, 5, 5, True )
-
+		self.drawDockingBays(surface)
 		pad0 = 0.0
 		pad1 = 1.0-pad0
 		r = 0
