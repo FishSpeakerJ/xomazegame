@@ -107,6 +107,7 @@ class Player:
 			if currentCell == self.headCell and not self.headAttached:
 				self.game.playerManager.foundHead( self.id )
 				self.headAttached = True
+				self.game.soundNamesToSounds[ "signalHead%d" % self.id ].play()
 				currentCell.isContainingHead = False
 			
 			# We've got a head... it isn't mine, let's check back later!
@@ -116,6 +117,7 @@ class Player:
 			if self.game.playerManager.checkForEnd( currentCell ):
 				if self.headAttached:
 					self.game.playerManager.finished( self.id )
+					self.game.soundNamesToSounds[ "signalEnd%d" % self.id ].play()
 
 	def checkForHead( self ):
 		currentCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
@@ -124,6 +126,7 @@ class Player:
 				self.signaling = False
 			else:
 				self.signaling = True
+				self.game.soundNamesToSounds[ "signalFound%d" % self.id ].play()
 		else:
 			self.signaling = False
 		pygame.time.set_timer( CHECKHEADS, 300 )
