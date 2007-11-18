@@ -179,9 +179,8 @@ class XoMaze:
 		# Gotta have this if we want to exit nicely
 		if event.type == QUIT:
 			return False
-#		elif event.type == globals.CLOCKTICK:
-#			self.gameClock.update()
-###				print self.gameClock.getTime()
+		elif event.type == globals.CHECKHEADS:
+			self.playerManager.checkForHeads()
 		elif event.type == KEYUP:
 			# Handle any directional input
 			if event.key in self.pressedKeys:

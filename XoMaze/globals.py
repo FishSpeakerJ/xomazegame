@@ -2,6 +2,7 @@ import pygame
 
 # custom events
 CLOCKTICK = pygame.USEREVENT + 1
+CHECKHEADS = pygame.USEREVENT + 2
 
 # Milliseconds we will sleep each frame if there are no events,
 # this will update the clock every second
