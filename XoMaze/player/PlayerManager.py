@@ -5,7 +5,8 @@ Handles all the players!
 
 """
 from Player import Player
- 
+from globals import *
+
 class PlayerManager:
 	def __init__( self, game ):
 		self.game = game
@@ -18,6 +19,8 @@ class PlayerManager:
 		self.playersWhoHaveHeads = []
 		self.endCells = []
 		self.alreadySaidUhOhs = []
+		pygame.time.set_timer( CELEBRATE, 0 )
+		pygame.time.set_timer( CHECKHEADS, 0 )
 		for player in self.playerIdsToPlayers.values():
 			player.reset()
 	
@@ -57,7 +60,8 @@ class PlayerManager:
 	def celebrate( self ):
 		for player in self.playerIdsToPlayers.values():
 			player.celebrate()
-	
+		pygame.time.set_timer( CELEBRATE, 300 )
+		
 	def foundHead( self, id ):
 		self.playersWhoHaveHeads.append( self.playerIdsToPlayers[ id ] )
 	
@@ -65,4 +69,5 @@ class PlayerManager:
 		for player in self.playerIdsToPlayers.values():
 			if not player.isFinished():
 				return
+		print "GAMEOSVER"
 		self.game.gameOver()
