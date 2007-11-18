@@ -7,6 +7,8 @@ Handles player stuff... not sure what yet...
 
 from globals import *
 
+import math
+
 class Player:
 	def __init__( self, game, id ):
 		self.game = game
@@ -21,6 +23,7 @@ class Player:
 		self.offset = 1.0 / ( self.game.numberOfPlayers + 3.0 ) * ( self.id + 2 )
 		self.headAttached = False
 		self.signaling = False
+#		self.
 		self.directionToStringDirection = {
 			0 : "north",
 			1 : "east",
@@ -28,7 +31,7 @@ class Player:
 			3 : "west",
 		}
 
-	def move( self, direction, dt=1.0 ):
+	def move( self, direction, dt=0.05 ):
 		'''
 		Move yourself in the maze
 			0 - North
@@ -41,48 +44,66 @@ class Player:
 			self.signaling = True
 			return
 
+		dt = min( dt, 0.1 )
+		delta = playerSpeed*dt
+
 		if direction == 0:  # North
-			potentialPosition = [ self.position[0], self.position[1] + playerYIncrement ]
-			checkPosition = [ self.position[0], self.position[1] + 0.5 ]
-			if self.oldDirection == 1 or self.oldDirection == 3:
-				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
+			directionVector = (0.0, 1.0)
 		elif direction == 1:  # East
-			potentialPosition = [ self.position[0] + playerXIncrement, self.position[1] ]
-			checkPosition = [ self.position[0] + 0.5, self.position[1] ] 
-			if self.oldDirection == 0 or self.oldDirection == 2:
-				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
+			directionVector = (1.0, 0.0)
 		elif direction == 2:  # South
-			potentialPosition = [ self.position[0], self.position[1] - playerYIncrement ]
-			checkPosition = [ self.position[0], self.position[1] - 0.5 ] 
-			if self.oldDirection == 1 or self.oldDirection == 3:
-				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
+			directionVector = (0.0, -1.0)
 		else:  # West
-			potentialPosition = [ self.position[0] - playerXIncrement, self.position[1] ]
-			checkPosition = [ self.position[0] - 0.5, self.position[1] ] 
-			if self.oldDirection == 0 or self.oldDirection == 2:
-				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
-		if False:
+			directionVector = (-1.0, 0.0)
+		
+		potentialPosition = [self.position[0] + delta*directionVector[0], self.position[1] + delta*directionVector[1]]
+		
+		if False and self.id == 2:
 			print "Player 0 move"
-			print "position = ( %f, %f ) " % ( self.position[0], self.position[1] )
-			print "direction = %d" % direction
-			print "oldDirection = %d" % self.oldDirection
-			print "potentialPosition = ( %f, %f )" % ( potentialPosition[0], potentialPosition[1] )
-			print "checkPosition = ( %f, %f )" % ( checkPosition[0], checkPosition[1] )
-			currentCell = self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) )
-			potentialCell = self.game.maze.getCellXY( *self.getDiscreetPosition( checkPosition ) )
+			print "  dt:", dt
+			print "  delta:", delta
+			print "  position = ( %f, %f ) " % ( self.position[0], self.position[1] )
+			print "  direction = %d" % direction
+			print "  oldDirection = %d" % self.oldDirection
+			print "  potentialPosition = ( %f, %f )" % ( potentialPosition[0], potentialPosition[1] )
+			currentCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
+			potentialCell = self.game.maze.getCellXY( *self.getDiscretePosition( potentialPosition ) )
 			
-			print "current cell %s " % currentCell
-			print "potential cell %s " % potentialCell
-			print "current cell's walls are : north = %s, east = %s, south = %s, west = %s " % ( currentCell.north.isWalled, currentCell.east.isWalled, currentCell.south.isWalled, currentCell.west.isWalled )
-			print "potential cell's walls are : north = %s, east = %s, south = %s, west = %s " % ( potentialCell.north.isWalled, potentialCell.east.isWalled, potentialCell.south.isWalled, potentialCell.west.isWalled )
+			print "  current cell %s " % currentCell
+			print "  potential cell %s " % potentialCell
+#			print "current cell's walls are : north = %s, east = %s, south = %s, west = %s " % ( currentCell.north.isWalled, currentCell.east.isWalled, currentCell.south.isWalled, currentCell.west.isWalled )
+#			print "potential cell's walls are : north = %s, east = %s, south = %s, west = %s " % ( potentialCell.north.isWalled, potentialCell.east.isWalled, potentialCell.south.isWalled, potentialCell.west.isWalled )
 			
 		self.oldDirection = direction
 		
-		# If my new discreet position is the same as my old one, just update contiuouse
-		# position.  Otherwise, check for walls.
-		if self.getDiscreetPosition( checkPosition ) != self.getDiscreetPosition( self.position ):
-			currentCell = self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) )
-			directionObject = getattr( currentCell, self.directionToStringDirection[ direction ] )
+		oldCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
+
+		# Check for walls if I'm past the center of the cell (in the direction of travel)
+		directionObject = getattr( oldCell, self.directionToStringDirection[direction] )
+		if directionObject.isWalled:
+			if (direction == 0) and (math.modf( potentialPosition[1] )[0] > 0.5):  # North
+				potentialPosition[1] = int( potentialPosition[1] ) + 0.5
+			elif (direction == 1) and (math.modf( potentialPosition[0] )[0] > 0.5):  # East
+				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
+			elif (direction == 2) and (math.modf( potentialPosition[1] )[0] < 0.5):  # South
+				potentialPosition[1] = int( potentialPosition[1] ) + 0.5
+			elif math.modf( potentialPosition[0] )[0] < 0.5:  # West
+				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
+		else:
+			if directionVector[0] == 0:
+				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
+			else:
+				potentialPosition[1] = int( potentialPosition[1] ) + 0.5
+
+
+		self.position = potentialPosition
+		self.game.onPlayerPositionChange( self.id, self.position )
+
+		# Do updates for new cell
+		currentCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) )
+		if currentCell != oldCell:
+			self.path.append( oldCell )
+	
 			if currentCell == self.headCell and not self.headAttached:
 				self.game.playerManager.foundHead( self.id )
 				self.headAttached = True
@@ -90,15 +111,6 @@ class Player:
 			if currentCell == self.endCell:
 				if self.headAttached:
 					self.game.playerManager.finished( self.id )
-	
-			if directionObject.isWalled:
-				return
-
-			# We're free and clear
-			self.path.append( currentCell )
-
-		self.position = potentialPosition
-		self.game.onPlayerPositionChange( self.id, self.position )
 		
 	def reset( self ):
 		'''
@@ -110,16 +122,16 @@ class Player:
 		x = int( self.game.maze.getXCellCount() / 2.0 )
 		x = int( x - float(self.game.numberOfPlayers / 2.0 ) ) + self.id*1.0 + self.offset
 		self.position = ( x, 0.5 )
-		self.beginCell = self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) ) 
+		self.beginCell = self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) ) 
 		self.headCell = self.game.maze.getRandomCell()
-		self.endCell = self.game.maze.getCellXY( *self.getDiscreetPosition( ( self.position[0], self.position[1] + self.game.maze.getYCellCount() - 1 ) ) )
-		self.path = [ self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) ) ]
+		self.endCell = self.game.maze.getCellXY( *self.getDiscretePosition( ( self.position[0], self.position[1] + self.game.maze.getYCellCount() - 1 ) ) )
+		self.path = [ self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) ) ]
 
 	def getPath( self ):
 		return self.path
 
 	def isFinished( self ):
-		if self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) ) == self.endCell and self.headAttached:
+		if self.game.maze.getCellXY( *self.getDiscretePosition( self.position ) ) == self.endCell and self.headAttached:
 			return True
 		else:
 			return False
@@ -127,7 +139,7 @@ class Player:
 	def getPosition( self ):
 		return self.position
 		
-	def getDiscreetPosition( self, position ):
+	def getDiscretePosition( self, position ):
 		return ( int( position[0] ), int( position[1] ) )
 
 	def getStrokeColor( self ):
