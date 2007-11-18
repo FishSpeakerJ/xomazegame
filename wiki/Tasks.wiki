@@ -17,7 +17,7 @@
  Shawn
   * select difficulty dialog
   * Fog of War image
-  * Winning animation
+  * ~~Winning animation~~
   * ~~Sounds~~
   * ~~signaling~~
   * ~~svg icon~~
