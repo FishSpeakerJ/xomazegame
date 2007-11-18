@@ -21,6 +21,7 @@
   * ~~Sounds~~
   * ~~signaling~~
   * ~~svg icon~~
+  * ~~fix controls~~
  
  Sabrina
   * Disable resetting of maze during the game
