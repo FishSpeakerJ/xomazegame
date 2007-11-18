@@ -13,10 +13,10 @@ bottomMargin = 20
 
 # maze sizes
 difficultyLevelToMazeSize = {
- 1:( 10, 10 ),
- 2:( 20, 16 ),
+ 1:( 12, 8 ),
+ 2:( 24, 16 ),
  3:( 30, 20 ),
- 4:( 40, 30 ),
+ 4:( 45, 30 ),
 } 
 
 emulatorKeys = {
@@ -59,7 +59,8 @@ keyboardKeys = {
 
 	pygame.K_KP8 : [ 3, 0, ],
 	pygame.K_KP6 : [ 3, 1, ],
-	pygame.K_KP2 : [ 3, 2, ],
+	pygame.K_KP2 : [ 3, 2, ], #down
+	pygame.K_KP5 : [ 3, 2, ], #down
 	pygame.K_KP4 : [ 3, 3, ],
 }
 # Player variables
