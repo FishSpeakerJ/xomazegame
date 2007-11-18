@@ -154,7 +154,6 @@ class Maze:
 
 	def mapX( self, fx ):
 		return int( self._x0 + fx*self._cellSize + 0.5 )
-	
 	def mapY( self, fy ):
 		return int( ( self._y0 + self._h ) - (fy*self._cellSize) + 0.5 )
 	
@@ -285,8 +284,12 @@ class Maze:
 		x = player.endCell.column + 0.5
 		y = player.endCell.row + 0.5
 		
-		strokeColor = blendColors( player.getStrokeColor(), (32,32,32))
-		fillColor = blendColors( player.getFillColor(), (32,32,32))
+		if player.isFinished():
+			strokeColor = player.getStrokeColor()
+			fillColor = player.getFillColor()
+		else:
+			strokeColor = (64,64,64)
+			fillColor = blendColors( player.getFillColor(), (32,32,32))
 		
 		isSignaling = player.isSignaling()
 
@@ -312,11 +315,11 @@ class Maze:
 				
 		path = player.getPath()
 		if len( path ):
-			self.drawPath( surface, None, factorColor( player.getFillColor() ), player.offset, player.isSignaling(), path )
+			self.drawPath( surface, None, factorColor( player.getFillColor(), 4 ), player.offset, player.isSignaling(), path )
 			
 			prunedPath = path[:]
 			
-			i = 0
+			i = 1
 			while i<len(prunedPath):
 				j = i+1
 				jFound = -1
@@ -325,8 +328,9 @@ class Maze:
 						jFound = j
 					j += 1
 				if jFound != -1:
-					prunedPath = prunedPath[:i]+prunedPath[(jFound+1):]
-				i += 1
+					prunedPath = prunedPath[:i]+prunedPath[jFound:]
+				else:
+					i += 1
 
 			if len( prunedPath ):
 				self.drawPath( surface, strokeColor, fillColor, player.offset, player.isSignaling(), prunedPath )
