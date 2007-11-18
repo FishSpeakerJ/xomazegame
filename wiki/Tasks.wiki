@@ -4,9 +4,7 @@
  Jason
   * Fog of War intro
   * Speed tweaking
-  * Possible performance bug (Sabrina's laptop)
   * faster movement on pre-walked paths
-  * fog of war bottom clipping
 
  Dennis
   * better path line colors
