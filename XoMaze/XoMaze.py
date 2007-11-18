@@ -295,23 +295,23 @@ class XoMaze:
 			for id in self.playerManager.playerIdsToPlayers:
 				player = self.playerManager.playerIdsToPlayers[id]
 				x, y = player.position
-				gx = self.maze.mapX( x )
-				gy = self.maze.mapY( y )
+				gx = int( self.maze.mapX( x ) )
+				gy = int( self.maze.mapY( y ) )
 				self._fogOfWarStartPoints.append( (gx, gy) )
 	
 			for endCell in self.playerManager.endCells:
 				endX, endY = self.maze.mapCell( endCell, 0.5 )
-				self._fogOfWarStartPoints.append( (endX, endY) )
+				self._fogOfWarStartPoints.append( (int( endX ), int( endY )) )
 		
 		self.fogOfWarSurface.blit( self.fogOfWarImage, (0.0, 0.0) )
 		radius = self.fogOfWarStartRadius + t*(self.fogOfWarRadius - self.fogOfWarStartRadius)
 		for point in self._fogOfWarStartPoints:
-			pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, point, radius )
+			pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, point, int( radius ) )
 	
 	def exitFogOfWar( self, t ):
 		radius = 1 + t*(self.fogOfWarGameOverRadius - 1)
 		w, h = self.fogOfWarSurface.get_width(), self.fogOfWarSurface.get_height()
-		pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, (w/2, h/2), radius )
+		pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, (w/2, h/2), int( radius ) )
 
 	def gameOver( self ):
 		'''
