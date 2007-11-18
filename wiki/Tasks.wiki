@@ -2,7 +2,6 @@
 
 = Functionality =
  Jason
-  * Fog of War reset
   * Show exit in fog of war
   * Fog of War entrance
   * Show players in the beginning of fog of war
