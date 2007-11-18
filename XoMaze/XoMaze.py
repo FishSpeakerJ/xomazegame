@@ -24,7 +24,7 @@ except ImportError:
 
 class XoMaze:
 	def __init__(self):
-		self.initScreen( width, height ) 
+		self.initScreen( int( width ), int( height ) ) 
 		self.initVariables()
 		self.initPlayerManager()
 		self.initSounds()
@@ -55,6 +55,10 @@ class XoMaze:
 		self.hud = Hud( self )
 		self.maze = Maze( self )
 
+		self.fogOfWarSurface = pygame.Surface( (boardWidth, boardHeight) )
+		self.fogOfWarKeyColor = (0, 255, 0)
+		self.fogOfWarRadius = 60
+		self.fogOfWarSurface.set_colorkey( self.fogOfWarKeyColor )
 
 	def initVariables( self ):
 		self.numberOfPlayers = 4
@@ -65,6 +69,15 @@ class XoMaze:
 		else:
 			# These are... wasd
 			self.keysToDirections = globals.keyboardKeys
+			
+		self.fogOfWarPlayerIDsToPointsToDraw = {}
+		self.fogOfWarPlayerIDsToLastPoints = {}
+		for i in range( self.numberOfPlayers ):
+			self.fogOfWarPlayerIDsToPointsToDraw[i] = []
+			self.fogOfWarPlayerIDsToLastPoints[i] = None
+
+		# DEBUG:
+#		self.fogOfWarPlayerIDsToPointsToDraw[0] = [(100, 100), (200, 100), (300, 300), (500, 600), (600, 500)]
 
 	def initPlayerManager( self ):
 		self.playerManager = PlayerManager( self )
@@ -120,9 +133,39 @@ class XoMaze:
 				self.pressedKeys[key] = self.gameClock.getTime()
 				
 		# if game timer is running, update stuff
-		if updateVisuals and self.gameClock.isRunning():	
-			# Do update the maze!
-			self.maze.paint( self.boardSurface )		
+		if updateVisuals and self.gameClock.isRunning():
+			# Update the maze!
+			self.maze.paint( self.boardSurface )
+
+			# Draw fog of war into it's own surface
+#			dirtyRects = []
+			for id in self.playerManager.playerIdsToPlayers:
+				pointsToDraw = self.fogOfWarPlayerIDsToPointsToDraw[id]
+				if len( pointsToDraw ) > 0:
+					lastPoint = self.fogOfWarPlayerIDsToLastPoints[id]
+					for point in pointsToDraw:
+						pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, point, self.fogOfWarRadius )
+#						dirtyRects.append( pygame.Rect( point[0] - self.fogOfWarRadius, point[1] - self.fogOfWarRadius, 2*self.fogOfWarRadius, 2*self.fogOfWarRadius ) )
+						if lastPoint is not None:
+							pygame.draw.line( self.fogOfWarSurface, self.fogOfWarKeyColor, lastPoint, point, self.fogOfWarRadius )
+						lastPoint = point
+					self.fogOfWarPlayerIDsToLastPoints[id] = lastPoint
+					self.fogOfWarPlayerIDsToPointsToDraw[id] = []
+
+#			if len( dirtyRects ) > 1:
+#				dirtyRect = dirtyRects[0].unionall( dirtyRects[1:] )
+#			elif len( dirtyRects ) == 1:
+#				dirtyRect = dirtyRects[0]
+#			else:
+#				dirtyRect = None
+
+			# Blit fog of war onto board
+#			if dirtyRect is not None:
+#				self.boardSurface.blit( self.fogOfWarSurface, (0, 0), dirtyRect )
+#			else:
+#				self.boardSurface.blit( self.fogOfWarSurface, (0, 0) )
+			self.boardSurface.blit( self.fogOfWarSurface, (0, 0) )
+
 			# Render that sucker
 			pygame.display.update()						
 				
@@ -160,12 +203,21 @@ class XoMaze:
 			elif event.key == K_3:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[3])
-						
-				
-				
 				
 		return True
-		
+
+	def onPlayerPositionChange( self, playerID, position ):
+		# mark points to be updated for fog of war
+		try:
+			x, y = position
+			newX = self.maze.mapX( x )
+			newY = self.maze.mapY( y )
+			self.fogOfWarPlayerIDsToPointsToDraw[playerID].append( (newX, newY) )
+		except:
+			print "can't update fog of war for player position", position
+			import traceback
+			traceback.print_exc()
+
 	def startNewGame( self, xCellNum, yCellNum ):
 		# clear EVERYTHING
 		self.boardSurface.fill( (1.0, 1.0, 1.0) )

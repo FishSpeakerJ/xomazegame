@@ -41,22 +41,22 @@ class Player:
 			self.signaling = True
 			return
 
-		if direction == 0:
+		if direction == 0:  # North
 			potentialPosition = [ self.position[0], self.position[1] + playerYIncrement ]
 			checkPosition = [ self.position[0], self.position[1] + 0.5 ]
 			if self.oldDirection == 1 or self.oldDirection == 3:
 				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
-		elif direction == 1:
+		elif direction == 1:  # East
 			potentialPosition = [ self.position[0] + playerXIncrement, self.position[1] ]
 			checkPosition = [ self.position[0] + 0.5, self.position[1] ] 
 			if self.oldDirection == 0 or self.oldDirection == 2:
 				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
-		elif direction == 2:
+		elif direction == 2:  # South
 			potentialPosition = [ self.position[0], self.position[1] - playerYIncrement ]
 			checkPosition = [ self.position[0], self.position[1] - 0.5 ] 
 			if self.oldDirection == 1 or self.oldDirection == 3:
 				potentialPosition[0] = int( potentialPosition[0] ) + 0.5
-		else:
+		else:  # West
 			potentialPosition = [ self.position[0] - playerXIncrement, self.position[1] ]
 			checkPosition = [ self.position[0] - 0.5, self.position[1] ] 
 			if self.oldDirection == 0 or self.oldDirection == 2:
@@ -78,27 +78,27 @@ class Player:
 			
 		self.oldDirection = direction
 		
-		# If my new discreet position is the same as my old one, update position
-		# and return, no need to check other walls
-		if self.getDiscreetPosition( checkPosition ) == self.getDiscreetPosition( self.position ):
-			self.position = potentialPosition
-			return
-			
-		currentCell = self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) )
-		directionObject = getattr( currentCell, self.directionToStringDirection[ direction ] )
-		if currentCell == self.headCell and not self.headAttached:
-			self.game.playerManager.foundHead( self.id )
-			self.headAttached = True
-			
-		if currentCell == self.endCell:
-			if self.headAttached:
-				self.game.playerManager.finished( self.id )
+		# If my new discreet position is the same as my old one, just update contiuouse
+		# position.  Otherwise, check for walls.
+		if self.getDiscreetPosition( checkPosition ) != self.getDiscreetPosition( self.position ):
+			currentCell = self.game.maze.getCellXY( *self.getDiscreetPosition( self.position ) )
+			directionObject = getattr( currentCell, self.directionToStringDirection[ direction ] )
+			if currentCell == self.headCell and not self.headAttached:
+				self.game.playerManager.foundHead( self.id )
+				self.headAttached = True
+				
+			if currentCell == self.endCell:
+				if self.headAttached:
+					self.game.playerManager.finished( self.id )
+	
+			if directionObject.isWalled:
+				return
 
-		if directionObject.isWalled:
-			return
-		# We're free and clear
-		self.path.append( currentCell )
+			# We're free and clear
+			self.path.append( currentCell )
+
 		self.position = potentialPosition
+		self.game.onPlayerPositionChange( self.id, self.position )
 		
 	def reset( self ):
 		'''

@@ -321,9 +321,9 @@ class Maze:
 		if self._game.playerManager:
 			for player in self._game.playerManager.playerIdsToPlayers.values():
 				self.drawPlayer( surface, player )
-		
-		self._x0 = None
-		self._y0 = None
-		self._w = None
-		self._h = None
-		self._cellSize = None
+
+#		self._x0 = None
+#		self._y0 = None
+#		self._w = None
+#		self._h = None
+#		self._cellSize = None
