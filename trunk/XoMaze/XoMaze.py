@@ -279,6 +279,9 @@ class XoMaze:
 			traceback.print_exc()
 
 	def startNewGame( self, xCellNum, yCellNum ):
+		# stop spacebar prompt
+		self.scheduler.removeInterval( self.flashSpaceBar )
+		self.acceptSpacebar = False
 		# make sure gameClock is stopped
 		self.gameClock.stop()
 		self.gameClock.reset()
