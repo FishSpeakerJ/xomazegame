@@ -21,7 +21,7 @@ class Player:
 		self.oldDirection = -1
 		self.path = []
 		self.offset = 1.0 / ( self.game.numberOfPlayers + 3.0 ) * ( self.id + 2 )
-		self.headAttached = False
+		self.headAttached = True
 		self.signaling = False
 		self.directionToStringDirection = {
 			0 : "north",
@@ -149,7 +149,7 @@ class Player:
 		Resets the player to the bottom of the maze, offset based on his id
 		'''
 		self.oldDirection = -1
-		self.headAttached = False
+		self.headAttached = True
 		self.signaling = False
 		self.snapDelayed = False
 		x = int( self.game.maze.getXCellCount() / 2.0 )
