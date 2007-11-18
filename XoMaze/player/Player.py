@@ -44,6 +44,7 @@ class Player:
 			self.signaling = True
 			return
 
+		playerSpeed = math.sqrt( self.game.maze._rowCount*self.game.maze._columnCount )/playerSpeedConstant
 		delta = playerSpeed*dt
 		delta = min( delta, 0.49 )
 

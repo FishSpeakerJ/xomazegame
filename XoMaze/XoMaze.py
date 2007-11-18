@@ -205,9 +205,12 @@ class XoMaze:
 			elif event.key == K_3:
 				# checkif this is relevant
 				self.startNewGame(*globals.difficultyLevelToMazeSize[3])
+			elif event.key == K_4:
+				# checkif this is relevant
+				self.startNewGame(*globals.difficultyLevelToMazeSize[4])
 			elif event.key == K_f:
 				self.fogOfWarEnabled = not self.fogOfWarEnabled
-				
+
 		return True
 
 	def onPlayerPositionChange( self, playerID, position ):
