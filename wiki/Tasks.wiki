@@ -4,7 +4,6 @@
  Jason
   * speed on beenVisited bug
   * two button bug
-  * clock reset bug
 
  Dennis
   * ~~better path line colors~~
