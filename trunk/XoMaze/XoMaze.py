@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import sys
 import os
+import math
 from Maze import Maze
 from Maze import Cell
 from Hud import Hud
@@ -28,6 +29,8 @@ except ImportError:
 
 class XoMaze:
 	def __init__(self):
+		self.scheduler = Scheduler( self )
+
 		self.initScreen( int( width ), int( height ) ) 
 		self.initVariables()
 		self.initPlayerManager()
@@ -40,10 +43,11 @@ class XoMaze:
 		pygame.event.set_blocked( pygame.VIDEOEXPOSE )
 		pygame.event.set_blocked( pygame.ACTIVEEVENT )
 
-		self.scheduler = Scheduler( self )
 
 		pygame.time.set_timer( globals.CLOCKTICK, globals.clockSleepTime )
-
+		self.showTitleScreen()
+		self.acceptSpacebar = True
+		
 		#eventwrap.install()
 		
 	def initScreen( self, width, height ):
@@ -63,7 +67,6 @@ class XoMaze:
 		self.hud = Hud( self )
 		self.maze = Maze( self )
 		self.fogOfWarSurface = pygame.Surface( (boardWidth, boardHeight) )
-		self.showTitleScreen()
 		# show title screen
 		
 
@@ -77,12 +80,18 @@ class XoMaze:
 		imageRect = self.titleImage.get_rect()
 		# Center the rectangle
 		imageRect.centerx = self.screen.get_rect().centerx
-		imageRect.centery = self.titleImage.get_height() + 10
+		imageRect.centery = (self.titleImage.get_height()/2.0 + 20)
 		self.screen.blit( self.titleImage, imageRect )
 
 		# show spacebar press anim
-		
-		
+		self.spacebar_up = self.loadImage( "%s_spacebar_1.png" % graphicsPrefix, (0, 255, 0) )		
+		self.spacebar_down = self.loadImage( "%s_spacebar_2.png" % graphicsPrefix, (0, 255, 0) )
+		# Create a rectangle
+		self.spacebar_imageRect = self.spacebar_up.get_rect()
+		# Center the rectangle
+		self.spacebar_imageRect.centerx = self.screen.get_rect().centerx
+		self.spacebar_imageRect.centery = self.titleImage.get_height() + 40 + self.spacebar_up.get_height()
+		self.startSpaceBarPrompt()
 		# show directions		
 		self.directionsImage = self.loadImage( "%s_startDirections.png" % graphicsPrefix, (0, 255, 0) )		
 		if self.screen.get_width() < self.directionsImage.get_width() + 20:
@@ -94,6 +103,17 @@ class XoMaze:
 		imageRect.centery = self.screen.get_height() - self.directionsImage.get_height()/2.0 - 20		
 		self.screen.blit( self.directionsImage, imageRect )
 		
+	def startSpaceBarPrompt( self ):
+		self.acceptSpacebar = True
+		self.scheduler.doInterval( 1.0, self.flashSpaceBar )
+		
+	def flashSpaceBar( self, t):
+		self.spacebar_down.set_alpha(255*math.sin(t*math.pi))
+		if t == 1.0:
+			if not self.gameClock.isRunning:
+				self.scheduler.doInterval( 1.0, self.flashSpaceBar )
+			else:
+				self.acceptSpacebar = False
 		
 		
 		
@@ -205,10 +225,16 @@ class XoMaze:
 			if self.fogOfWarEnabled:
 				self.boardSurface.blit( self.fogOfWarSurface, (0, 0) )
 
+
+		self.hud.update()
+		
+		# HACK
+		if self.acceptSpacebar:
+			self.screen.blit( self.spacebar_up, self.spacebar_imageRect )
+			self.screen.blit( self.spacebar_down, self.spacebar_imageRect )		
 		# Render that sucker
 		pygame.display.update()						
 
-		self.hud.update()
 		# Keep looping!
 		return keepGoing
 		
@@ -216,6 +242,9 @@ class XoMaze:
 		# Gotta have this if we want to exit nicely
 		if event.type == QUIT:
 			return False
+		elif event.type == KEYUP:
+			if event.key == K_SPACE and self.acceptSpacebar == True:
+				self.startNewGame(*globals.difficultyLevelToMazeSize[self.mazeComplexityLevel])
 		elif event.type == KEYDOWN: # (I assume we want key down, not up)
 			if event.key == K_ESCAPE:
 				# TODO: Show a confirmation dialog maybe?
@@ -250,12 +279,11 @@ class XoMaze:
 			traceback.print_exc()
 
 	def startNewGame( self, xCellNum, yCellNum ):
-		# make sure gameClock is stopped and reset
+		# make sure gameClock is stopped
 		self.gameClock.stop()
 		self.gameClock.reset()
-		
-		# clear EVERYTHING
-		self.boardSurface.fill( (1.0, 1.0, 1.0) )
+		# clear EVERYTHING		
+		self.screen.fill( (1.0,1.0,1.0) )
 		#self.hud.reset()
 		# create the new maze
 		self.maze.initialize(xCellNum,yCellNum)
@@ -295,12 +323,12 @@ class XoMaze:
 	
 			for endCell in self.playerManager.endCells:
 				endX, endY = self.maze.mapCell( endCell, 0.5 )
-				self._fogOfWarStartPoints.append( (int( endX ), int( endY )) )
+				self._fogOfWarStartPoints.append( (endX, endY) )
 		
 		self.fogOfWarSurface.blit( self.fogOfWarImage, (0.0, 0.0) )
 		radius = self.fogOfWarStartRadius + t*(self.fogOfWarRadius - self.fogOfWarStartRadius)
 		for point in self._fogOfWarStartPoints:
-			pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, point, int( radius ) )
+			pygame.draw.circle( self.fogOfWarSurface, self.fogOfWarKeyColor, point, radius )
 	
 	def exitFogOfWar( self, t ):
 		radius = 1 + t*(self.fogOfWarGameOverRadius - 1)
@@ -319,6 +347,9 @@ class XoMaze:
 		self.playerManager.doCelebrate = True
 		self.playerManager.celebrate()
 		self.gameClock.stop()
+		self.spacebar_imageRect.centery = self.screen.get_height()/2.0
+		self.scheduler.doLater( 5.0, self.startSpaceBarPrompt )
+
 
 	def loadImage( self, name, colorkey=None ):
 		fullname = os.path.join( "data", name )
