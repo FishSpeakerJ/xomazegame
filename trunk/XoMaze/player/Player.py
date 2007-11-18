@@ -111,7 +111,7 @@ class Player:
 			
 			# We've got a head... it isn't mine, let's check back later!
 			if currentCell.isContainingHead:
-				pygame.time.set_timer(globals.CHECKHEADS, 250 )
+				pygame.time.set_timer( CHECKHEADS, 250 )
 
 			if self.game.playerManager.checkForEnd( currentCell ):
 				if self.headAttached:
@@ -126,7 +126,7 @@ class Player:
 				self.signaling = True
 		else:
 			self.signaling = False
-		pygame.time.set_timer( globals.CHECKHEADS, 300 )
+		pygame.time.set_timer( CHECKHEADS, 300 )
 
 	def reset( self ):
 		'''
