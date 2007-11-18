@@ -256,8 +256,9 @@ class XoMaze:
 			traceback.print_exc()
 
 	def startNewGame( self, xCellNum, yCellNum ):
-		# make sure gameClock is stopped
+		# make sure gameClock is stopped and reset
 		self.gameClock.stop()
+		self.gameClock.reset()
 		
 		# clear EVERYTHING
 		self.boardSurface.fill( (1.0, 1.0, 1.0) )
