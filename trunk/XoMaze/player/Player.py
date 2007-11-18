@@ -44,7 +44,7 @@ class Player:
 			self.signaling = True
 			return
 
-		dt = min( dt, 0.1 )
+		dt = min( dt, 0.07 )
 		delta = playerSpeed*dt
 
 		if direction == 0:  # North
@@ -58,7 +58,7 @@ class Player:
 		
 		potentialPosition = [self.position[0] + delta*directionVector[0], self.position[1] + delta*directionVector[1]]
 		
-		if self.id == 2:
+		if False and self.id == 2:
 			print "Player 0 move"
 			print "  dt:", dt
 			print "  delta:", delta

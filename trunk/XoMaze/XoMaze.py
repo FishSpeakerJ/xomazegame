@@ -189,7 +189,7 @@ class XoMaze:
 				# TODO: Show a confirmation dialog maybe?
 				return False			
 			# Handle any directional input
-			if event.key in self.keysToDirections.keys():
+			if event.key in self.keysToDirections.keys() and self.gameClock.isRunning():
 				self.pressedKeys.append( event.key )
 			if event.key == K_SPACE:
 				# checkif this is relevant
