@@ -3,6 +3,8 @@
 = Functionality =
  Jason
   * all fog of war vanishes
+  * speed on beenVisited bug
+  * two button bug
 
  Dennis
   * ~~better path line colors~~
