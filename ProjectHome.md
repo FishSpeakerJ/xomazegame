@@ -1,0 +1,1 @@
+A collaborative maze game designed for the One Laptop Per Child (OLPC) XO Laptop, bourne out of the OLPC Pittsburgh Game Jam.
